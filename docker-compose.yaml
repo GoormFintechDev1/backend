@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   # MariaDB 서비스
   db:
@@ -8,11 +7,12 @@ services:
       MYSQL_ROOT_PASSWORD: 1234  # MariaDB의 루트 비밀번호 설정
       MYSQL_DATABASE: jipangi_db  # 사용할 데이터베이스 이름
       MYSQL_USER: user  # MariaDB 사용자 이름
-      MYSQL_PASSWORD: password  # MariaDB 사용자 비밀번호
+      MYSQL_PASSWORD: 1234  # MariaDB 사용자 비밀번호
     ports:
-      - "3306:3306"  # MariaDB의 기본 포트
+      - "3307:3306"  # MariaDB의 기본 포트
     volumes:
       - db-data:/var/lib/mysql  # MariaDB 데이터 볼륨 (데이터 영구 저장)
+      - ./initdb:/docker-entrypoint-initdb.d
     networks:
       - spring_net  # 네트워크 설정 (백엔드와 연결)
 
