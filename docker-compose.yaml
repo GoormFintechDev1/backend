@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  # MariaDB 서비스
+  db:
+    image: mariadb:latest  # 최신 MariaDB 이미지를 사용
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234  # MariaDB의 루트 비밀번호 설정
+      MYSQL_DATABASE: jipangi_db  # 사용할 데이터베이스 이름
+      MYSQL_USER: user  # MariaDB 사용자 이름
+      MYSQL_PASSWORD: password  # MariaDB 사용자 비밀번호
+    ports:
+      - "3306:3306"  # MariaDB의 기본 포트
+    volumes:
+      - db-data:/var/lib/mysql  # MariaDB 데이터 볼륨 (데이터 영구 저장)
+    networks:
+      - spring_net  # 네트워크 설정 (백엔드와 연결)
+
+  # Spring Boot 백엔드 서비스
+  app:
+    image: my-backend-app  # Dockerfile을 통해 빌드된 Spring Boot 애플리케이션 이미지
+    container_name: spring_app
+    build:
+      context: .  # 현재 디렉토리에서 Dockerfile을 사용해 빌드
+      dockerfile: Dockerfile  # 사용할 Dockerfile 경로
+    ports:
+      - "8080:8080"  # Spring Boot 애플리케이션의 기본 포트
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/jipangi_db?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: user  # MariaDB에서 설정한 사용자 이름과 동일해야 함
+      SPRING_DATASOURCE_PASSWORD: password  # MariaDB에서 설정한 비밀번호와 동일해야 함
+    depends_on:
+      - db  # MariaDB가 먼저 시작되도록 설정
+    networks:
+      - spring_net  # 네트워크 설정 (db와 동일한 네트워크 사용)
+
+# 네트워크 설정
+networks:
+  spring_net:
+
+# 볼륨 설정 (MariaDB 데이터가 컨테이너 재시작 시에도 유지되도록)
+volumes:
+  db-data:
