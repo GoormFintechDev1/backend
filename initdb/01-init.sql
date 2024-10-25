@@ -1,2 +1,0 @@
-GRANT ALL PRIVILEGES ON jipangi_db.* TO 'user'@'%';
-FLUSH PRIVILEGES;
