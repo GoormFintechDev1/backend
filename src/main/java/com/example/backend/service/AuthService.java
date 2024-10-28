@@ -24,24 +24,24 @@ public class AuthService {
     private final TokenService tokenService;
 
     // 회원가입
-    public void signup(SignupRequestDTO signupRequest) {
+    public ResponseEntity<String> signup(SignupRequestDTO signupRequest) {
         log.info("회원가입 요청 수신: {}", signupRequest.getAccount());
 
         // 1. 중복 검사
         if (memberRepository.findByAccount(signupRequest.getAccount()).isPresent()) {
             log.warn("회원가입 실패: 중복된 아이디 {}", signupRequest.getAccount());
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 아이디는 이미 사용 중입니다");
-            return;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 아이디는 이미 사용 중입니다");
+
         }
         if (memberRepository.findByNickname(signupRequest.getNickname()).isPresent()) {
             log.warn("회원가입 실패: 중복된 닉네임 {}", signupRequest.getNickname());
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 닉네임은 이미 사용 중입니다");
-            return;
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 닉네임은 이미 사용 중입니다");
+
         }
         if (memberRepository.findByPhoneNumber(signupRequest.getPhoneNumber()).isPresent()) {
             log.warn("회원가입 실패: 중복된 휴대번호 {}", signupRequest.getPhoneNumber());
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 휴대번호는 이미 사용 중입니다");
-            return;
+            return null;
         }
 
         // 2. 새로운 Member 객체 생성 및 정보 설정
@@ -57,6 +57,7 @@ public class AuthService {
         // 3. DB에 저장
         memberRepository.save(member);
         log.info("회원가입 성공: {}", signupRequest.getAccount());
+        return null;
     }
 
     // 로그인
