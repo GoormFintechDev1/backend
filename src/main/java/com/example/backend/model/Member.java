@@ -48,6 +48,5 @@ public class Member {
         this.address = address;
         this.role = MemberRoleEnum.USER;
     }
-
 }
 

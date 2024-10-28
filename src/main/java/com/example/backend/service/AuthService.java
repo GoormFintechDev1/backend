@@ -9,6 +9,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,41 +18,51 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
-
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final TokenService tokenService;
 
-    // 공통로직으로 빼서 중복조회 하기.
 
     // 회원가입
     public void signup(SignupRequestDTO signupRequest) {
-        // 1. 계정 중복 검사 (이미 존재하는 계정인지)
+        // 1. 중복 검사
         if (memberRepository.findByAccount(signupRequest.getAccount()).isPresent()) {
-            throw new IllegalArgumentException("회원ID가 이미 존재합니다.");
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 아이디는 이미 사용 중입니다");
+            return;
+        }
+        if (memberRepository.findByNickname(signupRequest.getNickname()).isPresent()) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 닉네임은 이미 사용 중입니다");
+            return;
+        }
+        if (memberRepository.findByPhoneNumber(signupRequest.getPhoneNumber()).isPresent()) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 휴대번호는 이미 사용 중입니다");
+            return;
         }
 
         // 2. 새로운 Member 객체 생성 및 정보 설정
         Member member = Member.builder()
                 .account(signupRequest.getAccount())
-                        .password(passwordEncoder.encode(signupRequest.getPassword()))
-
-
-        // 이런식으로 추가하면 됩니당!
+                .password(passwordEncoder.encode(signupRequest.getPassword()))
+                .name(signupRequest.getName())
+                .nickname(signupRequest.getNickname())
+                .phoneNumber(signupRequest.getPhoneNumber())
+                .address(signupRequest.getAddress())
+                .build();
 
         // 3. DB에 저장
         memberRepository.save(member);
     }
 
+    // 로그인
     public String login(LoginRequestDTO loginRequest, HttpServletResponse response) {
         // 1. 계정 조회 및 예외 처리
         Member member = memberRepository.findByAccount(loginRequest.getAccount())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid account"));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 계정"));
 
         // 2. 비밀번호 검증
         if (!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("Invalid password");
+            throw new IllegalArgumentException("잘못된 비밀번호");
         }
 
         // 3. 액세스 토큰, 리프레시 토큰 생성
@@ -70,12 +82,36 @@ public class AuthService {
         return refreshToken;
     }
 
+
+    // 로그아웃
     public void logout(String account, HttpServletResponse response) {
         // 1. 레디스에서 리프레시 토큰 삭제
         tokenService.deleteRefreshToken(account);
-
-        // 쿠키에서 액세스 토큰 삭제하는 로직
+        // 2. 액세스 토큰 쿠키 삭제
+        Cookie accessTokenCookie = new Cookie("accessToken", null); // 쿠키의 값을 null로 설정
+        accessTokenCookie.setMaxAge(0); // 쿠키 만료 시간 0으로 설정
+        accessTokenCookie.setPath("/"); // 해당 쿠키의 경로 설정
+        accessTokenCookie.setHttpOnly(true); // HTTP 전송만 허용 (선택)
+        response.addCookie(accessTokenCookie);
     }
+
+    // 회원 탈퇴
+
+
+
+    //// 중복 확인
+    // 아이디 중복 확인
+
+
+
+
+    // 닉네임 중복 확인
+
+
+    // 폰 번호 중복 확인
+
+
+
 
 }
 
