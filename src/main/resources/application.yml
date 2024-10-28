@@ -1,6 +1,9 @@
 server:
   port: 8080
 
+JWT:
+  SECRET: "dBsu7RpmQRefQ20XM4qY/nwSP1QNLpeV3iri2DpPrUe1o69kOHGP7kwzpzps2ptNN+ir8JpgWhY0E6/3xexhJQ=="
+
 spring:
   application:
     name: backend
@@ -29,7 +32,7 @@ spring:
         order_updates: true
         jdbc.batch_versioned_data: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
