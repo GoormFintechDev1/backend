@@ -1,7 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.LoginRequestDTO;
-import com.example.backend.dto.SignupRequestDTO;
+import com.example.backend.dto.*;
 import com.example.backend.model.Member;
 import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
@@ -74,6 +73,11 @@ public class AuthService {
                     return new IllegalArgumentException("잘못된 계정");
                 });
 
+        // 비활성화 상태라면 로그인 막기
+        if ("INACTIVE".equals(loginRequest.getActivity())) {
+            throw new IllegalArgumentException("계정이 비활성화되었습니다. 활성화를 원하면 확인 버튼을 누르세요.");
+        }
+
         // 2. 비밀번호 검증
         if (!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
             log.warn("로그인 실패: 잘못된 비밀번호");
@@ -101,12 +105,12 @@ public class AuthService {
     }
 
     // 로그아웃
-    public void logout(String account, HttpServletResponse response) {
-        log.info("로그아웃 요청 수신: {}", account);
+    public void logout(LogoutRequestDTO logoutRequest, HttpServletResponse response) {
+        log.info("로그아웃 요청 수신: {}", logoutRequest);
 
         // 1. 레디스에서 리프레시 토큰 삭제
-        log.info("Redis에서 {}의 리프레시 토큰 삭제 시도", account);
-        tokenService.deleteRefreshToken(account);
+        log.info("Redis에서 {}의 리프레시 토큰 삭제 시도", logoutRequest);
+        tokenService.deleteRefreshToken(logoutRequest.getAccount());
         log.info("Redis에서 리프레시 토큰 삭제 완료");
 
         // 2. 액세스 토큰 쿠키 삭제
@@ -117,34 +121,44 @@ public class AuthService {
         response.addCookie(accessTokenCookie);
 
         log.info("accessToken 쿠키 만료 설정 완료");
-        log.info("로그아웃 성공: {}", account);
+        log.info("로그아웃 성공: {}", logoutRequest);
     }
 
     // 회원 탈퇴 (active -> inactive)
-    public void removeMember(String account) {
-        log.info("회원 조회");
-        Member member = memberRepository.findByAccount(account)
+    public void inActiveMember(ActivityMemberRequestDTO activityMemberRequest) {
+        Member member = memberRepository.findByAccount(activityMemberRequest.getAccount())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        log.info("회원 상태를 inactive로 변경");
         member.setActivity(MemberActiveEnum.valueOf("INACTIVE"));
         memberRepository.save(member); // 변경된 상태 저장
 
-        log.info("회원 탈퇴 성공: {}", account);
+        log.info("회원 탈퇴 성공: {}", activityMemberRequest);
     }
+
+    // 회원 활성화 (inactive -> active)
+    public void activeMember(ActivityMemberRequestDTO activityMemberRequest) {
+        Member member = memberRepository.findByAccount(activityMemberRequest.getAccount())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        member.setActivity(MemberActiveEnum.valueOf("ACTIVE"));
+        memberRepository.save(member); // 변경된 상태 저장
+
+    }
+
+
     // 아이디 중복 확인 (true - 중복, false - 중복 아님)
-    public boolean checkAccount(String account) {
-        return memberRepository.findByAccount(account).isPresent();
+    public boolean checkAccount(CheckIdRequestDTO checkIdRequest) {
+        return memberRepository.findByAccount(checkIdRequest.getAccount()).isPresent();
     }
 
     // 닉네임 중복 확인 (true - 중복, false - 중복 아님)
-    public boolean checkNickname(String nickname) {
-        return memberRepository.findByNickname(nickname).isPresent();
+    public boolean checkNickname(CheckNicknameRequestDTO checkNicknameRequest) {
+        return memberRepository.findByNickname(checkNicknameRequest.getNickname()).isPresent();
     }
 
     // 폰 번호 중복 확인 (true - 중복, false - 중복 아님)
-    public boolean checkPhoneNumber(String phoneNumber) {
-        return memberRepository.findByPhoneNumber(phoneNumber).isPresent();
+    public boolean checkPhoneNumber(CheckPhoneRequestDTO checkPhoneRequest) {
+        return memberRepository.findByPhoneNumber(checkPhoneRequest.getPhone()).isPresent();
     }
 
 }
