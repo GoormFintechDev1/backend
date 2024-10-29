@@ -1,8 +1,6 @@
 package com.example.backend.util;
 
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -69,10 +67,17 @@ public class TokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(keyBytes).build().parseClaimsJws(token);
             log.info("Token is valid");
-            return true;
-        } catch (JwtException e) {
-            log.error("Invalid JWT Token", e);
-            return false;
+            return true; // 유효한 토큰이면 true 반환
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("Invalid JWT signature.");
+        } catch (ExpiredJwtException e) {
+            log.error("Expired JWT token.");
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT token.");
+        } catch (IllegalArgumentException e) {
+            log.error("JWT token compact of handler are invalid.");
         }
+        return false; // 유효하지 않은 토큰이면 false 반환
     }
+
 }

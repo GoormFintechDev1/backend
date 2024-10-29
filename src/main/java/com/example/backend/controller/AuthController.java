@@ -73,4 +73,13 @@ public class AuthController {
         boolean isDuplicate = authService.checkPhoneNumber(checkPhoneRequest);
         return ResponseEntity.ok(isDuplicate);
     }
+
+    // 회원 현재 상태 로그인 중인지 아닌지 -> 구현 (상태관리)
+    // 토큰으로 검증 // 유효 검증
+    // 로그인 상태 확인
+    @GetMapping("/check-login")
+    public ResponseEntity<String> checkLogin() {
+        log.info("로그인 상태 확인 요청");
+        return ResponseEntity.ok("로그인 상태 유효");
+    }
 }

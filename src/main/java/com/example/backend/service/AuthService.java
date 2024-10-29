@@ -1,6 +1,8 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.*;
+import com.example.backend.exception.base_exceptions.BadRequestException;
+import com.example.backend.exception.base_exceptions.ResourceNotFoundException;
 import com.example.backend.model.Member;
 import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
@@ -13,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -32,18 +32,15 @@ public class AuthService {
         // 1. 중복 검사
         if (memberRepository.findByAccount(signupRequest.getAccount()).isPresent()) {
             log.warn("회원가입 실패: 중복된 아이디 {}", signupRequest.getAccount());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 아이디는 이미 사용 중입니다");
-
+            throw new BadRequestException("해당 아이디는 이미 사용 중입니다");
         }
         if (memberRepository.findByNickname(signupRequest.getNickname()).isPresent()) {
             log.warn("회원가입 실패: 중복된 닉네임 {}", signupRequest.getNickname());
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 닉네임은 이미 사용 중입니다");
-
+            throw new BadRequestException("해당 닉네임은 이미 사용 중입니다");
         }
         if (memberRepository.findByPhoneNumber(signupRequest.getPhoneNumber()).isPresent()) {
             log.warn("회원가입 실패: 중복된 휴대번호 {}", signupRequest.getPhoneNumber());
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 휴대번호는 이미 사용 중입니다");
-            return null;
+            throw new BadRequestException("해당 휴대번호는 이미 사용 중입니다");
         }
 
         // 2. 새로운 Member 객체 생성 및 정보 설정
@@ -59,7 +56,7 @@ public class AuthService {
         // 3. DB에 저장
         memberRepository.save(member);
         log.info("회원가입 성공: {}", signupRequest.getAccount());
-        return null;
+        return ResponseEntity.ok("회원가입 성공");
     }
 
     // 로그인
@@ -70,18 +67,18 @@ public class AuthService {
         Member member = memberRepository.findByAccount(loginRequest.getAccount())
                 .orElseThrow(() -> {
                     log.warn("로그인 실패: 잘못된 계정 {}", loginRequest.getAccount());
-                    return new IllegalArgumentException("잘못된 계정");
+                    return new ResourceNotFoundException("존재하지 않는 계정입니다");
                 });
 
         // 비활성화 상태라면 로그인 막기
-        if ("INACTIVE".equals(loginRequest.getActivity())) {
-            throw new IllegalArgumentException("계정이 비활성화되었습니다. 활성화를 원하면 확인 버튼을 누르세요.");
+        if (member.getActivity() == MemberActiveEnum.INACTIVE) {
+            throw new BadRequestException("계정이 비활성화되었습니다. 활성화를 원하면 확인 버튼을 누르세요.");
         }
 
         // 2. 비밀번호 검증
         if (!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
             log.warn("로그인 실패: 잘못된 비밀번호");
-            throw new IllegalArgumentException("잘못된 비밀번호");
+            throw new BadRequestException("잘못된 비밀번호");
         }
 
         // 3. 액세스 토큰, 리프레시 토큰 생성
@@ -99,7 +96,7 @@ public class AuthService {
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(15 * 60);
         response.addCookie(accessTokenCookie);
-        log.info("accessToken 쿠키 설정 완료");
+        log.info("accessToken 쿠키 설정 완료: " + accessToken);
 
         return refreshToken;
     }
@@ -109,7 +106,6 @@ public class AuthService {
         log.info("로그아웃 요청 수신: {}", logoutRequest);
 
         // 1. 레디스에서 리프레시 토큰 삭제
-        log.info("Redis에서 {}의 리프레시 토큰 삭제 시도", logoutRequest);
         tokenService.deleteRefreshToken(logoutRequest.getAccount());
         log.info("Redis에서 리프레시 토큰 삭제 완료");
 
@@ -127,9 +123,9 @@ public class AuthService {
     // 회원 탈퇴 (active -> inactive)
     public void inActiveMember(ActivityMemberRequestDTO activityMemberRequest) {
         Member member = memberRepository.findByAccount(activityMemberRequest.getAccount())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 회원입니다."));
 
-        member.setActivity(MemberActiveEnum.valueOf("INACTIVE"));
+        member.setActivity(MemberActiveEnum.INACTIVE);
         memberRepository.save(member); // 변경된 상태 저장
 
         log.info("회원 탈퇴 성공: {}", activityMemberRequest);
@@ -138,13 +134,13 @@ public class AuthService {
     // 회원 활성화 (inactive -> active)
     public void activeMember(ActivityMemberRequestDTO activityMemberRequest) {
         Member member = memberRepository.findByAccount(activityMemberRequest.getAccount())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 회원입니다."));
 
-        member.setActivity(MemberActiveEnum.valueOf("ACTIVE"));
+        member.setActivity(MemberActiveEnum.ACTIVE);
         memberRepository.save(member); // 변경된 상태 저장
 
+        log.info("회원 활성화 성공: {}", activityMemberRequest);
     }
-
 
     // 아이디 중복 확인 (true - 중복, false - 중복 아님)
     public boolean checkAccount(CheckIdRequestDTO checkIdRequest) {
@@ -160,5 +156,4 @@ public class AuthService {
     public boolean checkPhoneNumber(CheckPhoneRequestDTO checkPhoneRequest) {
         return memberRepository.findByPhoneNumber(checkPhoneRequest.getPhone()).isPresent();
     }
-
 }
