@@ -8,6 +8,7 @@ import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
 import com.example.backend.util.TokenProvider;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -102,8 +103,21 @@ public class AuthService {
     }
 
     // 로그아웃
-    public void logout(LogoutRequestDTO logoutRequest, HttpServletResponse response) {
+    public void logout(LogoutRequestDTO logoutRequest, HttpServletRequest request, HttpServletResponse response) {
         log.info("로그아웃 요청 수신: {}", logoutRequest);
+
+        // 액세스 토큰 쿠키 로그 기록
+        String accessToken = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accessToken".equals(cookie.getName())) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        log.info("로그아웃 요청 시 액세스 토큰: {}", accessToken);
 
         // 1. 레디스에서 리프레시 토큰 삭제
         tokenService.deleteRefreshToken(logoutRequest.getAccount());

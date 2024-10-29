@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.*;
 import com.example.backend.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,13 +36,13 @@ public class AuthController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody LogoutRequestDTO logoutRequest, HttpServletResponse response) {
-        authService.logout(logoutRequest, response);
+    public ResponseEntity<String> logout(@RequestBody LogoutRequestDTO logoutRequest, HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(logoutRequest, request, response);
         return ResponseEntity.ok("로그아웃 성공");
     }
 
     // 회원 탈퇴(비활성화)
-    @DeleteMapping("/inactive")
+    @PostMapping("/inactive")
     public ResponseEntity<String> inActiveMember(@RequestBody ActivityMemberRequestDTO activityMemberRequest) {
         authService.inActiveMember(activityMemberRequest);
         return ResponseEntity.ok("회원 탈퇴 성공");
