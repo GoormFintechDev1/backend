@@ -1,7 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.LoginRequestDTO;
-import com.example.backend.dto.SignupRequestDTO;
+import com.example.backend.dto.*;
 import com.example.backend.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -36,41 +35,42 @@ public class AuthController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody Map<String, String> request, HttpServletResponse response) {
-        String account = request.get("account");
-        authService.logout(account, response);
+    public ResponseEntity<String> logout(@RequestBody LogoutRequestDTO logoutRequest, HttpServletResponse response) {
+        authService.logout(logoutRequest, response);
         return ResponseEntity.ok("로그아웃 성공");
     }
 
-    // 회원 탈퇴
-    @DeleteMapping("/remove")
-    public ResponseEntity<String> remove(@RequestBody Map<String, String> request) {
-        String account = request.get("account");
-        authService.removeMember(account);
+    // 회원 탈퇴(비활성화)
+    @DeleteMapping("/inactive")
+    public ResponseEntity<String> inActiveMember(@RequestBody ActivityMemberRequestDTO activityMemberRequest) {
+        authService.inActiveMember(activityMemberRequest);
         return ResponseEntity.ok("회원 탈퇴 성공");
+    }
+    // 회원 활성화
+    @PostMapping("/active")
+    public ResponseEntity<?> activateMember(@RequestBody ActivityMemberRequestDTO activityMemberRequest) {
+        authService.activeMember(activityMemberRequest);
+        return ResponseEntity.ok("회원 활성화 성공");
     }
 
     // 아이디 중복 확인 (true - 중복, false - 중복 아님)
     @PostMapping("/duplication/id")
-    public ResponseEntity<Boolean> checkAccount(@RequestBody Map<String, String> request) {
-        String account = request.get("account");
-        boolean isDuplicate = authService.checkAccount(account);
+    public ResponseEntity<Boolean> checkAccount(@RequestBody CheckIdRequestDTO checkIdRequest) {
+        boolean isDuplicate = authService.checkAccount(checkIdRequest);
         return ResponseEntity.ok(isDuplicate);
     }
 
     // 닉네임 중복 확인 (true - 중복, false - 중복 아님)
     @PostMapping("/duplication/nickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestBody Map<String, String> request) {
-        String nickname = request.get("nickname");
-        boolean isDuplicate = authService.checkNickname(nickname);
+    public ResponseEntity<Boolean> checkNickname(@RequestBody CheckNicknameRequestDTO checkNicknameRequest) {
+        boolean isDuplicate = authService.checkNickname(checkNicknameRequest);
         return ResponseEntity.ok(isDuplicate);
     }
 
     // 폰 번호 중복 확인 (true - 중복, false - 중복 아님)
     @PostMapping("/duplication/phone")
-    public ResponseEntity<Boolean> checkPhone(@RequestBody Map<String, String> request) {
-        String phone = request.get("phone");
-        boolean isDuplicate = authService.checkPhoneNumber(phone);
+    public ResponseEntity<Boolean> checkPhone(@RequestBody CheckPhoneRequestDTO  checkPhoneRequest) {
+        boolean isDuplicate = authService.checkPhoneNumber(checkPhoneRequest);
         return ResponseEntity.ok(isDuplicate);
     }
 }
