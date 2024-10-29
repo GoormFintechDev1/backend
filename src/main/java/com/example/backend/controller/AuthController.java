@@ -55,7 +55,7 @@ public class AuthController {
     }
 
     // 아이디 중복 확인 (true - 중복, false - 중복 아님)
-    @PostMapping("/duplication/id")
+    @PostMapping("/duplication/account")
     public ResponseEntity<Boolean> checkAccount(@RequestBody CheckIdRequestDTO checkIdRequest) {
         boolean isDuplicate = authService.checkAccount(checkIdRequest);
         return ResponseEntity.ok(isDuplicate);

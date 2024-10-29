@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final TokenService tokenService;
+    private final RedisTemplate redisTemplate;
 
     // 회원가입
     public ResponseEntity<String> signup(SignupRequestDTO signupRequest) {
@@ -64,6 +66,7 @@ public class AuthService {
     public String login(LoginRequestDTO loginRequest, HttpServletResponse response) {
         log.info("로그인 요청 수신: {}", loginRequest.getAccount());
 
+
         // 1. 계정 조회 및 예외 처리
         Member member = memberRepository.findByAccount(loginRequest.getAccount())
                 .orElseThrow(() -> {
@@ -95,7 +98,7 @@ public class AuthService {
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(15 * 60);
+        accessTokenCookie.setMaxAge(15 * 60); // 7분
         response.addCookie(accessTokenCookie);
         log.info("accessToken 쿠키 설정 완료: " + accessToken);
 
@@ -170,4 +173,9 @@ public class AuthService {
     public boolean checkPhoneNumber(CheckPhoneRequestDTO checkPhoneRequest) {
         return memberRepository.findByPhoneNumber(checkPhoneRequest.getPhone()).isPresent();
     }
+
+
+
 }
+
+
