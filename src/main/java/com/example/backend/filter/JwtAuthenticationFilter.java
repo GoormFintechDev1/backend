@@ -1,3 +1,4 @@
+// JwtAuthenticationFilter.java
 package com.example.backend.filter;
 
 import com.example.backend.util.TokenProvider;
@@ -25,6 +26,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
 
+        String requestURI = request.getRequestURI();
+
+        // 인증이 필요 없는 경로 예외 처리
+        if (requestURI.startsWith("/api/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // JWT 토큰 검증 로직
         String token = resolveToken(request);
 
         if (token != null) {

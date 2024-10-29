@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.LoginRequestDTO;
 import com.example.backend.dto.SignupRequestDTO;
 import com.example.backend.model.Member;
+import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
 import com.example.backend.util.TokenProvider;
 import jakarta.servlet.http.Cookie;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -116,4 +119,32 @@ public class AuthService {
         log.info("accessToken 쿠키 만료 설정 완료");
         log.info("로그아웃 성공: {}", account);
     }
+
+    // 회원 탈퇴 (active -> inactive)
+    public void removeMember(String account) {
+        log.info("회원 조회");
+        Member member = memberRepository.findByAccount(account)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        log.info("회원 상태를 inactive로 변경");
+        member.setActivity(MemberActiveEnum.valueOf("INACTIVE"));
+        memberRepository.save(member); // 변경된 상태 저장
+
+        log.info("회원 탈퇴 성공: {}", account);
+    }
+    // 아이디 중복 확인 (true - 중복, false - 중복 아님)
+    public boolean checkAccount(String account) {
+        return memberRepository.findByAccount(account).isPresent();
+    }
+
+    // 닉네임 중복 확인 (true - 중복, false - 중복 아님)
+    public boolean checkNickname(String nickname) {
+        return memberRepository.findByNickname(nickname).isPresent();
+    }
+
+    // 폰 번호 중복 확인 (true - 중복, false - 중복 아님)
+    public boolean checkPhoneNumber(String phoneNumber) {
+        return memberRepository.findByPhoneNumber(phoneNumber).isPresent();
+    }
+
 }

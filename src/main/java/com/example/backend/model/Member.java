@@ -1,4 +1,5 @@
 package com.example.backend.model;
+import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.model.enumSet.MemberRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,10 @@ public class Member {
     @Enumerated(value = EnumType.STRING)
     private MemberRoleEnum role;
 
+    @Column(name = "activity", nullable = true, length = 30)
+    @Enumerated(value = EnumType.STRING)
+    private MemberActiveEnum activity;
+
 
     // Builder를 이용하면 Service에서 체인 형태로 나타낼 수 있어 가독성이 높아짐
     @Builder
@@ -47,6 +52,7 @@ public class Member {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.role = MemberRoleEnum.USER;
+        this.activity = MemberActiveEnum.ACTIVE;
     }
 }
 
