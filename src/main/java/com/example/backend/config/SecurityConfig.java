@@ -36,7 +36,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화
                 .authorizeRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()  // 인증 및 회원가입 엔드포인트 접근 허용
-                        .requestMatchers("/api/member/**").authenticated() // 회원 정보 수정은 인증된 사용자만 접근
+                        //.requestMatchers("/api/member/**").authenticated() // 회원 정보 수정은 인증된 사용자만 접근
                         .anyRequest().authenticated()  // 나머지 엔드포인트는 인증 필요
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider),

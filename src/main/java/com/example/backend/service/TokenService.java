@@ -27,7 +27,8 @@ public class TokenService {
 
     // 리프레시 토큰 삭제
     public void deleteRefreshToken(String account) {
-        redisTemplate.delete("RT:" + account);
+        boolean status = redisTemplate.delete("RT:" + account);
+        System.out.println("Delete status --> " + status);
 
     }
 }
