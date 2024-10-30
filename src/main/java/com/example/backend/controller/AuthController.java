@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.*;
 import com.example.backend.service.AuthService;
+import com.example.backend.util.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -18,6 +21,7 @@ import java.util.Map;
 @Slf4j
 public class AuthController {
     private final AuthService authService;
+    private final TokenProvider tokenProvider;
 
     // 회원 가입
     @PostMapping("/signup")
@@ -75,12 +79,31 @@ public class AuthController {
         return ResponseEntity.ok(isDuplicate);
     }
 
-    // 회원 현재 상태 로그인 중인지 아닌지 -> 구현 (상태관리)
-    // 토큰으로 검증 // 유효 검증
+
     // 로그인 상태 확인
+    // TODO
+    //  -> 이게 필요한가? 우선 개선해서 토큰 시간 띄우는걸로 변경하긴 했음.
     @GetMapping("/check-login")
-    public ResponseEntity<String> checkLogin() {
+    public ResponseEntity<Map<String, Object>> checkLogin(HttpServletRequest request) {
         log.info("로그인 상태 확인 요청");
-        return ResponseEntity.ok("로그인 상태 유효");
+
+        String accessToken = tokenProvider.resolveAccessToken(request);
+        Map<String, Object> response = new HashMap<>();
+
+        if (accessToken != null && tokenProvider.validateToken(accessToken)) {
+            // 토큰이 유효한 경우 남은 유효 시간 확인
+            Date expiration = tokenProvider.getExpirationDate(accessToken);
+            long remainingTime = expiration.getTime() - new Date().getTime();
+
+            response.put("status", "로그인 상태 유효");
+            response.put("remainingTime", remainingTime);
+        } else {
+            // 토큰이 없거나 만료된 경우
+            response.put("status", "로그인 상태 만료");
+            response.put("remainingTime", 0);
+        }
+
+        return ResponseEntity.ok(response);
     }
+
 }

@@ -1,11 +1,12 @@
-// JwtAuthenticationFilter.java
 package com.example.backend.filter;
 
 import com.example.backend.util.TokenProvider;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,13 +15,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Slf4j
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
 
-    public JwtAuthenticationFilter(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,33 +33,48 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // JWT 토큰 검증 로직
-        String token = resolveToken(request);
+        // 쿠키에서 액세스 토큰 가져오기
+        String accessToken = tokenProvider.resolveAccessToken(request);
 
-        if (token != null) {
-            log.info("JWT Token found in request: {}", token);
-            if (tokenProvider.validateToken(token)) {
-                String account = tokenProvider.getAccountFromToken(token);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(account, null, null);
+        if (accessToken != null) {
+            try {
+                // accessToken 유효성 검증
+                if (tokenProvider.validateToken(accessToken)) {
+                    setAuthentication(accessToken);
+                }
+            } catch (ExpiredJwtException e) {
+            /*
+              ExpiredJwtException을 활용하여 이미 만료된 토큰임을 처리함으로써
+              중복된 유효성 검사를 제거
+            */
+                log.info("Access token이 만료되었습니다. Refresh Token으로 갱신을 시도합니다...");
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("JWT Token is valid. Authentication set for account: {}", account);
-            } else {
-                log.warn("Invalid JWT Token: {}", token);
+                //
+                String account = e.getClaims().getSubject();
+                String refreshToken = tokenProvider.getRefreshTokenFromRedis(account);
+
+                // Refresh Token 유효성 검증 후 새 Access Token 발급
+                if (refreshToken == null) {
+                    log.warn("Refresh Token이 없습니다. account: {}", account);
+                } else if (!tokenProvider.validateToken(refreshToken)) {
+                    log.warn("유효하지 않은 Refresh Token입니다. account: {}", account);
+                } else {
+                    String newAccessToken = tokenProvider.createAccessToken(account);
+                    tokenProvider.setAccessTokenCookie(newAccessToken, response);
+                    setAuthentication(newAccessToken);
+                    log.info("새로운 Access Token이 발급되었습니다. account: {}", account);
+                }
             }
-        } else {
-            log.info("No JWT Token found in request");
         }
-
         filterChain.doFilter(request, response);
     }
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
+    private void setAuthentication(String token) {
+        String account = tokenProvider.getAccountFromToken(token);
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(account, null, null);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
+
 }

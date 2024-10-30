@@ -7,13 +7,10 @@ import com.example.backend.model.Member;
 import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
 import com.example.backend.util.TokenProvider;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +23,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final TokenService tokenService;
-    private final RedisTemplate redisTemplate;
 
     // 회원가입
     public ResponseEntity<String> signup(SignupRequestDTO signupRequest) {
@@ -74,18 +70,18 @@ public class AuthService {
                     return new ResourceNotFoundException("존재하지 않는 계정입니다");
                 });
 
-        // 비활성화 상태라면 로그인 막기
+        // 2. 계정 활성 상태 확인
         if (member.getActivity() == MemberActiveEnum.INACTIVE) {
             throw new BadRequestException("계정이 비활성화되었습니다. 활성화를 원하면 확인 버튼을 누르세요.");
         }
 
-        // 2. 비밀번호 검증
+        // 3. 비밀번호 검증
         if (!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
             log.warn("로그인 실패: 잘못된 비밀번호");
             throw new BadRequestException("잘못된 비밀번호");
         }
 
-        // 3. 액세스 토큰, 리프레시 토큰 생성
+        // 4. 액세스 토큰, 리프레시 토큰 생성
         String accessToken = tokenProvider.createAccessToken(member.getAccount());
         String refreshToken = tokenProvider.createRefreshToken(member.getAccount());
         log.info("토큰 생성 완료 - accessToken 및 refreshToken 생성");
@@ -95,44 +91,27 @@ public class AuthService {
         log.info("Redis에 리프레시 토큰 저장 완료");
 
         // 5. 액세스 토큰을 쿠키에 저장
-        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(15 * 60); // 7분
-        response.addCookie(accessTokenCookie);
+        tokenProvider.setAccessTokenCookie(accessToken, response);
         log.info("accessToken 쿠키 설정 완료: " + accessToken);
 
         return refreshToken;
     }
+
 
     // 로그아웃
     public void logout(LogoutRequestDTO logoutRequest, HttpServletRequest request, HttpServletResponse response) {
         log.info("로그아웃 요청 수신: {}", logoutRequest);
 
         // 액세스 토큰 쿠키 로그 기록
-        String accessToken = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("accessToken".equals(cookie.getName())) {
-                    accessToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
+        String accessToken = tokenProvider.resolveAccessToken(request);
         log.info("로그아웃 요청 시 액세스 토큰: {}", accessToken);
 
         // 1. 레디스에서 리프레시 토큰 삭제
         tokenService.deleteRefreshToken(logoutRequest.getAccount());
         log.info("Redis에서 리프레시 토큰 삭제 완료");
 
-        // 2. 액세스 토큰 쿠키 삭제
-        Cookie accessTokenCookie = new Cookie("accessToken", null); // 쿠키의 값을 null로 설정
-        accessTokenCookie.setMaxAge(0); // 쿠키 만료 시간 0으로 설정
-        accessTokenCookie.setPath("/"); // 해당 쿠키의 경로 설정
-        accessTokenCookie.setHttpOnly(true); // HTTP 전송만 허용 (선택)
-        response.addCookie(accessTokenCookie);
-
+        // 2. 액세스 토큰 쿠키 만료
+        tokenProvider.expireAccessTokenCookie(response);
         log.info("accessToken 쿠키 만료 설정 완료");
         log.info("로그아웃 성공: {}", logoutRequest);
     }

@@ -9,6 +9,8 @@ import java.time.Duration;
 @Service
 public class TokenService {
 
+
+    // 레디스 관련 서비스임.
     private final RedisTemplate<String, String> redisTemplate;
 
     public TokenService(RedisTemplate<String, String> redisTemplate) {
