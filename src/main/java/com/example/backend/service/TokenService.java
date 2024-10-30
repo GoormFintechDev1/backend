@@ -1,12 +1,14 @@
 package com.example.backend.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
 @Service
+@Slf4j
 public class TokenService {
 
 
@@ -30,8 +32,7 @@ public class TokenService {
     // 리프레시 토큰 삭제
     public void deleteRefreshToken(String account) {
         boolean status = redisTemplate.delete("RT:" + account);
-        System.out.println("Delete status --> " + status);
-
+        log.info("삭제 상태 --> " + status);
     }
 }
 
