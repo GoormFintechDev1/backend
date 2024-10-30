@@ -104,16 +104,20 @@ public class AuthService {
 
         // 액세스 토큰 쿠키 로그 기록
         String accessToken = tokenProvider.resolveAccessToken(request);
-        log.info("로그아웃 요청 시 액세스 토큰: {}", accessToken);
 
-        // 1. 레디스에서 리프레시 토큰 삭제
-        tokenService.deleteRefreshToken(logoutRequest.getAccount());
-        log.info("Redis에서 리프레시 토큰 삭제 완료");
+        if (accessToken != null) {
+            log.info("로그아웃 요청 시 액세스 토큰: {}", accessToken);
+            tokenService.deleteRefreshToken(logoutRequest.getAccount());
+            log.info("-- Redis에서 리프레시 토큰 삭제 완료");
 
-        // 2. 액세스 토큰 쿠키 만료
-        tokenProvider.expireAccessTokenCookie(response);
-        log.info("accessToken 쿠키 만료 설정 완료");
-        log.info("로그아웃 성공: {}", logoutRequest);
+            tokenProvider.expireAccessTokenCookie(response);
+            log.info("-- accessToken 쿠키 만료 설정 완료");
+            log.info("로그아웃 성공! : {}", logoutRequest.getAccount());
+        } else {
+            log.warn("로그인 된 상태가 아닙니다!");
+            throw new BadRequestException("로그인된 상태가 아닙니다.");
+        }
+
     }
 
     // 회원 탈퇴 (active -> inactive)
@@ -152,7 +156,6 @@ public class AuthService {
     public boolean checkPhoneNumber(CheckPhoneRequestDTO checkPhoneRequest) {
         return memberRepository.findByPhoneNumber(checkPhoneRequest.getPhone()).isPresent();
     }
-
 
 
 }
