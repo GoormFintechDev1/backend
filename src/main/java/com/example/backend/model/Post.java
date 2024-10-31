@@ -26,8 +26,9 @@ public class Post extends BaseTime {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category; // 카테고리 (연결된 카테고리 엔티티)
 
+    @ManyToOne
     @Column(name = "member_id", nullable = false)
-    private Long memberId; // 회원 식별 번호
+    private Member memberId; // 회원 식별 번호 (연결된 회원 엔티티)
 
     @Column(name = "title", length = 100, nullable = false)
     private String title; // 상품 제목
@@ -45,6 +46,9 @@ public class Post extends BaseTime {
     @Column(name = "view_count")
     private BigInteger viewCount; // 조회수
 
+    @Column(name = "like_count", nullable = false)
+    private BigInteger likeCount; // 좋아요 갯수
+
     @Enumerated(EnumType.STRING)
     @Column(name = "selling_area", nullable = false)
     private SellingAreaEnum sellingArea; // 거래 희망 장소 (판매자, 구매자, 협의)
@@ -54,7 +58,5 @@ public class Post extends BaseTime {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt; // 수정 일자
-
-
 
 }
