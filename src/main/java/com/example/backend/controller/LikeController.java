@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 public class LikeController {
 
-    // 좋아요 누르기
-    @PostMapping("/{postId}")
-    public ResponseEntity<String> addLike(@PathVariable Long id) {
-
-    }
+//    // 좋아요 누르기
+//    @PostMapping("/{postId}")
+//    public ResponseEntity<String> addLike(@PathVariable Long id) {
+//
+//    }
 }
