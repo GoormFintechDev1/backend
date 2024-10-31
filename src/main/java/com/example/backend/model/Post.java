@@ -27,8 +27,8 @@ public class Post extends BaseTime {
     private Category category; // 카테고리 (연결된 카테고리 엔티티)
 
     @ManyToOne
-    @Column(name = "member_id", nullable = false)
-    private Member memberId; // 회원 식별 번호 (연결된 회원 엔티티)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member; // 회원 식별 번호 (연결된 회원 엔티티)
 
     @Column(name = "title", length = 100, nullable = false)
     private String title; // 상품 제목
