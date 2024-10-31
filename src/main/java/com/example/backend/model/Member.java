@@ -10,7 +10,8 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+@Table(name = "members")
+public class Member extends BaseTime{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

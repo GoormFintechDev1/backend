@@ -142,6 +142,8 @@ public class AuthService {
         log.info("회원 활성화 성공: {}", activityMemberRequest);
     }
 
+    //TODO 신고 횟수 5회 누적 시 유저 정지 SUSPENDED 로 변환 하는 로직 구현하기.
+
     // 아이디 중복 확인 (true - 중복, false - 중복 아님)
     public boolean checkAccount(CheckIdRequestDTO checkIdRequest) {
         return memberRepository.findByAccount(checkIdRequest.getAccount()).isPresent();
