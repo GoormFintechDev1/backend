@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.Post;
 import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -7,10 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/post")
 @RequiredArgsConstructor
 @Slf4j
 public class PostController {
@@ -28,9 +31,13 @@ public class PostController {
 
     // 글 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<String> editPost(@PathVariable Long id) {
-
-        return null;
+    public ResponseEntity<String> editPost(@PathVariable Long postId, @RequestBody Post updatedPost) {
+        boolean isUpdated = postService.editPost(postId, updatedPost);
+        if (isUpdated) {
+            return ResponseEntity.ok("Post updated successfully.");
+        } else {
+            return ResponseEntity.status(404).body("Post not found.");
+        }
     }
 
     // 상품 전체 조회
@@ -42,18 +49,16 @@ public class PostController {
 
     // 상품 상세 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<String> showDetail(@PathVariable Long id) {
-
-        return null;
+    public ResponseEntity<Post> showDetail(@PathVariable Long postId) {
+        Optional<Post> post = postService.showDetail(postId);
+        return post.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(404).build());
     }
-
-
 
     // 검색(카테고리 기반)
     @GetMapping("/search/category")
-    public ResponseEntity<String> searchCategory() {
-
-        return null;
+    public ResponseEntity<?> searchCategory(@RequestParam String category) {
+        return ResponseEntity.ok(postService.searchByCategory(category));
     }
 
     @GetMapping("/search/keyword")
