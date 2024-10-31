@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+
 import com.example.backend.converter.DTOConverter;
 import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.model.Post;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -72,4 +75,29 @@ public class PostService {
         // 변환된 DTO 리스트 반환
         return dtoList;
     }
+
+    // 글 수정
+    public boolean editPost(Long postId, Post updatedPost) {
+        Optional<Post> existingPost = postRepository.findById(postId);
+        if (existingPost.isPresent()) {
+            Post post = existingPost.get();
+            post.setTitle(updatedPost.getTitle());
+            post.setDescription(updatedPost.getDescription());
+            postRepository.save(post);
+            return true;
+        }
+        return false;
+    }
+
+    // 상품 상세 조회
+    public Optional<Post> showDetail(Long postId) {
+        return postRepository.findById(postId);
+    }
+
+    // query
+    // 검색(카테고리 기반)
+    public List<Post> searchByCategory(String category) {
+        return postRepository.findByCategory(category);
+    }
 }
+
