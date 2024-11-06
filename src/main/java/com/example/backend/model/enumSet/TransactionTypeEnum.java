@@ -5,6 +5,7 @@ public enum TransactionTypeEnum {
     EXPENSE("EXPENSE");
 
     private final String value;
+
     TransactionTypeEnum(String value) {
         this.value = value;
     }

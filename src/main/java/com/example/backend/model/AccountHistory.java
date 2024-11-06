@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.example.backend.model.enumSet.TransactionMeansEnum;
 import com.example.backend.model.enumSet.TransactionTypeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,11 @@ public class AccountHistory {
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type")
     private TransactionTypeEnum transactionType;
+
+    // 거래 방식 (카드(Card) / 현금(Cash)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "transaction_means")
+    private TransactionMeansEnum transactionMeans;
 
     // 거래일
     @Column(name = "transaction_date")
