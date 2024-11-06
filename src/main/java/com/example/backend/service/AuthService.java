@@ -44,10 +44,9 @@ public class AuthService {
 
         // 2. 새로운 Member 객체 생성 및 정보 설정
         Member member = Member.builder()
-                .account(signupRequest.getAccount())
+                .loginId(signupRequest.getAccount())
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .name(signupRequest.getName())
-                .nickname(signupRequest.getNickname())
                 .phoneNumber(signupRequest.getPhoneNumber())
                 .address(signupRequest.getAddress())
                 .build();
@@ -148,15 +147,9 @@ public class AuthService {
     public boolean checkAccount(CheckIdRequestDTO checkIdRequest) {
         return memberRepository.findByAccount(checkIdRequest.getAccount()).isPresent();
     }
-
-    // 닉네임 중복 확인 (true - 중복, false - 중복 아님)
-    public boolean checkNickname(CheckNicknameRequestDTO checkNicknameRequest) {
-        return memberRepository.findByNickname(checkNicknameRequest.getNickname()).isPresent();
-    }
-
     // 폰 번호 중복 확인 (true - 중복, false - 중복 아님)
-    public boolean checkPhoneNumber(CheckPhoneRequestDTO checkPhoneRequest) {
-        return memberRepository.findByPhoneNumber(checkPhoneRequest.getPhone()).isPresent();
+    public boolean checkPhoneNumber(CheckPhoneNumberRequestDTO checkPhoneRequest) {
+        return memberRepository.findByPhoneNumber(checkPhoneRequest.getPhoneNumber()).isPresent();
     }
 
 

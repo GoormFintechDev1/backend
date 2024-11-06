@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LogoutRequestDTO {
-    private String account;
+    private String loginId;
 }
 
 
