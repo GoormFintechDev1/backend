@@ -169,7 +169,7 @@ public class AuthService {
 
     // 이메일 중복 확인 (true - 중복, false - 중복 아님)
     public boolean checkEmail(CheckEmailRequestDTO checkEmailRequest) {
-        return memberRepository.findByEmail(checkEmailRequest.getEmail().isPresent());
+        return memberRepository.findByEmail(checkEmailRequest.getEmail()).isPresent();
     }
 
 }
