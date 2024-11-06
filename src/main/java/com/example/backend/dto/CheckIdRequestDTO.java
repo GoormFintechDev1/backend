@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CheckIdRequestDTO {
-    private String account;
+    private String loginId;
 }
 

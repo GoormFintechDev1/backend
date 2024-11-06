@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ActivityMemberRequestDTO {
-    private String account;
+    private String loginId;
 }
