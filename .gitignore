@@ -40,5 +40,4 @@ out/
 .env
 /src/main/resources/application-API-KEY.properties
 
-*.yaml
-*.yml
+
