@@ -26,17 +26,14 @@ public class AuthService {
 
     // 회원가입
     public ResponseEntity<String> signup(SignupRequestDTO signupRequest) {
-        log.info("회원가입 요청 수신: {}", signupRequest.getAccount());
+        log.info("회원가입 요청 수신: {}", signupRequest.getLoginId());
 
         // 1. 중복 검사
-        if (memberRepository.findByAccount(signupRequest.getAccount()).isPresent()) {
-            log.warn("회원가입 실패: 중복된 아이디 {}", signupRequest.getAccount());
+        if (memberRepository.findByAccount(signupRequest.getLoginId()).isPresent()) {
+            log.warn("회원가입 실패: 중복된 아이디 {}", signupRequest.getLoginId());
             throw new BadRequestException("해당 아이디는 이미 사용 중입니다");
         }
-        if (memberRepository.findByNickname(signupRequest.getNickname()).isPresent()) {
-            log.warn("회원가입 실패: 중복된 닉네임 {}", signupRequest.getNickname());
-            throw new BadRequestException("해당 닉네임은 이미 사용 중입니다");
-        }
+
         if (memberRepository.findByPhoneNumber(signupRequest.getPhoneNumber()).isPresent()) {
             log.warn("회원가입 실패: 중복된 휴대번호 {}", signupRequest.getPhoneNumber());
             throw new BadRequestException("해당 휴대번호는 이미 사용 중입니다");
@@ -44,7 +41,7 @@ public class AuthService {
 
         // 2. 새로운 Member 객체 생성 및 정보 설정
         Member member = Member.builder()
-                .loginId(signupRequest.getAccount())
+                .loginId(signupRequest.getLoginId())
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .name(signupRequest.getName())
                 .phoneNumber(signupRequest.getPhoneNumber())
@@ -53,19 +50,19 @@ public class AuthService {
 
         // 3. DB에 저장
         memberRepository.save(member);
-        log.info("회원가입 성공: {}", signupRequest.getAccount());
+        log.info("회원가입 성공: {}", signupRequest.getLoginId());
         return ResponseEntity.ok("회원가입 성공");
     }
 
     // 로그인
     public String login(LoginRequestDTO loginRequest, HttpServletResponse response) {
-        log.info("로그인 요청 수신: {}", loginRequest.getAccount());
+        log.info("로그인 요청 수신: {}", loginRequest.getLoginId());
 
 
         // 1. 계정 조회 및 예외 처리
-        Member member = memberRepository.findByAccount(loginRequest.getAccount())
+        Member member = memberRepository.findByAccount(loginRequest.getLoginId())
                 .orElseThrow(() -> {
-                    log.warn("로그인 실패: 잘못된 계정 {}", loginRequest.getAccount());
+                    log.warn("로그인 실패: 잘못된 계정 {}", loginRequest.getLoginId());
                     return new ResourceNotFoundException("존재하지 않는 계정입니다");
                 });
 
@@ -81,12 +78,12 @@ public class AuthService {
         }
 
         // 4. 액세스 토큰, 리프레시 토큰 생성
-        String accessToken = tokenProvider.createAccessToken(member.getAccount());
-        String refreshToken = tokenProvider.createRefreshToken(member.getAccount());
+        String accessToken = tokenProvider.createAccessToken(member.getLoginId());
+        String refreshToken = tokenProvider.createRefreshToken(member.getLoginId());
         log.info("토큰 생성 완료 - accessToken 및 refreshToken 생성");
 
         // 4. 리프레시 토큰 Redis에 저장
-        tokenService.saveRefreshToken(member.getAccount(), refreshToken);
+        tokenService.saveRefreshToken(member.getLoginId(), refreshToken);
         log.info("Redis에 리프레시 토큰 저장 완료");
 
         // 5. 액세스 토큰을 쿠키에 저장
@@ -106,12 +103,12 @@ public class AuthService {
 
         if (accessToken != null) {
             log.info("로그아웃 요청 시 액세스 토큰: {}", accessToken);
-            tokenService.deleteRefreshToken(logoutRequest.getAccount());
+            tokenService.deleteRefreshToken(logoutRequest.getLoginId());
             log.info("-- Redis에서 리프레시 토큰 삭제 완료");
 
             tokenProvider.expireAccessTokenCookie(response);
             log.info("-- accessToken 쿠키 만료 설정 완료");
-            log.info("로그아웃 성공! : {}", logoutRequest.getAccount());
+            log.info("로그아웃 성공! : {}", logoutRequest.getLoginId());
         } else {
             log.warn("로그인 된 상태가 아닙니다!");
             throw new BadRequestException("로그인된 상태가 아닙니다.");
@@ -121,7 +118,7 @@ public class AuthService {
 
     // 회원 탈퇴 (active -> inactive)
     public void inActiveMember(ActivityMemberRequestDTO activityMemberRequest) {
-        Member member = memberRepository.findByAccount(activityMemberRequest.getAccount())
+        Member member = memberRepository.findByAccount(activityMemberRequest.getLoginId())
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 회원입니다."));
 
         member.setActivity(MemberActiveEnum.INACTIVE);
@@ -132,7 +129,7 @@ public class AuthService {
 
     // 회원 활성화 (inactive -> active)
     public void activeMember(ActivityMemberRequestDTO activityMemberRequest) {
-        Member member = memberRepository.findByAccount(activityMemberRequest.getAccount())
+        Member member = memberRepository.findByAccount(activityMemberRequest.getLoginId())
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 회원입니다."));
 
         member.setActivity(MemberActiveEnum.ACTIVE);
@@ -144,8 +141,8 @@ public class AuthService {
     //TODO 신고 횟수 5회 누적 시 유저 정지 SUSPENDED 로 변환 하는 로직 구현하기.
 
     // 아이디 중복 확인 (true - 중복, false - 중복 아님)
-    public boolean checkAccount(CheckIdRequestDTO checkIdRequest) {
-        return memberRepository.findByAccount(checkIdRequest.getAccount()).isPresent();
+    public boolean checkLoginID(CheckIdRequestDTO checkIdRequest) {
+        return memberRepository.findByAccount(checkIdRequest.getLoginId()).isPresent();
     }
     // 폰 번호 중복 확인 (true - 중복, false - 중복 아님)
     public boolean checkPhoneNumber(CheckPhoneNumberRequestDTO checkPhoneRequest) {

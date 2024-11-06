@@ -60,21 +60,15 @@ public class AuthController {
 
     // 아이디 중복 확인 (true - 중복, false - 중복 아님)
     @PostMapping("/duplication/account")
-    public ResponseEntity<Boolean> checkAccount(@RequestBody CheckIdRequestDTO checkIdRequest) {
-        boolean isDuplicate = authService.checkAccount(checkIdRequest);
+    public ResponseEntity<Boolean> checkLoginID(@RequestBody CheckIdRequestDTO checkIdRequest) {
+        boolean isDuplicate = authService.checkLoginID(checkIdRequest);
         return ResponseEntity.ok(isDuplicate);
     }
 
-    // 닉네임 중복 확인 (true - 중복, false - 중복 아님)
-    @PostMapping("/duplication/nickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestBody CheckNicknameRequestDTO checkNicknameRequest) {
-        boolean isDuplicate = authService.checkNickname(checkNicknameRequest);
-        return ResponseEntity.ok(isDuplicate);
-    }
 
     // 폰 번호 중복 확인 (true - 중복, false - 중복 아님)
     @PostMapping("/duplication/phone")
-    public ResponseEntity<Boolean> checkPhone(@RequestBody CheckPhoneRequestDTO  checkPhoneRequest) {
+    public ResponseEntity<Boolean> checkPhone(@RequestBody CheckPhoneNumberRequestDTO checkPhoneRequest) {
         boolean isDuplicate = authService.checkPhoneNumber(checkPhoneRequest);
         return ResponseEntity.ok(isDuplicate);
     }
