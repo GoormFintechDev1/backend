@@ -40,6 +40,8 @@ public class QAccountHistory extends EntityPathBase<AccountHistory> {
 
     public final DateTimePath<java.time.LocalDateTime> transactionDate = createDateTime("transactionDate", java.time.LocalDateTime.class);
 
+    public final EnumPath<com.example.backend.model.enumSet.TransactionMeansEnum> transactionMeans = createEnum("transactionMeans", com.example.backend.model.enumSet.TransactionMeansEnum.class);
+
     public final EnumPath<com.example.backend.model.enumSet.TransactionTypeEnum> transactionType = createEnum("transactionType", com.example.backend.model.enumSet.TransactionTypeEnum.class);
 
     public QAccountHistory(String variable) {

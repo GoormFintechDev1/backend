@@ -7,6 +7,7 @@ import com.example.backend.model.BusinessRegistration;
 import com.example.backend.model.Member;
 import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
+import com.example.backend.security.AESUtil;
 import com.example.backend.util.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,12 +41,29 @@ public class AuthService {
             throw new BadRequestException("해당 휴대번호는 이미 사용 중입니다");
         }
 
+        if (memberRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
+            log.warn("회원가입 실패: 중복된 이메일 {}", signupRequest.getEmail());
+            throw new BadRequestException("해당 이메일은 이미 사용 중입니다");
+        }
+
+        // 주민등록번호 암호화
+        String encryptedIdentityNumber;
+        try {
+            encryptedIdentityNumber = AESUtil.encrypt(signupRequest.getIdentityNumber());
+        } catch (Exception e) {
+            log.error("암호화 실패: 주민등록번호 {}", signupRequest.getIdentityNumber(), e);
+            throw new RuntimeException("회원가입 중 오류 발생");
+        }
+
+
         // 2. 새로운 Member 객체 생성 및 정보 설정
         Member member = Member.builder()
                 .loginId(signupRequest.getLoginId())
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .name(signupRequest.getName())
                 .phoneNumber(signupRequest.getPhoneNumber())
+                .email(signupRequest.getEmail())
+                .identityNumber(encryptedIdentityNumber) // 암호화 된 주민등록번호 설정
                 .build();
 
         // 3. DB에 저장
@@ -149,6 +167,10 @@ public class AuthService {
         return memberRepository.findByPhoneNumber(checkPhoneRequest.getPhoneNumber()).isPresent();
     }
 
+    // 이메일 중복 확인 (true - 중복, false - 중복 아님)
+    public boolean checkEmail(CheckEmailRequestDTO checkEmailRequest) {
+        return memberRepository.findByEmail(checkEmailRequest.getEmail().isPresent());
+    }
 
 }
 

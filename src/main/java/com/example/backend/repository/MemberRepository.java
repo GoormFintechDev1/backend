@@ -12,7 +12,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByLoginId(String LoginId);
     Optional<Member> findByPhoneNumber(String phoneNumber);
 
-    // 사업자 인증에서 사용
-    Optional<Member> findByName(String Name);
-
+    Optional<Member> findByEmail(String email);
 }
