@@ -10,50 +10,47 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "members")
+@Table(name = "member")
 public class Member extends BaseTime{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "account", nullable = false, unique = true)
-    private String account; // 아이디
+    @Column(name = "login_id", nullable = false, unique = true, length = 20)
+    private String loginId; // 아이디
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = true, length = 255)
     private String password;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = true, length = 50)
     private String name;
 
-    @Column(name = "nickname",  unique = true)
-    private String nickname; // 추후 랜덤 생성
-
-    @Column(name = "phoneNumber")
+    @Column(name = "phone_number", nullable = true, length = 15)
     private String phoneNumber;
 
-    @Column(name = "address")
+    @Column(name = "address", nullable = true, length = 255)
     private String address;
 
-    @Column(name = "role", nullable = true, length = 30)
-    @Enumerated(value = EnumType.STRING)
-    private MemberRoleEnum role;
+//    @Column(name = "role", nullable = true, length = 30)
+//    @Enumerated(value = EnumType.STRING)
+//    private MemberRoleEnum role;
 
-    @Column(name = "activity", nullable = true, length = 30)
-    @Enumerated(value = EnumType.STRING)
-    private MemberActiveEnum activity;
+//    @Column(name = "activity", nullable = true, length = 30)
+//    @Enumerated(value = EnumType.STRING)
+//    private MemberActiveEnum activity;
 
 
     // Builder를 이용하면 Service에서 체인 형태로 나타낼 수 있어 가독성이 높아짐
     @Builder
-    public Member(String account, String password, String name, String nickname, String phoneNumber, String address) {
-        this.account = account;
+    public Member(String loginId, String password, String name, String phoneNumber, String address) {
+        this.loginId = loginId;
         this.password = password;
         this.name = name;
-        this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.role = MemberRoleEnum.USER;
-        this.activity = MemberActiveEnum.ACTIVE;
+//        this.role = MemberRoleEnum.USER;
+//        this.activity = MemberActiveEnum.ACTIVE;
     }
 }
 

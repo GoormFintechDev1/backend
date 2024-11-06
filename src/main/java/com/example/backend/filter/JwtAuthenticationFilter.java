@@ -30,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 인증이 필요 없는 경로 예외 처리
         if (requestURI.startsWith("/api/auth/")) {
             filterChain.doFilter(request, response);
+
             return;
         }
 
