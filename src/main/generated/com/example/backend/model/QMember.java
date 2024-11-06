@@ -23,13 +23,13 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<com.example.backend.model.enumSet.MemberActiveEnum> activity = createEnum("activity", com.example.backend.model.enumSet.MemberActiveEnum.class);
 
-    public final StringPath address = createString("address");
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
+
+    public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 

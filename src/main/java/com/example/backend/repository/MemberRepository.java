@@ -11,4 +11,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 중복 여부 검사
     Optional<Member> findByLoginId(String LoginId);
     Optional<Member> findByPhoneNumber(String phoneNumber);
+
+    // 사업자 인증에서 사용
+    Optional<Member> findByName(String Name);
+
 }

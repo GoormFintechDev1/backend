@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.*;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.exception.base_exceptions.ResourceNotFoundException;
+import com.example.backend.model.BusinessRegistration;
 import com.example.backend.model.Member;
 import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
@@ -45,7 +46,6 @@ public class AuthService {
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .name(signupRequest.getName())
                 .phoneNumber(signupRequest.getPhoneNumber())
-                .address(signupRequest.getAddress())
                 .build();
 
         // 3. DB에 저장
@@ -78,8 +78,8 @@ public class AuthService {
         }
 
         // 4. 액세스 토큰, 리프레시 토큰 생성
-        String accessToken = tokenProvider.createAccessToken(member.getLoginId());
-        String refreshToken = tokenProvider.createRefreshToken(member.getLoginId());
+        String accessToken = tokenProvider.createAccessToken(member.getLoginId(), member.getId());
+        String refreshToken = tokenProvider.createRefreshToken(member.getLoginId(), member.getId());
         log.info("토큰 생성 완료 - accessToken 및 refreshToken 생성");
 
         // 4. 리프레시 토큰 Redis에 저장
