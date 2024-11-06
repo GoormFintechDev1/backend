@@ -26,14 +26,16 @@ public class Member extends BaseTime {
     @Column(name = "name", nullable = true, length = 50)
     private String name;
 
-    @Column(name = "address", nullable = true, length = 255)
-    private String address;
 
     @Column(name = "phone_number", nullable = true, length = 15)
     private String phoneNumber;
 
+    // 주민등록 번호
     @Column(name = "identity_number", nullable = true, length = 30)
     private String identityNumber;
+
+    @Column(name = "email", nullable = true, length = 30)
+    private String email;
 
     @Column(name = "activity", nullable = true, length = 30)
     @Enumerated(value = EnumType.STRING)
@@ -47,7 +49,6 @@ public class Member extends BaseTime {
         this.password = password;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.address = address;
         this.identityNumber = identityNumber;
         this.activity = MemberActiveEnum.ACTIVE;
     }

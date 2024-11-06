@@ -29,6 +29,10 @@ public class BusinessRegistration extends BaseTime {
     @Column(name = "br_num", nullable = false, unique = true)
     private Long brNum;
 
+    // 사업장 주소
+    @Column(name = "address", nullable = true, length = 255)
+    private String address;
+
     // 사업 시작일
     @Column(name = "business_start_date")
     private LocalDate businessStartDate;

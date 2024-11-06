@@ -24,6 +24,8 @@ public class QBusinessRegistration extends EntityPathBase<BusinessRegistration> 
 
     public final QBaseTime _super = new QBaseTime(this);
 
+    public final StringPath address = createString("address");
+
     public final NumberPath<Long> brNum = createNumber("brNum", Long.class);
 
     public final QBusinessCategory businessCategory;

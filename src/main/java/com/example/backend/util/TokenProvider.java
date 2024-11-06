@@ -37,10 +37,11 @@ public class TokenProvider {
     }
 
     // (공통) 토큰 생성 로직
-    private String createToken(String account, long expireTime) {
+    private String createToken(String account, Long memberId, long expireTime) {
         Date now = new Date();
         return Jwts.builder()
                 .setSubject(account)
+                .claim("memberId", memberId)  // memberId를 Claims에 추가
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + expireTime))
                 .signWith(Keys.hmacShaKeyFor(keyBytes), SignatureAlgorithm.HS512)
@@ -48,15 +49,15 @@ public class TokenProvider {
     }
 
     // 액세스 토큰 생성 로직
-    public String createAccessToken(String account) {
+    public String createAccessToken(String account, Long memberId) {
         log.info("Creating Access Token for account: {}", account);
-        return createToken(account, ACCESS_TOKEN_EXPIRE_TIME);
+        return createToken(account, memberId, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
     // 리프레시 토큰 생성 로직
-    public String createRefreshToken(String account) {
+    public String createRefreshToken(String account, Long memberId) {
         log.info("Creating Refresh Token for account: {}", account);
-        return createToken(account, REFRESH_TOKEN_EXPIRE_TIME);
+        return createToken(account, memberId, REFRESH_TOKEN_EXPIRE_TIME);
     }
 
     // 토큰에서 account 추출
@@ -68,6 +69,17 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    // 토큰에서 memberId 추출
+    public Long getMemberIdFromToken(String token) {
+        log.info("Extracting memberId from token");
+        return Jwts.parserBuilder()
+                .setSigningKey(keyBytes)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("memberId", Long.class);
     }
 
     // 토큰 유효성 검증 로직
@@ -124,7 +136,7 @@ public class TokenProvider {
         response.addCookie(accessTokenCookie);
     }
 
-
+    // 토큰 만료 시간 가져오기
     public Date getExpirationDate(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(keyBytes)
@@ -133,7 +145,4 @@ public class TokenProvider {
                 .getBody()
                 .getExpiration();
     }
-
-
-
 }

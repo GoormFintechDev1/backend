@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.*;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.exception.base_exceptions.ResourceNotFoundException;
+import com.example.backend.model.BusinessRegistration;
 import com.example.backend.model.Member;
 import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
@@ -45,7 +46,6 @@ public class AuthService {
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .name(signupRequest.getName())
                 .phoneNumber(signupRequest.getPhoneNumber())
-                .address(signupRequest.getAddress())
                 .build();
 
         // 3. DB에 저장
