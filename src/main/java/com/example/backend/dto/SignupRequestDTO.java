@@ -13,6 +13,7 @@ public class SignupRequestDTO {
     private String name;
     private String identityNumber;
     private String phoneNumber; // 중복 확인
+    private String email; // 중복 확인
 }
 
 

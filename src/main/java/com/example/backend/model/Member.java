@@ -26,7 +26,6 @@ public class Member extends BaseTime {
     @Column(name = "name", nullable = true, length = 50)
     private String name;
 
-
     @Column(name = "phone_number", nullable = true, length = 15)
     private String phoneNumber;
 
@@ -44,11 +43,12 @@ public class Member extends BaseTime {
 
     // Builder를 이용하면 Service에서 체인 형태로 나타낼 수 있어 가독성이 높아짐
     @Builder
-    public Member(String loginId, String password, String name, String phoneNumber, String address, String identityNumber, MemberActiveEnum activity) {
+    public Member(String loginId, String password, String name, String phoneNumber, String email, String identityNumber, MemberActiveEnum activity) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.identityNumber = identityNumber;
         this.activity = MemberActiveEnum.ACTIVE;
     }
