@@ -8,9 +8,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+
 public class BaseTime {
-
-
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;

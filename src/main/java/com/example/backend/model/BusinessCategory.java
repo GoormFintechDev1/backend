@@ -11,13 +11,19 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "categories")
-public class Category {
-
+@Table(name = "business_category")
+public class BusinessCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 카테고리 ID
+    @Column(name = "business_category_id")
+    private Long id;
 
-    @Column(name = "name", length = 20, nullable = false)
-    private String name; // 카테고리 이름
+    // 업태
+    @Column(name = "type")
+    private String type;
+
+    // 종목
+    @Column(name = "field")
+    private String field;
+
 }

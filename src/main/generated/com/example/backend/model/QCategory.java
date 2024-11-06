@@ -13,7 +13,7 @@ import com.querydsl.core.types.Path;
  * QCategory is a Querydsl query type for Category
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QCategory extends EntityPathBase<Category> {
+public class QCategory extends EntityPathBase<BusinessCategory> {
 
     private static final long serialVersionUID = -412993554L;
 
@@ -24,15 +24,15 @@ public class QCategory extends EntityPathBase<Category> {
     public final StringPath name = createString("name");
 
     public QCategory(String variable) {
-        super(Category.class, forVariable(variable));
+        super(BusinessCategory.class, forVariable(variable));
     }
 
-    public QCategory(Path<? extends Category> path) {
+    public QCategory(Path<? extends BusinessCategory> path) {
         super(path.getType(), path.getMetadata());
     }
 
     public QCategory(PathMetadata metadata) {
-        super(Category.class, metadata);
+        super(BusinessCategory.class, metadata);
     }
 
 }
