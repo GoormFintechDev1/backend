@@ -39,3 +39,5 @@ out/
 ### JWT 시크릿 키###
 .env
 /src/main/resources/application-API-KEY.properties
+
+*.yml
