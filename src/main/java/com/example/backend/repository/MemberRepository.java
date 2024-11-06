@@ -9,7 +9,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // Null Pointer Exception을 방지할 수 있음
 
     // 중복 여부 검사
-    Optional<Member> findByAccount(String account);
-    Optional<Member> findByNickname(String nickname);
+    Optional<Member> findByLoginId(String LoginId);
     Optional<Member> findByPhoneNumber(String phoneNumber);
 }
