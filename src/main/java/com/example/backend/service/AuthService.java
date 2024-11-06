@@ -29,7 +29,7 @@ public class AuthService {
         log.info("회원가입 요청 수신: {}", signupRequest.getLoginId());
 
         // 1. 중복 검사
-        if (memberRepository.findByAccount(signupRequest.getLoginId()).isPresent()) {
+        if (memberRepository.findByLoginId(signupRequest.getLoginId()).isPresent()) {
             log.warn("회원가입 실패: 중복된 아이디 {}", signupRequest.getLoginId());
             throw new BadRequestException("해당 아이디는 이미 사용 중입니다");
         }
@@ -60,7 +60,7 @@ public class AuthService {
 
 
         // 1. 계정 조회 및 예외 처리
-        Member member = memberRepository.findByAccount(loginRequest.getLoginId())
+        Member member = memberRepository.findByLoginId(loginRequest.getLoginId())
                 .orElseThrow(() -> {
                     log.warn("로그인 실패: 잘못된 계정 {}", loginRequest.getLoginId());
                     return new ResourceNotFoundException("존재하지 않는 계정입니다");
@@ -118,7 +118,7 @@ public class AuthService {
 
     // 회원 탈퇴 (active -> inactive)
     public void inActiveMember(ActivityMemberRequestDTO activityMemberRequest) {
-        Member member = memberRepository.findByAccount(activityMemberRequest.getLoginId())
+        Member member = memberRepository.findByLoginId(activityMemberRequest.getLoginId())
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 회원입니다."));
 
         member.setActivity(MemberActiveEnum.INACTIVE);
@@ -129,7 +129,7 @@ public class AuthService {
 
     // 회원 활성화 (inactive -> active)
     public void activeMember(ActivityMemberRequestDTO activityMemberRequest) {
-        Member member = memberRepository.findByAccount(activityMemberRequest.getLoginId())
+        Member member = memberRepository.findByLoginId(activityMemberRequest.getLoginId())
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 회원입니다."));
 
         member.setActivity(MemberActiveEnum.ACTIVE);
@@ -142,7 +142,7 @@ public class AuthService {
 
     // 아이디 중복 확인 (true - 중복, false - 중복 아님)
     public boolean checkLoginID(CheckIdRequestDTO checkIdRequest) {
-        return memberRepository.findByAccount(checkIdRequest.getLoginId()).isPresent();
+        return memberRepository.findByLoginId(checkIdRequest.getLoginId()).isPresent();
     }
     // 폰 번호 중복 확인 (true - 중복, false - 중복 아님)
     public boolean checkPhoneNumber(CheckPhoneNumberRequestDTO checkPhoneRequest) {
