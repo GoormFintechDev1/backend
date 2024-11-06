@@ -37,10 +37,10 @@ public class TokenProvider {
     }
 
     // (공통) 토큰 생성 로직
-    private String createToken(String account, Long memberId, long expireTime) {
+    private String createToken(String loginId, Long memberId, long expireTime) {
         Date now = new Date();
         return Jwts.builder()
-                .setSubject(account)
+                .setSubject(loginId)
                 .claim("memberId", memberId)  // memberId를 Claims에 추가
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + expireTime))
@@ -49,15 +49,15 @@ public class TokenProvider {
     }
 
     // 액세스 토큰 생성 로직
-    public String createAccessToken(String account, Long memberId) {
-        log.info("Creating Access Token for account: {}", account);
-        return createToken(account, memberId, ACCESS_TOKEN_EXPIRE_TIME);
+    public String createAccessToken(String loginId, Long memberId) {
+        log.info("Creating Access Token for account: {}", loginId);
+        return createToken(loginId, memberId, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
     // 리프레시 토큰 생성 로직
-    public String createRefreshToken(String account, Long memberId) {
-        log.info("Creating Refresh Token for account: {}", account);
-        return createToken(account, memberId, REFRESH_TOKEN_EXPIRE_TIME);
+    public String createRefreshToken(String loginId, Long memberId) {
+        log.info("Creating Refresh Token for account: {}", loginId);
+        return createToken(loginId, memberId, REFRESH_TOKEN_EXPIRE_TIME);
     }
 
     // 토큰에서 account 추출
@@ -114,8 +114,8 @@ public class TokenProvider {
     }
 
     // Redis에서 리프레시 토큰을 조회
-    public String getRefreshTokenFromRedis(String account) {
-        return (String) redisTemplate.opsForValue().get(account);
+    public String getRefreshTokenFromRedis(String loginId) {
+        return (String) redisTemplate.opsForValue().get(loginId);
     }
 
     // 새로운 액세스 토큰을 쿠키에 설정

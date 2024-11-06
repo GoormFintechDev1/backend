@@ -78,8 +78,8 @@ public class AuthService {
         }
 
         // 4. 액세스 토큰, 리프레시 토큰 생성
-        String accessToken = tokenProvider.createAccessToken(member.getLoginId());
-        String refreshToken = tokenProvider.createRefreshToken(member.getLoginId());
+        String accessToken = tokenProvider.createAccessToken(member.getLoginId(), member.getId());
+        String refreshToken = tokenProvider.createRefreshToken(member.getLoginId(), member.getId());
         log.info("토큰 생성 완료 - accessToken 및 refreshToken 생성");
 
         // 4. 리프레시 토큰 Redis에 저장

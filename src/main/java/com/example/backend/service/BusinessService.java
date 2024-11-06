@@ -19,7 +19,7 @@ public class BusinessService {
     private final MemberRepository memberRepository;
 
     public ResponseEntity<String> checkBusiness(Long memberId, CheckBusinessDTO checkBusinessRequest) {
-        log.info("사업자 등록 번호 확인 로직 진입 {}", checkBusinessRequest);
+        log.info("!!!!!!!사업자 등록 번호 확인 로직 진입 {}", memberId);
 
         // 1. 입력 값과 사업자 등록 번호가 일치하는 것이 있는지 확인
         BusinessRegistration business = businessRepository.findByBrNum(checkBusinessRequest.getBrNum())

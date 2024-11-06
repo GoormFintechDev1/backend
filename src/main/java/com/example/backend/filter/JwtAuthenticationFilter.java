@@ -51,19 +51,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 log.info("Access token이 만료되었습니다. Refresh Token으로 갱신을 시도합니다...");
 
                 //
-                String account = e.getClaims().getSubject();
-                String refreshToken = tokenProvider.getRefreshTokenFromRedis(account);
+                String loginId = e.getClaims().getSubject();
+                Long memberId = e.getClaims().get("memberId", Long.class);
+                String refreshToken = tokenProvider.getRefreshTokenFromRedis(loginId);
 
                 // Refresh Token 유효성 검증 후 새 Access Token 발급
                 if (refreshToken == null) {
-                    log.warn("Refresh Token이 없습니다. account: {}", account);
+                    log.warn("Refresh Token이 없습니다. loginId: {}", loginId);
                 } else if (!tokenProvider.validateToken(refreshToken)) {
-                    log.warn("유효하지 않은 Refresh Token입니다. account: {}", account);
+                    log.warn("유효하지 않은 Refresh Token입니다. loginId: {}", loginId);
                 } else {
-                    String newAccessToken = tokenProvider.createAccessToken(account);
+                    String newAccessToken = tokenProvider.createAccessToken(loginId, memberId);
                     tokenProvider.setAccessTokenCookie(newAccessToken, response);
                     setAuthentication(newAccessToken);
-                    log.info("새로운 Access Token이 발급되었습니다. account: {}", account);
+                    log.info("새로운 Access Token이 발급되었습니다. loginId: {}", loginId);
                 }
             }
         }
