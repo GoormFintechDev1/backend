@@ -21,8 +21,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final QBaseTime _super = new QBaseTime(this);
 
-    public final StringPath account = createString("account");
-
     public final EnumPath<com.example.backend.model.enumSet.MemberActiveEnum> activity = createEnum("activity", com.example.backend.model.enumSet.MemberActiveEnum.class);
 
     public final StringPath address = createString("address");
@@ -35,15 +33,15 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath name = createString("name");
+    public final StringPath identityNumber = createString("identityNumber");
 
-    public final StringPath nickname = createString("nickname");
+    public final StringPath loginId = createString("loginId");
+
+    public final StringPath name = createString("name");
 
     public final StringPath password = createString("password");
 
     public final StringPath phoneNumber = createString("phoneNumber");
-
-    public final EnumPath<com.example.backend.model.enumSet.MemberRoleEnum> role = createEnum("role", com.example.backend.model.enumSet.MemberRoleEnum.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
