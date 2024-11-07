@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 
 @RestController
@@ -20,17 +21,16 @@ public class PosController {
 
     private final PosService posService;
 
-    // 월 매출 세부 정보
+    // 월 매출 세부 정보 및 일자별 매출 리스트
     @GetMapping("/{posId}/monthly-income")
     public ResponseEntity<MonthlyIncomeDTO> getMonthlySalesSummary(
             @PathVariable Long posId,
             @RequestParam("month") String month,
             @AuthenticationPrincipal Long memberId) {  // JWT에서 추출한 memberId
-        MonthlyIncomeDTO salesSummary = posService.getMonthlyIncomeSummary(memberId, posId, YearMonth.parse(month));
-        return ResponseEntity.ok(salesSummary);
+        MonthlyIncomeDTO incomeSummary = posService.getMonthlyIncomeSummary(memberId, posId, YearMonth.parse(month));
+        return ResponseEntity.ok(incomeSummary);
     }
 
-    // 일 매출 세부 정보
     // 특정 일 매출 세부 정보 반환
     @GetMapping("/{posId}/daily-income")
     public ResponseEntity<DailyIncomeDTO> getDailyIncomeDetail(

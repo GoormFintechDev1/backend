@@ -5,6 +5,8 @@ import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.*;
 import com.example.backend.model.enumSet.PaymentTypeEnum;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +25,13 @@ public class PosService {
 
     private final JPAQueryFactory queryFactory;
 
-    // 월 매출 요약
+    // 월 매출 요약 및 일별 매출 리스트 반환
     public MonthlyIncomeDTO getMonthlyIncomeSummary(Long memberId, Long posId, YearMonth month) {
 
         QPos qPos = QPos.pos;
         QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
         QPosSales qposSales = QPosSales.posSales;
 
-        // QueryDSL을 사용하여 memberId, posId, 그리고 businessId가 연결된 관계인지 확인
         Boolean isAuthorized = queryFactory
                 .selectOne()
                 .from(qPos)
@@ -45,8 +46,6 @@ public class PosService {
             throw new BadRequestException("포스 접근 권한이 없음.");
         }
 
-
-        // 월 매출 총합 계산
         BigDecimal monthlyTotalIncome = queryFactory
                 .select(qposSales.totalAmount.sum())
                 .from(qposSales)
@@ -54,7 +53,6 @@ public class PosService {
                         .and(qposSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
 
-        // 월 카드 매출 총합 계산
         BigDecimal monthlyCardIncome = queryFactory
                 .select(qposSales.totalAmount.sum())
                 .from(qposSales)
@@ -63,7 +61,6 @@ public class PosService {
                         .and(qposSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
 
-        // 월 현금 매출 총합 계산
         BigDecimal monthlyCashIncome = queryFactory
                 .select(qposSales.totalAmount.sum())
                 .from(qposSales)
@@ -72,19 +69,48 @@ public class PosService {
                         .and(qposSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
 
-
-
-
+        List<DailyIncomeDTO> dailyIncomeList = queryFactory
+                .select(
+                        qposSales.saleDate,
+                        qposSales.totalAmount.sum(),
+                        new CaseBuilder()
+                                .when(qposSales.paymentType.eq(PaymentTypeEnum.CARD))
+                                .then(qposSales.totalAmount.sum())
+                                .otherwise(BigDecimal.ZERO),
+                        new CaseBuilder()
+                                .when(qposSales.paymentType.eq(PaymentTypeEnum.CASH))
+                                .then(qposSales.totalAmount.sum())
+                                .otherwise(BigDecimal.ZERO)
+                )
+                .from(qposSales)
+                .where(qposSales.pos.posId.eq(posId)
+                        .and(qposSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59))))
+                .groupBy(qposSales.saleDate.year(), qposSales.saleDate.month(), qposSales.saleDate.dayOfMonth())
+                .fetch()
+                .stream()
+                .map(tuple -> new DailyIncomeDTO(
+                        tuple.get(qposSales.saleDate).toLocalDate(),
+                        tuple.get(qposSales.totalAmount.sum()),
+                        tuple.get(new CaseBuilder()
+                                .when(qposSales.paymentType.eq(PaymentTypeEnum.CARD))
+                                .then(qposSales.totalAmount.sum())
+                                .otherwise(BigDecimal.ZERO)),
+                        tuple.get(new CaseBuilder()
+                                .when(qposSales.paymentType.eq(PaymentTypeEnum.CASH))
+                                .then(qposSales.totalAmount.sum())
+                                .otherwise(BigDecimal.ZERO))
+                ))
+                .collect(Collectors.toList());
 
         return new MonthlyIncomeDTO(
                 monthlyTotalIncome != null ? monthlyTotalIncome : BigDecimal.ZERO,
                 monthlyCardIncome != null ? monthlyCardIncome : BigDecimal.ZERO,
-                monthlyCashIncome != null ? monthlyCashIncome : BigDecimal.ZERO
+                monthlyCashIncome != null ? monthlyCashIncome : BigDecimal.ZERO,
+                dailyIncomeList
         );
     }
 
-
-    // 특정 일 매출 세부 정보
+    // 특정 일 매출 세부 정보 반환
     public DailyIncomeDTO getDailyIncomeDetail(Long memberId, Long posId, LocalDate date) {
         QPos qPos = QPos.pos;
         QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
@@ -140,5 +166,4 @@ public class PosService {
                 cashIncome != null ? cashIncome : BigDecimal.ZERO
         );
     }
-
 }
