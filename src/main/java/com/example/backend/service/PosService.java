@@ -2,7 +2,9 @@ package com.example.backend.service;
 
 import com.example.backend.dto.pos.DailyIncomeDTO;
 import com.example.backend.dto.pos.MonthlySalesSummaryDTO;
-import com.example.backend.model.QPosSales;
+import com.example.backend.exception.base_exceptions.BadRequestException;
+import com.example.backend.model.*;
+import com.example.backend.repository.MemberRepository;
 import com.example.backend.repository.PosRepository;
 import com.example.backend.repository.PosSalesRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,11 +25,30 @@ public class PosService {
     private final JPAQueryFactory queryFactory;
     private final PosRepository posRepository;
     private final PosSalesRepository posSalesRepository;
+    private final MemberRepository memberRepository;
 
     // 월별 총 매출 합계 계산 및 Pos income 업데이트
-    public MonthlySalesSummaryDTO getMonthlySalesSummary(Long posId, YearMonth month) {
+    public MonthlySalesSummaryDTO getMonthlySalesSummary(Long memberId, Long posId, YearMonth month) {
 
+        QPos qPos = QPos.pos;
+        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
         QPosSales qposSales = QPosSales.posSales;
+
+        // QueryDSL을 사용하여 memberId, posId, 그리고 businessId가 연결된 관계인지 확인
+        Boolean isAuthorized = queryFactory
+                .selectOne()
+                .from(qPos)
+                .join(qPos.businessRegistration, qBusinessRegistration)
+                .where(
+                        qBusinessRegistration.member.id.eq(memberId)
+                                .and(qPos.posId.eq(posId))
+                )
+                .fetchFirst() != null;
+
+        if (!isAuthorized) {
+            throw new BadRequestException("포스 접근 권한이 없음.");
+        }
+
 
         // 월 매출 총합 계산
         BigDecimal monthlyIncome = queryFactory
