@@ -40,8 +40,6 @@ public class QAccount extends EntityPathBase<Account> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
 
-    public final NumberPath<java.math.BigDecimal> totalExpenses = createNumber("totalExpenses", java.math.BigDecimal.class);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 

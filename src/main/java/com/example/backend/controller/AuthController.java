@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.*;
+import com.example.backend.dto.auth.*;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -103,7 +103,6 @@ public class AuthController {
             response.put("status", "로그인 상태 만료");
             response.put("remainingTime", 0);
         }
-
         return ResponseEntity.ok(response);
     }
 

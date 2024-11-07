@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.CheckBusinessDTO;
+import com.example.backend.dto.auth.CheckBusinessDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.BusinessRegistration;
 import com.example.backend.model.Member;

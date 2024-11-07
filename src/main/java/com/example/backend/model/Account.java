@@ -35,11 +35,4 @@ public class Account extends BaseTime{
     // 잔고
     @Column(name = "balance", precision = 15, scale = 0)
     private BigDecimal balance;
-
-    // 총지출
-    @Column(name = "total_expenses", precision = 15, scale = 0)
-    private BigDecimal totalExpenses;
-
-
-
 }
