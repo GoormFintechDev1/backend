@@ -17,7 +17,7 @@ public class BusinessRegistration extends BaseTime {
 
     // 회원 식별 번호
     @OneToOne
-    @JoinColumn(name = "member_id",nullable = true)
+    @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
     // 사업 카테고리 식별번호

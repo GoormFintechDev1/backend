@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,6 +18,8 @@ public class QPosSales extends EntityPathBase<PosSales> {
 
     private static final long serialVersionUID = 263419400L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QPosSales posSales = new QPosSales("posSales");
 
     public final StringPath approvalNumber = createString("approvalNumber");
@@ -25,7 +28,7 @@ public class QPosSales extends EntityPathBase<PosSales> {
 
     public final EnumPath<com.example.backend.model.enumSet.PaymentTypeEnum> paymentType = createEnum("paymentType", com.example.backend.model.enumSet.PaymentTypeEnum.class);
 
-    public final NumberPath<Long> posId = createNumber("posId", Long.class);
+    public final QPos pos;
 
     public final DateTimePath<java.time.LocalDateTime> saleDate = createDateTime("saleDate", java.time.LocalDateTime.class);
 
@@ -38,15 +41,24 @@ public class QPosSales extends EntityPathBase<PosSales> {
     public final NumberPath<java.math.BigDecimal> vatAmount = createNumber("vatAmount", java.math.BigDecimal.class);
 
     public QPosSales(String variable) {
-        super(PosSales.class, forVariable(variable));
+        this(PosSales.class, forVariable(variable), INITS);
     }
 
     public QPosSales(Path<? extends PosSales> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QPosSales(PathMetadata metadata) {
-        super(PosSales.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QPosSales(PathMetadata metadata, PathInits inits) {
+        this(PosSales.class, metadata, inits);
+    }
+
+    public QPosSales(Class<? extends PosSales> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.pos = inits.isInitialized("pos") ? new QPos(forProperty("pos"), inits.get("pos")) : null;
     }
 
 }

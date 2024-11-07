@@ -21,8 +21,9 @@ public class PosSales {
     @Column(name = "sale_id")
     private Long saleId;
 
-    @Column(name = "pos_id", nullable = false)
-    private Long posId;
+    @ManyToOne
+    @JoinColumn(name = "pos_id", nullable = false)
+    private Pos pos;
 
     @Column(name = "sale_date", nullable = false)
     private LocalDateTime saleDate;
