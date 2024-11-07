@@ -29,8 +29,13 @@ INSERT INTO pos (pos_id, business_id, account_id, income) VALUES (3, 1, 1, 32000
 INSERT INTO pos (pos_id, business_id, account_id, income) VALUES (4, 1, 1, 1500000);
 INSERT INTO pos (pos_id, business_id, account_id, income) VALUES (5, 1, 1, 1000000);
 
+INSERT INTO pos (pos_id, business_id, account_id, income) VALUES (6, 2, 1, 1000000);
+
+
 INSERT INTO pos_sale (sale_id, pos_id, sale_date, sale_time, payment_type, total_amount, vat_amount, card_company, approval_number) VALUES (1, 1, '2024-11-07 10:00:00', '2024-11-07 10:00:00', 'CARD', 100000, 10000, '신한카드', 'SH12345678');
 INSERT INTO pos_sale (sale_id, pos_id, sale_date, sale_time, payment_type, total_amount, vat_amount, card_company, approval_number) VALUES (2, 2, '2024-11-07 11:00:00', '2024-11-07 11:00:00', 'CASH', 50000, 0, NULL, NULL);
 INSERT INTO pos_sale (sale_id, pos_id, sale_date, sale_time, payment_type, total_amount, vat_amount, card_company, approval_number) VALUES (3, 3, '2024-11-07 12:00:00', '2024-11-07 12:00:00', 'CARD', 200000, 20000, 'KB국민카드', 'KB98765432');
 INSERT INTO pos_sale (sale_id, pos_id, sale_date, sale_time, payment_type, total_amount, vat_amount, card_company, approval_number) VALUES (4, 4, '2024-11-07 13:00:00', '2024-11-07 13:00:00', 'CARD', 150000, 15000, '삼성카드', 'SP11223344');
+INSERT INTO pos_sale (sale_id, pos_id, sale_date, sale_time, payment_type, total_amount, vat_amount, card_company, approval_number) VALUES (5, 5, '2024-11-07 14:00:00', '2024-11-07 14:00:00', 'CARD', 120000, 12000, '현대카드', 'HY55667788');
+
 INSERT INTO pos_sale (sale_id, pos_id, sale_date, sale_time, payment_type, total_amount, vat_amount, card_company, approval_number) VALUES (5, 5, '2024-11-07 14:00:00', '2024-11-07 14:00:00', 'CARD', 120000, 12000, '현대카드', 'HY55667788');
