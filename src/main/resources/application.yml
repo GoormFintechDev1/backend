@@ -34,10 +34,10 @@ spring:
   #    driver-class-name: org.mariadb.jdbc.Driver
 
   datasource:
-    url: jdbc:mariadb://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/doubly_db?useSSL=false&useServerPrepStmts=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/doubly_db?useSSL=false&useServerPrepStmts=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: ${DATABASE_USERNAME:root}
-    password: ${DATABASE_PASSWORD:1234}
-    driver-class-name: org.mariadb.jdbc.Driver
+    password: ${DATABASE_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     defer-datasource-initialization: true

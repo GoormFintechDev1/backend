@@ -1,12 +1,11 @@
-package com.example.backend.dto;
+package com.example.backend.dto.auth;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class LogoutRequestDTO {
+public class CheckIdRequestDTO {
     private String loginId;
 }
-
 

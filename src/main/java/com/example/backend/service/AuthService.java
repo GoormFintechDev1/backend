@@ -1,9 +1,8 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.*;
+import com.example.backend.dto.auth.*;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.exception.base_exceptions.ResourceNotFoundException;
-import com.example.backend.model.BusinessRegistration;
 import com.example.backend.model.Member;
 import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;

@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.CheckBusinessDTO;
+import com.example.backend.dto.auth.CheckBusinessDTO;
 import com.example.backend.service.BusinessService;
 import com.example.backend.util.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
