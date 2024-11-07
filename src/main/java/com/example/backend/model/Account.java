@@ -28,6 +28,10 @@ public class Account extends BaseTime{
     @Column(name = "account_num")
     private String accountNumber;
 
+    // 은행 이름
+    @Column(name = "bank_name")
+    private String bankName;
+
     // 잔고
     @Column(name = "balance", precision = 15, scale = 0)
     private BigDecimal balance;

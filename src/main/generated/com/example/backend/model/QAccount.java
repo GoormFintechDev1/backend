@@ -30,6 +30,8 @@ public class QAccount extends EntityPathBase<Account> {
 
     public final NumberPath<java.math.BigDecimal> balance = createNumber("balance", java.math.BigDecimal.class);
 
+    public final StringPath bankName = createString("bankName");
+
     public final QBusinessRegistration business;
 
     //inherited
