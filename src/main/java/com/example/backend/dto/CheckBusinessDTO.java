@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 public class CheckBusinessDTO {
     // 사업자 등록 번호
-    private Long brNum;
+    private String brNum;
     // 사업자 주소
     private String address;
 

@@ -26,7 +26,7 @@ public class QBusinessRegistration extends EntityPathBase<BusinessRegistration> 
 
     public final StringPath address = createString("address");
 
-    public final NumberPath<Long> brNum = createNumber("brNum", Long.class);
+    public final StringPath brNum = createString("brNum");
 
     public final QBusinessCategory businessCategory;
 

@@ -25,9 +25,9 @@ public class BusinessRegistration extends BaseTime {
     @JoinColumn(name = "business_category_id", nullable = false)
     private BusinessCategory businessCategory;
 
-    // 사업자등록번호
+    // 사업자등록번호 -> String으로 받기 v
     @Column(name = "br_num", nullable = false, unique = true)
-    private Long brNum;
+    private String brNum;
 
     // 사업장 주소
     @Column(name = "address", nullable = true, length = 255)
