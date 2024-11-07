@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "pos")
@@ -32,6 +33,6 @@ public class Pos {
     private BigDecimal income;
 
     @OneToMany(mappedBy = "pos", cascade = CascadeType.ALL)
-    private List<POSSales> sales;
+    private List<PosSales> sales;
 
 }
