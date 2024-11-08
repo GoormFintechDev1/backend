@@ -85,7 +85,12 @@ public class PosService {
                 .from(qposSales)
                 .where(qposSales.pos.posId.eq(posId)
                         .and(qposSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59))))
-                .groupBy(qposSales.saleDate.year(), qposSales.saleDate.month(), qposSales.saleDate.dayOfMonth())
+                .groupBy(qposSales.saleDate,
+                        qposSales.saleDate.year(),
+                        qposSales.saleDate.month(),
+                        qposSales.saleDate.dayOfMonth(),
+                        qposSales.paymentType
+                )
                 .fetch()
                 .stream()
                 .map(tuple -> new DailyIncomeDTO(
