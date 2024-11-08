@@ -22,22 +22,20 @@ public class PosController {
     private final PosService posService;
 
     // 월 매출 세부 정보 및 일자별 매출 리스트
-    @GetMapping("/{posId}/monthly-income")
+    @GetMapping("/monthly-income")
     public ResponseEntity<MonthlyIncomeDTO> getMonthlySalesSummary(
-            @PathVariable Long posId,
             @RequestParam("month") String month,
             @AuthenticationPrincipal Long memberId) {  // JWT에서 추출한 memberId
-        MonthlyIncomeDTO incomeSummary = posService.getMonthlyIncomeSummary(memberId, posId, YearMonth.parse(month));
+        MonthlyIncomeDTO incomeSummary = posService.getMonthlyIncomeSummary(memberId, YearMonth.parse(month));
         return ResponseEntity.ok(incomeSummary);
     }
 
     // 특정 일 매출 세부 정보 반환
-    @GetMapping("/{posId}/daily-income")
+    @GetMapping("/daily-income")
     public ResponseEntity<DailyIncomeDTO> getDailyIncomeDetail(
-            @PathVariable Long posId,
             @RequestParam("date") String date,
             @AuthenticationPrincipal Long memberId) {
-        DailyIncomeDTO incomeDetail = posService.getDailyIncomeDetail(memberId, posId, LocalDate.parse(date));
+        DailyIncomeDTO incomeDetail = posService.getDailyIncomeDetail(memberId, LocalDate.parse(date));
         return ResponseEntity.ok(incomeDetail);
     }
 

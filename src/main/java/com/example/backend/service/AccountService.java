@@ -141,7 +141,6 @@ public class AccountService {
 
     ////// 지출 상세 정보
     public expenseDetailDTO showDetailExpense(Long memberId, YearMonth month) {
-
         BigDecimal monthlyExpenses = calculateTotalExpenses(month, memberId);
         Map<String, BigDecimal> categoryTotalExpenses = calculateCategoryWiseExpenses(month, memberId);
         List<expenseDetailDTO.ExpenseDetail> expenseDetails = getExpenseDetails(month, memberId);
