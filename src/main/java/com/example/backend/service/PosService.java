@@ -321,9 +321,10 @@ public class PosService {
                 .fetchOne();
 
         return new IncomeHistoryDTO(
-                totalIncome0Ago != null ? totalIncome0Ago : BigDecimal.ZERO,
+                totalIncome2Ago != null ? totalIncome2Ago : BigDecimal.ZERO,
                 totalIncome1Ago != null ? totalIncome1Ago : BigDecimal.ZERO,
-                totalIncome2Ago != null ? totalIncome2Ago : BigDecimal.ZERO
+                totalIncome0Ago != null ? totalIncome0Ago : BigDecimal.ZERO
+
         );
     }
 
