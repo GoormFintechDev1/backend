@@ -50,7 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             */
                 log.info("Access token이 만료되었습니다. Refresh Token으로 갱신을 시도합니다...");
 
-                //
                 String loginId = e.getClaims().getSubject();
                 Long memberId = e.getClaims().get("memberId", Long.class);
                 String refreshToken = tokenProvider.getRefreshTokenFromRedis(loginId);
