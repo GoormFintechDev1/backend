@@ -21,8 +21,8 @@ public class Pos {
     @Column(name = "pos_id")
     private Long posId;
 
-    @ManyToOne
-    @JoinColumn(name = "business_id", nullable = false)
+    @OneToOne // 한 사람은 포스를 한 개만 갖도록
+    @JoinColumn(name = "business_id", nullable = false, unique = true)
     private BusinessRegistration businessRegistration;
 
     @ManyToOne

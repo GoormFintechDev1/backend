@@ -25,8 +25,28 @@ public class PosService {
 
     private final JPAQueryFactory queryFactory;
 
+    // 로그인한 유저의 posId를 가져오는 로직
+    private Long getPosIdByMemberId(Long memberId) {
+        QPos qPos = QPos.pos;
+        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+
+        Long posId = queryFactory
+                .select(qPos.posId)
+                .from(qPos)
+                .join(qPos.businessRegistration, qBusinessRegistration)
+                .where(qBusinessRegistration.member.id.eq(memberId))
+                .fetchOne();
+
+        if (posId == null) {
+            throw new BadRequestException("해당 사용자는 포스가 없습니다.");
+        }
+        return posId;
+    }
+
+
     // 월 매출 요약 및 일별 매출 리스트 반환
-    public MonthlyIncomeDTO getMonthlyIncomeSummary(Long memberId, Long posId, YearMonth month) {
+    public MonthlyIncomeDTO getMonthlyIncomeSummary(Long memberId, YearMonth month) {
+        Long posId = getPosIdByMemberId(memberId);
 
         QPos qPos = QPos.pos;
         QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
@@ -116,7 +136,9 @@ public class PosService {
     }
 
     // 특정 일 매출 세부 정보 반환
-    public DailyIncomeDTO getDailyIncomeDetail(Long memberId, Long posId, LocalDate date) {
+    public DailyIncomeDTO getDailyIncomeDetail(Long memberId, LocalDate date) {
+        Long posId = getPosIdByMemberId(memberId);
+
         QPos qPos = QPos.pos;
         QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
         QPosSales qposSales = QPosSales.posSales;
