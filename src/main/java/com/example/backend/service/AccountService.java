@@ -58,6 +58,22 @@ public class AccountService {
                                 month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
     }
+    // 월별 총수익 합계 구하는 함수
+    private BigDecimal calculateTotalRevenue(YearMonth month, Long memberId) {
+        Long accountId = getAccountIdByMemberId(memberId);
+        QAccountHistory accountHistory = QAccountHistory.accountHistory;
+
+        return queryFactory
+                .select(accountHistory.amount.sum())
+                .from(accountHistory)
+                .where(accountHistory.accountId.accountId.eq(accountId)
+                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.REVENUE))
+                        .and(accountHistory.transactionDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+    }
+
 
     // 월별 카테고리별 지출 합계 구하는 함수
     private Map<String, BigDecimal> calculateCategoryWiseExpenses(YearMonth month, Long memberId) {
@@ -151,4 +167,19 @@ public class AccountService {
                 expenseDetails
         );
     }
+
+    ////// 순 이익 (총수익 - 총지출)
+    public BigDecimal showNetProfit(Long memberId, YearMonth month) {
+        // 총수익 계산
+        BigDecimal totalRevenue = calculateTotalRevenue(month, memberId);
+        if (totalRevenue == null) totalRevenue = BigDecimal.ZERO;
+
+        // 총지출 계산
+        BigDecimal totalExpenses = calculateTotalExpenses(month, memberId);
+        if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;
+
+        // 순이익 = 총수익 - 총지출
+        return totalRevenue.subtract(totalExpenses);
+    }
+
 }
