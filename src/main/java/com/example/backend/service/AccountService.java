@@ -24,8 +24,28 @@ public class AccountService {
 
     private final JPAQueryFactory queryFactory;
 
+    // 로그인한 유저의 accountId를 가져오는 로직
+    private Long getAccountIdByMemberId(Long memberId) {
+        QAccount qAccount = QAccount.account;
+        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+
+        Long accountId = queryFactory
+                .select(qAccount.accountId)
+                .from(qAccount)
+                .join(qAccount.business, qBusinessRegistration)
+                .where(qBusinessRegistration.member.id.eq(memberId))
+                .fetchOne();
+
+        if (accountId == null) {
+            throw new BadRequestException("해당 사용자는 계좌가 없습니다.");
+        }
+        return accountId;
+    }
+
     // 월별 지출 합계 구하는 함수
-    private BigDecimal calculateTotalExpenses(Long accountId, YearMonth month) {
+    private BigDecimal calculateTotalExpenses(YearMonth month, Long memberId) {
+        Long accountId = getAccountIdByMemberId(memberId);
+
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
 
         return queryFactory
@@ -40,7 +60,9 @@ public class AccountService {
     }
 
     // 월별 카테고리별 지출 합계 구하는 함수
-    private Map<String, BigDecimal> calculateCategoryWiseExpenses(Long accountId, YearMonth month) {
+    private Map<String, BigDecimal> calculateCategoryWiseExpenses(YearMonth month, Long memberId) {
+        Long accountId = getAccountIdByMemberId(memberId);
+
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
 
         return queryFactory
@@ -60,8 +82,9 @@ public class AccountService {
                 ));
     }
 
-    // 오늘 지출 합계 구하는 함수 (오늘 날짜와 대조)
-    private BigDecimal calculateTodayExpense(Long accountId) {
+    // 오늘 지출 합계 구하는 함수
+    private BigDecimal calculateTodayExpense(Long memberId) {
+        Long accountId = getAccountIdByMemberId(memberId);
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
         LocalDate today = LocalDate.now();
 
@@ -77,7 +100,8 @@ public class AccountService {
     }
 
     // 월별 상세 지출 정보 가져오는 함수
-    private List<expenseDetailDTO.ExpenseDetail> getExpenseDetails(Long accountId, YearMonth month) {
+    private List<expenseDetailDTO.ExpenseDetail> getExpenseDetails(YearMonth month, Long memberId) {
+        Long accountId = getAccountIdByMemberId(memberId);
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
 
         return queryFactory
@@ -102,61 +126,30 @@ public class AccountService {
                 .collect(Collectors.toList());
     }
 
-
     ///////// 지출 요약
-    public expenseDTO showSimpleExpense(Long memberId,Long accountId, YearMonth month) {
-        QAccount qAccount = QAccount.account;
-        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+    public expenseDTO showSimpleExpense(Long memberId, YearMonth month) {
+        BigDecimal monthlyExpenses = calculateTotalExpenses(month, memberId);
+        Map<String, BigDecimal> categoryExpenses = calculateCategoryWiseExpenses(month, memberId);
+        BigDecimal todayExpense = calculateTodayExpense(memberId);
 
-
-        BigDecimal monthlyExpenses = calculateTotalExpenses(accountId, month);
-        Map<String, BigDecimal> categoryExpenses = calculateCategoryWiseExpenses(accountId, month);
-        BigDecimal todayExpense = calculateTodayExpense(accountId);
-
-        // QueryDSL을 사용하여 memberId, accountId, 그리고 businessId가 연결된 관계인지 확인
-        Boolean isAuthorized = queryFactory
-                .selectOne()
-                .from(qAccount)
-                .join(qAccount.business, qBusinessRegistration)
-                .where(
-                        qBusinessRegistration.member.id.eq(memberId)
-                                .and(qAccount.accountId.eq(accountId))
-                )
-                .fetchFirst() != null;
-
-        if (!isAuthorized) {
-            throw new BadRequestException("계좌 접근 권한이 없음.");
-        }
-
-        return new expenseDTO(monthlyExpenses, todayExpense != null ? todayExpense : BigDecimal.ZERO, categoryExpenses);
+        return new expenseDTO(
+                monthlyExpenses,
+                todayExpense != null ? todayExpense : BigDecimal.ZERO,
+                categoryExpenses
+        );
     }
 
     ////// 지출 상세 정보
-    public expenseDetailDTO showDetailExpense(Long memberId,Long accountId, YearMonth month) {
+    public expenseDetailDTO showDetailExpense(Long memberId, YearMonth month) {
 
-        QAccount qAccount = QAccount.account;
-        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+        BigDecimal monthlyExpenses = calculateTotalExpenses(month, memberId);
+        Map<String, BigDecimal> categoryTotalExpenses = calculateCategoryWiseExpenses(month, memberId);
+        List<expenseDetailDTO.ExpenseDetail> expenseDetails = getExpenseDetails(month, memberId);
 
-        Map<String, BigDecimal> categoryTotalExpenses = calculateCategoryWiseExpenses(accountId, month);
-        List<expenseDetailDTO.ExpenseDetail> expenseDetails = getExpenseDetails(accountId, month);
-        BigDecimal monthlyExpenses = calculateTotalExpenses(accountId, month);
-
-        // QueryDSL을 사용하여 memberId, accountId, 그리고 businessId가 연결된 관계인지 확인
-        Boolean isAuthorized = queryFactory
-                .selectOne()
-                .from(qAccount)
-                .join(qAccount.business, qBusinessRegistration)
-                .where(
-                        qBusinessRegistration.member.id.eq(memberId)
-                                .and(qAccount.accountId.eq(accountId))
-                )
-                .fetchFirst() != null;
-
-        if (!isAuthorized) {
-            throw new BadRequestException("계좌 접근 권한이 없음.");
-        }
-
-        return new expenseDetailDTO(monthlyExpenses,categoryTotalExpenses, expenseDetails);
+        return new expenseDetailDTO(
+                monthlyExpenses,
+                categoryTotalExpenses,
+                expenseDetails
+        );
     }
-
 }
