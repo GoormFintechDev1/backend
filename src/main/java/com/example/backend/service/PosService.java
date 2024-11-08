@@ -6,6 +6,8 @@ import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.*;
 import com.example.backend.model.enumSet.PaymentTypeEnum;
+import com.example.backend.model.enumSet.TransactionMeansEnum;
+import com.example.backend.model.enumSet.TransactionTypeEnum;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +45,74 @@ public class PosService {
             throw new BadRequestException("해당 사용자는 포스가 없습니다.");
         }
         return posId;
+    }
+
+    // 월말 정산하여 Account에 입금하는 함수
+    public void depositMonthlyIncomeToAccount(Long memberId, YearMonth month) {
+        Long posId = getPosIdByMemberId(memberId);
+
+        QPosSales qPosSales = QPosSales.posSales;
+        QAccount qAccount = QAccount.account;
+        QBusinessRegistration qBusiness = QBusinessRegistration.businessRegistration;
+        QAccountHistory qAccountHistory = QAccountHistory.accountHistory;
+
+        // 1. 월 매출 합계 조회
+        BigDecimal monthlyTotalIncome = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.pos.posId.eq(posId)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        if (monthlyTotalIncome == null || monthlyTotalIncome.compareTo(BigDecimal.ZERO) == 0) {
+            log.info("해당 월에 매출이 없습니다.");
+            return;
+        }
+
+        // 2. Account 조회
+        Account account = queryFactory
+                .selectFrom(qAccount)
+                .join(qAccount.business, qBusiness)
+                .where(qBusiness.member.id.eq(memberId))
+                .fetchOne();
+
+        if (account == null) {
+            throw new BadRequestException("해당 사업자의 계좌가 없습니다.");
+        }
+
+        // 3. Account의 잔고 업데이트
+        BigDecimal updatedBalance = account.getBalance().add(monthlyTotalIncome);
+        account.setBalance(updatedBalance);
+
+        // 4. AccountHistory 기록 추가
+        saveRevenueHistory(account, monthlyTotalIncome, updatedBalance);
+        log.info("매출 정산 완료: {}원 입금됨 (Account ID: {}), 현재 잔액: {}원", monthlyTotalIncome, account.getAccountId(), updatedBalance);
+    }
+
+    private void saveRevenueHistory(Account account, BigDecimal amount, BigDecimal balanceAfter) {
+        QAccountHistory qAccountHistory = QAccountHistory.accountHistory;
+
+        long insertedCount = queryFactory
+                .insert(qAccountHistory)
+                .set(qAccountHistory.accountId, account)
+                .set(qAccountHistory.transactionType, TransactionTypeEnum.REVENUE)
+                .set(qAccountHistory.transactionMeans, TransactionMeansEnum.CARD)
+                .set(qAccountHistory.transactionDate, LocalDateTime.now())
+                .set(qAccountHistory.amount, amount)
+                .set(qAccountHistory.balanceAfter, balanceAfter)
+                .set(qAccountHistory.category, "매출 정산")
+                .set(qAccountHistory.note, "월말 매출 정산 기록")
+                .set(qAccountHistory.fixedExpenses, false)
+                .set(qAccountHistory.storeName, "정산 시스템")
+                .execute();
+
+        if (insertedCount > 0) {
+            log.info("AccountHistory에 매출 내역 기록 완료 (Account ID: {})", account.getAccountId());
+        } else {
+            log.error("AccountHistory 기록 실패");
+        }
     }
 
 
