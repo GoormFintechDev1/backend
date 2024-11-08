@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.pos.DailyIncomeDTO;
+import com.example.backend.dto.pos.IncomeHistoryDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.*;
@@ -193,4 +194,66 @@ public class PosService {
                 cashIncome != null ? cashIncome : BigDecimal.ZERO
         );
     }
+
+    // 이번 달 매출 및 지난 2개월의 월 매출 정보
+    public IncomeHistoryDTO getIncomeHistory(Long memberId, YearMonth month) {
+        Long posId = getPosIdByMemberId(memberId);
+
+        QPos qPos = QPos.pos;
+        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+        QPosSales qposSales = QPosSales.posSales;
+
+        Boolean isAuthorized = queryFactory
+                .selectOne()
+                .from(qPos)
+                .join(qPos.businessRegistration, qBusinessRegistration)
+                .where(
+                        qBusinessRegistration.member.id.eq(memberId)
+                                .and(qPos.posId.eq(posId))
+                )
+                .fetchFirst() != null;
+
+        if (!isAuthorized) {
+            throw new BadRequestException("포스 접근 권한이 없음.");
+        }
+
+        // 이번 달 매출
+        BigDecimal totalIncome0Ago = queryFactory
+                .select(qposSales.totalAmount.sum())
+                .from(qposSales)
+                .where(qposSales.pos.posId.eq(posId)
+                        .and(qposSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        // 1개월 전 매출
+        YearMonth oneMonthAgo = month.minusMonths(1);
+        BigDecimal totalIncome1Ago = queryFactory
+                .select(qposSales.totalAmount.sum())
+                .from(qposSales)
+                .where(qposSales.pos.posId.eq(posId)
+                        .and(qposSales.saleDate.between(
+                                oneMonthAgo.atDay(1).atStartOfDay(),
+                                oneMonthAgo.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        // 2개월 전 매출
+        YearMonth twoMonthsAgo = month.minusMonths(2);
+        BigDecimal totalIncome2Ago = queryFactory
+                .select(qposSales.totalAmount.sum())
+                .from(qposSales)
+                .where(qposSales.pos.posId.eq(posId)
+                        .and(qposSales.saleDate.between(
+                                twoMonthsAgo.atDay(1).atStartOfDay(),
+                                twoMonthsAgo.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        return new IncomeHistoryDTO(
+                totalIncome0Ago != null ? totalIncome0Ago : BigDecimal.ZERO,
+                totalIncome1Ago != null ? totalIncome1Ago : BigDecimal.ZERO,
+                totalIncome2Ago != null ? totalIncome2Ago : BigDecimal.ZERO
+        );
+    }
+
 }

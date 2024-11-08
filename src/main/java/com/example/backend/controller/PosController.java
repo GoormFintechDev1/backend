@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.pos.DailyIncomeDTO;
+import com.example.backend.dto.pos.IncomeHistoryDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.service.PosService;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,14 @@ public class PosController {
         DailyIncomeDTO incomeDetail = posService.getDailyIncomeDetail(memberId, LocalDate.parse(date));
         return ResponseEntity.ok(incomeDetail);
     }
+
+    // 이번 달 매출 및 지난 2개월의 월 매출 정보
+   @GetMapping("/income-history")
+    public ResponseEntity<IncomeHistoryDTO> getIncomeHistory(
+           @RequestParam("month") String month,
+           @AuthenticationPrincipal Long memberId) {
+       IncomeHistoryDTO incomeHistory = posService.getIncomeHistory(memberId, YearMonth.parse(month));
+       return ResponseEntity.ok(incomeHistory);
+   }
 
 }
