@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.YearMonth;
 
 @RestController
@@ -38,4 +39,15 @@ public class AccountController {
         expenseDetailDTO expenseDetails = accountService.showDetailExpense(memberId, yearMonth);
         return ResponseEntity.ok(expenseDetails);
     }
+
+    // 순 이익 (총수익 - 총지출)
+    @GetMapping("/profit")
+    public ResponseEntity<BigDecimal> netProfit(
+            @RequestParam("month") String month,
+            @AuthenticationPrincipal Long memberId) {  // JWT에서 추출한 memberId
+        YearMonth yearMonth = YearMonth.parse(month);
+        BigDecimal netProfit = accountService.showNetProfit(memberId, yearMonth);
+        return ResponseEntity.ok(netProfit);
+    }
+
 }
