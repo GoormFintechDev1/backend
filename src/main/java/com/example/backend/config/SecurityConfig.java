@@ -34,6 +34,7 @@ public class SecurityConfig {
         log.info("Configuring SecurityFilterChain with JWT Authentication Filter");
 
         http.csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
                 .authorizeRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()  // 인증 및 회원가입 엔드포인트 접근 허용
                         //.requestMatchers("/api/member/**").authenticated() // 회원 정보 수정은 인증된 사용자만 접근
@@ -45,4 +46,22 @@ public class SecurityConfig {
         log.info("SecurityFilterChain configured successfully");
         return http.build();
     }
+
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        log.info("Configuring CORS settings");
+
+        org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:3000"); // 허용할 프론트엔드 도메인
+        configuration.setAllowCredentials(true); // 쿠키 및 인증 정보를 포함한 요청 허용
+        configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
+        configuration.addAllowedHeader("*"); // 모든 헤더 허용
+        configuration.addExposedHeader("Authorization"); // 응답 헤더 노출
+
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+
 }
