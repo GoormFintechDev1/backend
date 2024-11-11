@@ -2,6 +2,8 @@ package com.example.backend.service;
 
 import com.example.backend.dto.account.expenseDTO;
 import com.example.backend.dto.account.expenseDetailDTO;
+import com.example.backend.dto.account.expenseWeekDTO;
+import com.example.backend.dto.account.profitDetailDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.*;
 import com.example.backend.model.enumSet.TransactionTypeEnum;
@@ -11,8 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -181,5 +186,99 @@ public class AccountService {
         // 순이익 = 총수익 - 총지출
         return totalRevenue.subtract(totalExpenses);
     }
+
+    /////// 순이익 상세
+    public profitDetailDTO showProfitDetail(Long memberId, YearMonth month) {
+        // 순 이익
+        BigDecimal netProfit= showNetProfit(memberId,month);
+        // 총 수입
+        BigDecimal incomeTotal= calculateTotalRevenue(month, memberId);
+
+        // 매출 원가 (지출에서 카테고리가 '재료비', '인건비,', '물류비')
+        BigDecimal saleCost = calculateTotalRevenue(month, memberId);
+        // 운영 비용 (지출에서 카테고리가 '임대료', '통신비', '유지보수비', '공과금')
+        BigDecimal operatingExpense= calculateTotalRevenue(month, memberId);
+
+        // 세금 (지출에서 카테고리가 '세금', 매출의 '부가세' vat_amount)
+        BigDecimal taxes= calculateTotalRevenue(month, memberId);
+
+        return new profitDetailDTO(
+                netProfit,
+                incomeTotal,
+                saleCost,
+                operatingExpense,
+                taxes
+        );
+    }
+
+    /// 주차를 계산하는 함수 (json 형식으로 값 반환)
+    public List<Map<String, String>> calculateWeeksInMonth(YearMonth month) {
+        List<Map<String, String>> weeks = new ArrayList<>();
+
+        // 해당 월의 첫날과 마지막 날 계산
+        LocalDate firstDay = LocalDate.of(month.getYear(), month.getMonth(), 1);
+        LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+
+        LocalDate current = firstDay;
+
+        while (current.isBefore(lastDay) || current.equals(lastDay)) {
+            // 주차별 시작일과 종료일 계산
+            LocalDate startOfWeek = current.with(java.time.DayOfWeek.MONDAY);
+            LocalDate endOfWeek = current.with(java.time.DayOfWeek.SUNDAY);
+
+            // 해당 월에 속하는 날짜만 포함
+            if (startOfWeek.isBefore(firstDay)) startOfWeek = firstDay;
+            if (endOfWeek.isAfter(lastDay)) endOfWeek = lastDay;
+
+            Map<String, String> weekInfo = new HashMap<>();
+            weekInfo.put("week", String.valueOf(current.get(java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
+            weekInfo.put("start", startOfWeek.toString());
+            weekInfo.put("end", endOfWeek.toString());
+            weeks.add(weekInfo);
+
+            // 다음 주로 이동
+            current = current.plusWeeks(1);
+        }
+
+        return weeks;
+    }
+
+    /////// 주차별 지출
+    public expenseWeekDTO showWeekExpense(Long memberId, YearMonth month) {
+        List<Map<String, String>> weeks = calculateWeeksInMonth(month);
+
+        QAccountHistory accountHistory = QAccountHistory.accountHistory;
+        Long accountId = getAccountIdByMemberId(memberId);
+
+        List<BigDecimal> weekExpenses = new ArrayList<>();
+
+        // 주차별 지출 합계 계산
+        for (Map<String, String> week : weeks) {
+            LocalDate startDate = LocalDate.parse(week.get("start"));
+            LocalDate endDate = LocalDate.parse(week.get("end"));
+
+            BigDecimal totalExpense = queryFactory
+                    .select(accountHistory.amount.sum())
+                    .from(accountHistory)
+                    .where(accountHistory.accountId.accountId.eq(accountId)
+                            .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                            .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
+                    .fetchOne();
+
+
+            if (totalExpense == null) totalExpense = BigDecimal.ZERO;
+            weekExpenses.add(totalExpense);
+        }
+
+        // 주차별 지출 정보를 DTO에 담아 반환
+        return new expenseWeekDTO(
+                weekExpenses.size() > 0 ? weekExpenses.get(0) : BigDecimal.ZERO,
+                weekExpenses.size() > 1 ? weekExpenses.get(1) : BigDecimal.ZERO,
+                weekExpenses.size() > 2 ? weekExpenses.get(2) : BigDecimal.ZERO,
+                weekExpenses.size() > 3 ? weekExpenses.get(3) : BigDecimal.ZERO,
+                weekExpenses.size() > 4 ? weekExpenses.get(4) : BigDecimal.ZERO
+        );
+    }
+
 
 }

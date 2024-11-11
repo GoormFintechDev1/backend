@@ -2,6 +2,8 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.account.expenseDTO;
 import com.example.backend.dto.account.expenseDetailDTO;
+import com.example.backend.dto.account.expenseWeekDTO;
+import com.example.backend.dto.account.profitDetailDTO;
 import com.example.backend.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +50,27 @@ public class AccountController {
         YearMonth yearMonth = YearMonth.parse(month);
         BigDecimal netProfit = accountService.showNetProfit(memberId, yearMonth);
         return ResponseEntity.ok(netProfit);
+    }
+
+    // 순이익 상세 (총 수익, 매출 원가, 운영 비용, 세금, 순 이익)
+    @GetMapping("/profit/detail")
+    public ResponseEntity<profitDetailDTO> profitDetail(
+            @RequestParam("month") String month,
+            @AuthenticationPrincipal Long memberId){
+        YearMonth yearMonth = YearMonth.parse(month);
+        profitDetailDTO profitDetail = accountService.showProfitDetail(memberId, yearMonth);
+        return ResponseEntity.ok(profitDetail);
+    }
+
+    // 주차별 지출 (월요일 기준으로 주차 시작)
+    @GetMapping("/expense/week")
+    public ResponseEntity<expenseWeekDTO> expenseWeek(
+            @RequestParam("month") String month,
+            @AuthenticationPrincipal Long memberId
+    ) {
+        YearMonth yearMonth = YearMonth.parse(month);
+        expenseWeekDTO expense = accountService.showWeekExpense(memberId, yearMonth);
+        return ResponseEntity.ok(expense);
     }
 
 }
