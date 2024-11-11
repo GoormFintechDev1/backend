@@ -150,31 +150,31 @@ public class GoalService {
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(goalMonth.withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(goalMonth))
                 )
                 .fetchOne();
 
         BigDecimal currentMonthRevenue = posService.calculateMonthlyRevenue(memberId, YearMonth.from(goalMonth));
 
         // 1개월 전 목표 및 실제 매출
-        LocalDate oneMonthAgo = goalMonth.minusMonths(1);
+        YearMonth oneMonthAgo = goalMonth.minusMonths(1);
         Goals oneMonthGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(oneMonthAgo.withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(oneMonthAgo))
                 )
                 .fetchOne();
         BigDecimal oneMonthRevenue = posService.calculateMonthlyRevenue(memberId, YearMonth.from(oneMonthAgo));
 
 
         // 2개월 전 목표 및 실제 매출
-        LocalDate twoMonthsAgo = goalMonth.minusMonths(2);
+        YearMonth twoMonthsAgo = goalMonth.minusMonths(2);
         Goals twoMonthGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(twoMonthsAgo.withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(twoMonthsAgo))
                 )
                 .fetchOne();
         BigDecimal twoMonthRevenue = posService.calculateMonthlyRevenue(memberId, YearMonth.from(twoMonthsAgo));
@@ -204,7 +204,7 @@ public class GoalService {
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(goalMonth.withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(goalMonth))
                 )
                 .fetchOne();
 
@@ -212,23 +212,23 @@ public class GoalService {
 
 
         // 1개월 전 목표 및 실제 지출
-        LocalDate oneMonthAgo = goalMonth.minusMonths(1);
+        YearMonth oneMonthAgo = goalMonth.minusMonths(1);
         Goals oneMonthGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(oneMonthAgo.withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(oneMonthAgo))
                 )
                 .fetchOne();
         BigDecimal oneMonthExpense = accountService.calculateTotalExpenses(YearMonth.from(oneMonthAgo), memberId);
 
         // 2개월 전 목표 및 실제 지출
-        LocalDate twoMonthsAgo = goalMonth.minusMonths(2);
+        YearMonth twoMonthsAgo = goalMonth.minusMonths(2);
         Goals twoMonthGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(twoMonthsAgo.withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(twoMonthsAgo))
                 )
                 .fetchOne();
         BigDecimal twoMonthExpense = accountService.calculateTotalExpenses(YearMonth.from(twoMonthsAgo), memberId);
