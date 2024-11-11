@@ -11,6 +11,6 @@ import java.time.YearMonth;
 @Data
 @AllArgsConstructor
 public class RevenueGoalRequestDTO {
-    private LocalDate goalMonth; // 목표 월
+    private YearMonth goalMonth; // 목표 월
     private BigDecimal revenueGoal; // 매출 목표
 }

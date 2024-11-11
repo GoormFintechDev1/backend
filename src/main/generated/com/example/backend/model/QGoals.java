@@ -38,7 +38,7 @@ public class QGoals extends EntityPathBase<Goals> {
 
     public final NumberPath<Long> goalId = createNumber("goalId", Long.class);
 
-    public final DatePath<java.time.LocalDate> goalMonth = createDate("goalMonth", java.time.LocalDate.class);
+    public final ComparablePath<java.time.YearMonth> goalMonth = createComparable("goalMonth", java.time.YearMonth.class);
 
     public final BooleanPath revenueAchieved = createBoolean("revenueAchieved");
 
