@@ -61,7 +61,7 @@ public class AccountService {
 
 
     // 월별 지출 합계 구하는 함수
-    private BigDecimal calculateTotalExpenses(YearMonth month, Long memberId) {
+    public BigDecimal calculateTotalExpenses(YearMonth month, Long memberId) {
         Long accountId = getAccountIdByMemberId(memberId);
 
         QAccountHistory accountHistory = QAccountHistory.accountHistory;

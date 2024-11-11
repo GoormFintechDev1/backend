@@ -328,6 +328,19 @@ public class PosService {
         );
     }
 
+    public BigDecimal calculateMonthlyRevenue(Long memberId, YearMonth month) {
+        Long posId = getPosIdByMemberId(memberId);
+        QPosSales qposSales = QPosSales.posSales;
 
+        return queryFactory
+                .select(qposSales.totalAmount.sum())
+                .from(qposSales)
+                .where(qposSales.pos.posId.eq(posId)
+                .and(qposSales.saleDate.between(
+                        month.atDay(1).atStartOfDay(),
+                        month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+    }
 
 }
