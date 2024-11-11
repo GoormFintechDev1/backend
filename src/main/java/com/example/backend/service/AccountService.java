@@ -46,6 +46,24 @@ public class AccountService {
         }
         return accountId;
     }
+    // 로그인한 유저의 posId를 가져오는 로직
+    private Long getPosIdByMemberId(Long memberId) {
+        QPos qPos = QPos.pos;
+        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+
+        Long posId = queryFactory
+                .select(qPos.posId)
+                .from(qPos)
+                .join(qPos.businessRegistration, qBusinessRegistration)
+                .where(qBusinessRegistration.member.id.eq(memberId))
+                .fetchOne();
+
+        if (posId == null) {
+            throw new BadRequestException("해당 사용자는 포스가 없습니다.");
+        }
+        return posId;
+    }
+
 
     // 월별 지출 합계 구하는 함수
     private BigDecimal calculateTotalExpenses(YearMonth month, Long memberId) {
@@ -189,18 +207,60 @@ public class AccountService {
 
     /////// 순이익 상세
     public profitDetailDTO showProfitDetail(Long memberId, YearMonth month) {
+        Long accountId = getAccountIdByMemberId(memberId);
+        Long posId = getPosIdByMemberId(memberId);
+        QAccountHistory accountHistory = QAccountHistory.accountHistory;
+        QPosSales posSales= QPosSales.posSales;
+        QPos pos= QPos.pos;
+
         // 순 이익
         BigDecimal netProfit= showNetProfit(memberId,month);
         // 총 수입
         BigDecimal incomeTotal= calculateTotalRevenue(month, memberId);
 
         // 매출 원가 (지출에서 카테고리가 '재료비', '인건비,', '물류비')
-        BigDecimal saleCost = calculateTotalRevenue(month, memberId);
+        BigDecimal saleCost = queryFactory
+                .select(accountHistory.amount.sum())
+                .from(accountHistory)
+                .where(accountHistory.accountId.accountId.eq(accountId)
+                    .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                    .and(accountHistory.category.in("재료비", "인건비", "물류비")))
+                .fetchOne();
+
         // 운영 비용 (지출에서 카테고리가 '임대료', '통신비', '유지보수비', '공과금')
-        BigDecimal operatingExpense= calculateTotalRevenue(month, memberId);
+        BigDecimal operatingExpense= queryFactory
+                .select(accountHistory.amount.sum())
+                .from(accountHistory)
+                .where(accountHistory.accountId.accountId.eq(accountId)
+                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.category.in("임대료", "통신비", "유지보수비","공과금")))
+                .fetchOne();
+
 
         // 세금 (지출에서 카테고리가 '세금', 매출의 '부가세' vat_amount)
-        BigDecimal taxes= calculateTotalRevenue(month, memberId);
+        // 1. accountHistory에서 '세금' 항목의 합계 구하기
+        BigDecimal accountTaxes = queryFactory
+                .select(accountHistory.amount.sum())
+                .from(accountHistory)
+                .where(accountHistory.accountId.accountId.eq(accountId)
+                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.category.eq("세금")))
+                .fetchOne();
+        // 2. posSales에서 vatAmount 항목의 합계 구하기
+        BigDecimal posVatAmount = queryFactory
+                .select(posSales.vatAmount.sum())
+                .from(posSales)
+                .join(posSales.pos, pos)
+                .where(pos.posId.eq(posSales.pos.posId)
+                        .and(pos.account.accountId.eq(accountId)))
+                .fetchOne();
+        // 합산 (null 은 0으로 )
+        if (accountTaxes == null) accountTaxes = BigDecimal.ZERO;
+        if (posVatAmount == null) posVatAmount = BigDecimal.ZERO;
+
+        // 3. 두 항목을 더하여 최종 세금 계산
+        BigDecimal taxes = accountTaxes.add(posVatAmount);
+
 
         return new profitDetailDTO(
                 netProfit,
