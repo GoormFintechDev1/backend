@@ -5,10 +5,12 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Data
 @AllArgsConstructor
 public class RevenueGoalResponseDTO {
+
     private LocalDate goalMonth; // 목표 월
     private BigDecimal revenueGoal2Ago; // 매출 목표
     private BigDecimal monthlyRevenue2Ago; // 실제 매출
@@ -19,6 +21,7 @@ public class RevenueGoalResponseDTO {
 
     private BigDecimal revenueGoal0Ago; // 매출 목표
     private BigDecimal monthlyRevenue0Ago; // 실제 매출
+
 
 
 }

@@ -30,7 +30,7 @@ public class Goals extends BaseTime{
 
     // 목표월
     @Column(name = "goal_month")
-    private LocalDate goalMonth;
+    private YearMonth goalMonth;
 
     // 매출 목표
     @Column(name = "revenue_goal", precision = 15, scale = 0)
