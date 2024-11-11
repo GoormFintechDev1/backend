@@ -10,8 +10,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ExpenseGoalResponseDTO {
     private LocalDate goalMonth; // 목표 월
-    private BigDecimal expenseGoal; // 지출 목표
-    private BigDecimal monthlyExpense; // 실제 지출
-    private Boolean expenseAchieved; // 지출 달성 여부
+    private BigDecimal expenseGoal2Ago; // 지출 목표
+    private BigDecimal monthlyExpense2Ago; // 실제 지출
+
+    private BigDecimal expenseGoal1Ago; // 지출 목표
+    private BigDecimal monthlyExpense1Ago; // 실제 지출
+
+    private BigDecimal expenseGoal0Ago; // 지출 목표
+    private BigDecimal monthlyExpense0Ago; // 실제 지출
 
 }

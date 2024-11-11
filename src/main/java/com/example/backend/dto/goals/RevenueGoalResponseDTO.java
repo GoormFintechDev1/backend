@@ -10,8 +10,15 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class RevenueGoalResponseDTO {
     private LocalDate goalMonth; // 목표 월
-    private BigDecimal revenueGoal; // 매출 목표
-    private BigDecimal monthlyRevenue; // 실제 매출
-    private Boolean revenueAchieved; // 매출 달성 여부
+    private BigDecimal revenueGoal2Ago; // 매출 목표
+    private BigDecimal monthlyRevenue2Ago; // 실제 매출
+
+    private BigDecimal revenueGoal1Ago; // 매출 목표
+    private BigDecimal monthlyRevenue1Ago; // 실제 매출
+
+
+    private BigDecimal revenueGoal0Ago; // 매출 목표
+    private BigDecimal monthlyRevenue0Ago; // 실제 매출
+
 
 }
