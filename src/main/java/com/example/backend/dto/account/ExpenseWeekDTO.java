@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-public class expenseWeekDTO {
+public class ExpenseWeekDTO {
     // 1주차
     private BigDecimal week1;
     // 2주차

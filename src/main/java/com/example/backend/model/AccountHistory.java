@@ -3,10 +3,7 @@ package com.example.backend.model;
 import com.example.backend.model.enumSet.TransactionMeansEnum;
 import com.example.backend.model.enumSet.TransactionTypeEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -67,5 +64,18 @@ public class AccountHistory {
     // 거래처
     @Column(name = "store_name", length = 50)
     private String storeName;
+
+    @Builder
+    public AccountHistory(String transactionType, Account accountId, String transactionMeans, LocalDateTime transactionDate,BigDecimal amount, String category, String note, Boolean fixedExpenses, String storeName) {
+        this.accountId = accountId;
+        this.transactionType = TransactionTypeEnum.EXPENSE;
+        this.transactionMeans = TransactionMeansEnum.CASH;
+        this.transactionDate = transactionDate;
+        this.amount = amount;
+        this.category = category;
+        this.note = note;
+        this.fixedExpenses = fixedExpenses;
+        this.storeName = storeName;
+    }
 
 }

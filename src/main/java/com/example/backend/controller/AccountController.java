@@ -1,9 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.account.expenseDTO;
-import com.example.backend.dto.account.expenseDetailDTO;
-import com.example.backend.dto.account.expenseWeekDTO;
-import com.example.backend.dto.account.profitDetailDTO;
+import com.example.backend.dto.account.*;
 import com.example.backend.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,21 +21,21 @@ public class AccountController {
 
     // 지출 간단 보기
     @GetMapping("/expense")
-    public ResponseEntity<expenseDTO> expense(
+    public ResponseEntity<ExpenseDTO> expense(
             @RequestParam("month") String month,
             @AuthenticationPrincipal Long memberId) {  // JWT에서 추출한 memberId
         YearMonth yearMonth = YearMonth.parse(month);
-        expenseDTO expenseSummary = accountService.showSimpleExpense(memberId, yearMonth);
+        ExpenseDTO expenseSummary = accountService.showSimpleExpense(memberId, yearMonth);
         return ResponseEntity.ok(expenseSummary);
     }
 
     // 지출 상세보기
     @GetMapping("/expense/detail")
-    public ResponseEntity<expenseDetailDTO> expenseDetail(
+    public ResponseEntity<ExpenseDetailDTO> expenseDetail(
             @RequestParam("month") String month,
             @AuthenticationPrincipal Long memberId) {  // JWT에서 추출한 memberId
         YearMonth yearMonth = YearMonth.parse(month);
-        expenseDetailDTO expenseDetails = accountService.showDetailExpense(memberId, yearMonth);
+        ExpenseDetailDTO expenseDetails = accountService.showDetailExpense(memberId, yearMonth);
         return ResponseEntity.ok(expenseDetails);
     }
 
@@ -54,23 +51,59 @@ public class AccountController {
 
     // 순이익 상세 (총 수익, 매출 원가, 운영 비용, 세금, 순 이익)
     @GetMapping("/profit/detail")
-    public ResponseEntity<profitDetailDTO> profitDetail(
+    public ResponseEntity<ProfitDetailDTO> profitDetail(
             @RequestParam("month") String month,
             @AuthenticationPrincipal Long memberId){
         YearMonth yearMonth = YearMonth.parse(month);
-        profitDetailDTO profitDetail = accountService.showProfitDetail(memberId, yearMonth);
+        ProfitDetailDTO profitDetail = accountService.showProfitDetail(memberId, yearMonth);
         return ResponseEntity.ok(profitDetail);
     }
 
     // 주차별 지출 (월요일 기준으로 주차 시작)
     @GetMapping("/expense/week")
-    public ResponseEntity<expenseWeekDTO> expenseWeek(
+    public ResponseEntity<ExpenseWeekDTO> expenseWeek(
             @RequestParam("month") String month,
             @AuthenticationPrincipal Long memberId
     ) {
         YearMonth yearMonth = YearMonth.parse(month);
-        expenseWeekDTO expense = accountService.showWeekExpense(memberId, yearMonth);
+        ExpenseWeekDTO expense = accountService.showWeekExpense(memberId, yearMonth);
         return ResponseEntity.ok(expense);
     }
 
+    /////// 수기 입력
+    // 입력
+    @PostMapping("/create")
+    public ResponseEntity<String> createAccount(
+            @RequestBody CreateAccountHistoryDTO accountHistoryDTO,
+            @AuthenticationPrincipal Long memberId) {
+        Long historyId = accountService.createAccountHistory(memberId,accountHistoryDTO);
+        String responseMessage = "생성 성공 || historyId : " + historyId;
+        return ResponseEntity.ok(responseMessage);
+    }
+
+    // 수정
+    @PutMapping("{historyId}/edit")
+    public ResponseEntity<String> editAccount(
+            @PathVariable Long historyId,
+            @RequestBody CreateAccountHistoryDTO accountHistoryDTO){
+        CreateAccountHistoryDTO updatedAccount = accountService.editAccountHistory(historyId,accountHistoryDTO);
+        if (updatedAccount != null) {
+            return ResponseEntity.ok("수정 성공");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+    // 삭제
+    @DeleteMapping("{historyId}/delete")
+    public ResponseEntity<String> deleteAccount(
+            @PathVariable Long historyId){
+        boolean deleted = accountService.deleteAccountHistory(historyId);
+        if (deleted) {
+            return ResponseEntity.ok("삭제 성공");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
