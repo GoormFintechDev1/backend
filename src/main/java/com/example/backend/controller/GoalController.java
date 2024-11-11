@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,14 +49,14 @@ public class GoalController {
 
     // 목표 달성 여부 확인
     @GetMapping("/check/revenue")
-    public ResponseEntity<RevenueGoalResponseDTO> checkRevenueGoal(@AuthenticationPrincipal Long memberId, @RequestParam LocalDate goalMonth) {
+    public ResponseEntity<RevenueGoalResponseDTO> checkRevenueGoal(@AuthenticationPrincipal Long memberId, @RequestParam YearMonth goalMonth) {
         RevenueGoalResponseDTO responseDTO = goalService.checkRevenueGoal(memberId, goalMonth);
         return ResponseEntity.ok(responseDTO);
     }
 
     // 목표 달성 여부 확인
     @GetMapping("/check/expense")
-    public ResponseEntity<ExpenseGoalResponseDTO> checkExpenseGoal(@AuthenticationPrincipal Long memberId, @RequestParam LocalDate goalMonth) {
+    public ResponseEntity<ExpenseGoalResponseDTO> checkExpenseGoal(@AuthenticationPrincipal Long memberId, @RequestParam YearMonth goalMonth) {
         ExpenseGoalResponseDTO responseDTO = goalService.checkExpenseGoal(memberId, goalMonth);
         return ResponseEntity.ok(responseDTO);
     }

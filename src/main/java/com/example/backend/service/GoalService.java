@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.YearMonth;
 
 @Service
@@ -38,7 +37,7 @@ public class GoalService {
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth().withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth()))
                 )
                 .fetchOne();
 
@@ -73,7 +72,7 @@ public class GoalService {
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth().withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth()))
                 )
                 .fetchOne();
 
@@ -108,7 +107,7 @@ public class GoalService {
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth().withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth()))
                 )
                 .fetchOne();
 
@@ -128,7 +127,7 @@ public class GoalService {
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth().withDayOfMonth(1)))
+                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth()))
                 )
                 .fetchOne();
 
@@ -141,7 +140,7 @@ public class GoalService {
     }
 
     // 매출 목표 달성 여부 체크 및 업데이트
-    public RevenueGoalResponseDTO checkRevenueGoal(Long memberId, LocalDate goalMonth) {
+    public RevenueGoalResponseDTO checkRevenueGoal(Long memberId, YearMonth goalMonth) {
         BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
 
         QGoals qGoals = QGoals.goals;
@@ -157,7 +156,7 @@ public class GoalService {
             throw new BadRequestException("설정된 목표가 없습니다.");
         }
 
-        BigDecimal monthlyRevenue = posService.calculateMonthlyRevenue(memberId, YearMonth.from(goalMonth));
+        BigDecimal monthlyRevenue = posService.calculateMonthlyRevenue(memberId, goalMonth);
         boolean revenueAchieved = monthlyRevenue.compareTo(goal.getRevenueGoal()) >= 0;
 
         return new RevenueGoalResponseDTO(
@@ -169,7 +168,7 @@ public class GoalService {
     }
 
     // 지출 목표 달성 여부 체크 및 업데이트
-    public ExpenseGoalResponseDTO checkExpenseGoal(Long memberId, LocalDate goalMonth) {
+    public ExpenseGoalResponseDTO checkExpenseGoal(Long memberId, YearMonth goalMonth) {
         BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
 
         QGoals qGoals = QGoals.goals;
@@ -185,7 +184,7 @@ public class GoalService {
             throw new BadRequestException("설정된 목표가 없습니다.");
         }
 
-        BigDecimal monthlyExpense = accountService.calculateTotalExpenses(YearMonth.from(goalMonth), memberId);
+        BigDecimal monthlyExpense = accountService.calculateTotalExpenses(goalMonth, memberId);
         boolean expenseAchieved = monthlyExpense.compareTo(goal.getExpenseGoal()) <= 0;
 
         return new ExpenseGoalResponseDTO(
