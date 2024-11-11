@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
-public class expenseDetailDTO {
+public class ExpenseDetailDTO {
 
     // 달별 지출 합계
     private BigDecimal totalMonthExpenses;

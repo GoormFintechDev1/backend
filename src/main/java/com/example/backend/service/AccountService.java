@@ -1,25 +1,20 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.account.expenseDTO;
-import com.example.backend.dto.account.expenseDetailDTO;
-import com.example.backend.dto.account.expenseWeekDTO;
-import com.example.backend.dto.account.profitDetailDTO;
+import com.example.backend.dto.account.*;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.*;
 import com.example.backend.model.enumSet.TransactionTypeEnum;
+import com.example.backend.repository.AccountHistoryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -139,7 +134,7 @@ public class AccountService {
     }
 
     // 월별 상세 지출 정보 가져오는 함수
-    private List<expenseDetailDTO.ExpenseDetail> getExpenseDetails(YearMonth month, Long memberId) {
+    private List<ExpenseDetailDTO.ExpenseDetail> getExpenseDetails(YearMonth month, Long memberId) {
         Long accountId = getAccountIdByMemberId(memberId);
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
 
@@ -153,7 +148,7 @@ public class AccountService {
                 .orderBy(accountHistory.transactionDate.desc())
                 .fetch()
                 .stream()
-                .map(record -> new expenseDetailDTO.ExpenseDetail(
+                .map(record -> new ExpenseDetailDTO.ExpenseDetail(
                         record.getTransactionDate(),
                         record.getTransactionMeans(),
                         record.getAmount(),
@@ -166,12 +161,12 @@ public class AccountService {
     }
 
     ///////// 지출 요약
-    public expenseDTO showSimpleExpense(Long memberId, YearMonth month) {
+    public ExpenseDTO showSimpleExpense(Long memberId, YearMonth month) {
         BigDecimal monthlyExpenses = calculateTotalExpenses(month, memberId);
         Map<String, BigDecimal> categoryExpenses = calculateCategoryWiseExpenses(month, memberId);
         BigDecimal todayExpense = calculateTodayExpense(memberId);
 
-        return new expenseDTO(
+        return new ExpenseDTO(
                 monthlyExpenses,
                 todayExpense != null ? todayExpense : BigDecimal.ZERO,
                 categoryExpenses
@@ -179,12 +174,12 @@ public class AccountService {
     }
 
     ////// 지출 상세 정보
-    public expenseDetailDTO showDetailExpense(Long memberId, YearMonth month) {
+    public ExpenseDetailDTO showDetailExpense(Long memberId, YearMonth month) {
         BigDecimal monthlyExpenses = calculateTotalExpenses(month, memberId);
         Map<String, BigDecimal> categoryTotalExpenses = calculateCategoryWiseExpenses(month, memberId);
-        List<expenseDetailDTO.ExpenseDetail> expenseDetails = getExpenseDetails(month, memberId);
+        List<ExpenseDetailDTO.ExpenseDetail> expenseDetails = getExpenseDetails(month, memberId);
 
-        return new expenseDetailDTO(
+        return new ExpenseDetailDTO(
                 monthlyExpenses,
                 categoryTotalExpenses,
                 expenseDetails
@@ -206,7 +201,7 @@ public class AccountService {
     }
 
     /////// 순이익 상세
-    public profitDetailDTO showProfitDetail(Long memberId, YearMonth month) {
+    public ProfitDetailDTO showProfitDetail(Long memberId, YearMonth month) {
         Long accountId = getAccountIdByMemberId(memberId);
         Long posId = getPosIdByMemberId(memberId);
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
@@ -262,7 +257,7 @@ public class AccountService {
         BigDecimal taxes = accountTaxes.add(posVatAmount);
 
 
-        return new profitDetailDTO(
+        return new ProfitDetailDTO(
                 netProfit,
                 incomeTotal,
                 saleCost,
@@ -304,7 +299,7 @@ public class AccountService {
     }
 
     /////// 주차별 지출
-    public expenseWeekDTO showWeekExpense(Long memberId, YearMonth month) {
+    public ExpenseWeekDTO showWeekExpense(Long memberId, YearMonth month) {
         List<Map<String, String>> weeks = calculateWeeksInMonth(month);
 
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
@@ -331,13 +326,77 @@ public class AccountService {
         }
 
         // 주차별 지출 정보를 DTO에 담아 반환
-        return new expenseWeekDTO(
+        return new ExpenseWeekDTO(
                 weekExpenses.size() > 0 ? weekExpenses.get(0) : BigDecimal.ZERO,
                 weekExpenses.size() > 1 ? weekExpenses.get(1) : BigDecimal.ZERO,
                 weekExpenses.size() > 2 ? weekExpenses.get(2) : BigDecimal.ZERO,
                 weekExpenses.size() > 3 ? weekExpenses.get(3) : BigDecimal.ZERO,
                 weekExpenses.size() > 4 ? weekExpenses.get(4) : BigDecimal.ZERO
         );
+    }
+
+    ///////////// 수기 입력
+    @Autowired
+    private AccountHistoryRepository accountRepository;
+
+    // 입력  -- historyId 반환
+    public Long createAccountHistory(Long memberId, CreateAccountHistoryDTO dto) {
+
+        // accountId는 로그인을 기반으로 자동으로 넣기
+        Long accountId = getAccountIdByMemberId(memberId); // Long 타입으로 계좌 ID 가져오기
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 계좌 ID입니다.")).getAccountId();
+
+        AccountHistory accountHistory = AccountHistory.builder()
+                .accountId(account)
+                .transactionType(String.valueOf(dto.getTransactionType()))
+                .transactionMeans(String.valueOf(dto.getTransactionMeans()))
+                .transactionDate(dto.getTransactionDate())
+                .amount(dto.getAmount())
+                .category(dto.getCategory())
+                .note(dto.getNote())
+                .fixedExpenses(dto.getFixedExpenses())
+                .storeName(dto.getStoreName())
+                .build();
+
+        accountRepository.save(accountHistory);
+        log.info("계좌 기록 생성 성공 : {}", accountHistory.getHistoryId());
+        return accountHistory.getHistoryId();
+    }
+
+    // 수정
+    public CreateAccountHistoryDTO editAccountHistory(Long historyId, CreateAccountHistoryDTO dto) {
+        // 해당 historyId로 계좌 기록 조회
+        AccountHistory existingAccount = accountRepository.findById(historyId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 historyId의 기록을 찾을 수 없습니다."));
+
+        // 기존 AccountHistory 객체의 필드 수정
+        existingAccount.setTransactionType(dto.getTransactionType());
+        existingAccount.setTransactionMeans(dto.getTransactionMeans());
+        existingAccount.setTransactionDate(dto.getTransactionDate());
+        existingAccount.setAmount(dto.getAmount());
+        existingAccount.setCategory(dto.getCategory());
+        existingAccount.setNote(dto.getNote());
+        existingAccount.setFixedExpenses(dto.getFixedExpenses());
+        existingAccount.setStoreName(dto.getStoreName());
+
+        // 수정된 내용 저장 (이제는 기존 레코드가 수정됨)
+        accountRepository.save(existingAccount);
+        return dto;
+    }
+
+
+
+    // 삭제
+    public boolean deleteAccountHistory(Long historyId) {
+        Optional<AccountHistory> existingAccountOpt = accountRepository.findById(historyId);
+
+        // 기록이 존재할 경우 삭제
+        if (existingAccountOpt.isPresent()) {
+            accountRepository.deleteById(historyId);
+            return true;
+        }
+        return false;
     }
 
 

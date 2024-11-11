@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-public class profitDetailDTO {
+public class ProfitDetailDTO {
 
     // 순 이익
     private BigDecimal netProfit;
