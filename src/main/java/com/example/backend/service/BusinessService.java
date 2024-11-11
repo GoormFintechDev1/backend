@@ -4,8 +4,10 @@ import com.example.backend.dto.auth.CheckBusinessDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.BusinessRegistration;
 import com.example.backend.model.Member;
+import com.example.backend.model.QBusinessRegistration;
 import com.example.backend.repository.BusinessRepository;
 import com.example.backend.repository.MemberRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,23 @@ import org.springframework.stereotype.Service;
 public class BusinessService {
     private final BusinessRepository businessRepository;
     private final MemberRepository memberRepository;
+    private final JPAQueryFactory jpaQueryFactory;
+
+    // 로그인한 유저의 businessID를 가져오는 로직
+    public BusinessRegistration getBusinessIdByMemberID(Long memberID){
+        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+
+        BusinessRegistration business = jpaQueryFactory
+                .select(qBusinessRegistration)
+                .from(qBusinessRegistration)
+                .where(qBusinessRegistration.member.id.eq(memberID))
+                .fetchOne();
+
+        if (business == null){
+            throw new BadRequestException("해당 회원과 연결된 사업자가 없습니다");
+        }
+        return business;
+    }
 
     public ResponseEntity<String> checkBusiness(Long memberId, CheckBusinessDTO checkBusinessRequest) {
         log.info("!!!!!!!사업자 등록 번호 확인 로직 진입 {}", memberId);

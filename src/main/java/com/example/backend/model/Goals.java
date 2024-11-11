@@ -8,12 +8,14 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity@Table(name = "goals")
+@Entity
+@Table(name = "goals")
 public class Goals extends BaseTime{
 
     // 식별 ID
@@ -38,4 +40,6 @@ public class Goals extends BaseTime{
     @Column(name = "expense_goal", precision = 15, scale = 0)
     private BigDecimal expenseGoal;
 
+    private Boolean revenueAchieved = false; // 매출 목표 달성 여부
+    private Boolean expenseAchieved = false; // 지출 목표 달성 여부
 }
