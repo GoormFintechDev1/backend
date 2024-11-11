@@ -139,59 +139,109 @@ public class GoalService {
         goalsRepository.save(existingGoal);
     }
 
-    // 매출 목표 달성 여부 체크 및 업데이트
+
+    // 매출 목표 달성 여부 체크 및 업데이트 (3개월)
     public RevenueGoalResponseDTO checkRevenueGoal(Long memberId, YearMonth goalMonth) {
         BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
-
         QGoals qGoals = QGoals.goals;
-        Goals goal = queryFactory
+
+        // 이번 달 목표 및 실제 매출
+        Goals currentGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(goalMonth))
+                                .and(qGoals.goalMonth.eq(goalMonth.withDayOfMonth(1)))
                 )
                 .fetchOne();
 
-        if (goal == null) {
-            throw new BadRequestException("설정된 목표가 없습니다.");
-        }
+        BigDecimal currentMonthRevenue = posService.calculateMonthlyRevenue(memberId, YearMonth.from(goalMonth));
 
-        BigDecimal monthlyRevenue = posService.calculateMonthlyRevenue(memberId, goalMonth);
-        boolean revenueAchieved = monthlyRevenue.compareTo(goal.getRevenueGoal()) >= 0;
+        // 1개월 전 목표 및 실제 매출
+        LocalDate oneMonthAgo = goalMonth.minusMonths(1);
+        Goals oneMonthGoal = queryFactory
+                .selectFrom(qGoals)
+                .where(
+                        qGoals.businessId.id.eq(business.getId())
+                                .and(qGoals.goalMonth.eq(oneMonthAgo.withDayOfMonth(1)))
+                )
+                .fetchOne();
+        BigDecimal oneMonthRevenue = posService.calculateMonthlyRevenue(memberId, YearMonth.from(oneMonthAgo));
+
+
+        // 2개월 전 목표 및 실제 매출
+        LocalDate twoMonthsAgo = goalMonth.minusMonths(2);
+        Goals twoMonthGoal = queryFactory
+                .selectFrom(qGoals)
+                .where(
+                        qGoals.businessId.id.eq(business.getId())
+                                .and(qGoals.goalMonth.eq(twoMonthsAgo.withDayOfMonth(1)))
+                )
+                .fetchOne();
+        BigDecimal twoMonthRevenue = posService.calculateMonthlyRevenue(memberId, YearMonth.from(twoMonthsAgo));
+
 
         return new RevenueGoalResponseDTO(
-                goal.getGoalMonth(),
-                goal.getRevenueGoal(),
-                monthlyRevenue,
-                revenueAchieved
+                currentGoal != null ? currentGoal.getGoalMonth() : null,
+                twoMonthGoal != null ? twoMonthGoal.getRevenueGoal() : BigDecimal.ZERO,
+                twoMonthRevenue,
+                oneMonthGoal != null ? oneMonthGoal.getRevenueGoal() : BigDecimal.ZERO,
+                oneMonthRevenue,
+                currentGoal != null ? currentGoal.getRevenueGoal() : BigDecimal.ZERO,
+                currentMonthRevenue
+
         );
     }
 
-    // 지출 목표 달성 여부 체크 및 업데이트
+
+
+    // 지출 목표 달성 여부 체크 및 업데이트 (3개월)
     public ExpenseGoalResponseDTO checkExpenseGoal(Long memberId, YearMonth goalMonth) {
         BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
-
         QGoals qGoals = QGoals.goals;
-        Goals goal = queryFactory
+
+        // 이번 달 목표 및 실제 지출
+        Goals currentGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
                         qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(goalMonth))
+                                .and(qGoals.goalMonth.eq(goalMonth.withDayOfMonth(1)))
                 )
                 .fetchOne();
 
-        if (goal == null) {
-            throw new BadRequestException("설정된 목표가 없습니다.");
-        }
+        BigDecimal currentMonthExpense = accountService.calculateTotalExpenses(YearMonth.from(goalMonth), memberId);
 
-        BigDecimal monthlyExpense = accountService.calculateTotalExpenses(goalMonth, memberId);
-        boolean expenseAchieved = monthlyExpense.compareTo(goal.getExpenseGoal()) <= 0;
+
+        // 1개월 전 목표 및 실제 지출
+        LocalDate oneMonthAgo = goalMonth.minusMonths(1);
+        Goals oneMonthGoal = queryFactory
+                .selectFrom(qGoals)
+                .where(
+                        qGoals.businessId.id.eq(business.getId())
+                                .and(qGoals.goalMonth.eq(oneMonthAgo.withDayOfMonth(1)))
+                )
+                .fetchOne();
+        BigDecimal oneMonthExpense = accountService.calculateTotalExpenses(YearMonth.from(oneMonthAgo), memberId);
+
+        // 2개월 전 목표 및 실제 지출
+        LocalDate twoMonthsAgo = goalMonth.minusMonths(2);
+        Goals twoMonthGoal = queryFactory
+                .selectFrom(qGoals)
+                .where(
+                        qGoals.businessId.id.eq(business.getId())
+                                .and(qGoals.goalMonth.eq(twoMonthsAgo.withDayOfMonth(1)))
+                )
+                .fetchOne();
+        BigDecimal twoMonthExpense = accountService.calculateTotalExpenses(YearMonth.from(twoMonthsAgo), memberId);
 
         return new ExpenseGoalResponseDTO(
-                goal.getGoalMonth(),
-                goal.getExpenseGoal(),
-                monthlyExpense,
-                expenseAchieved
+                currentGoal != null ? currentGoal.getGoalMonth() : null,
+                twoMonthGoal != null ? twoMonthGoal.getExpenseGoal() : BigDecimal.ZERO,
+                twoMonthExpense,
+                oneMonthGoal != null ? oneMonthGoal.getExpenseGoal() : BigDecimal.ZERO,
+                oneMonthExpense,
+                currentGoal != null ? currentGoal.getExpenseGoal() : BigDecimal.ZERO,
+                currentMonthExpense
         );
     }
+
 }
