@@ -84,7 +84,7 @@ public class AuthController {
 
     // 로그인 상태 확인
     // TODO
-    //  -> 이게 필요한가? 우선 개선해서 토큰 시간 띄우는걸로 변경하긴 했음.
+    //  -> 삭제 예정
     // 로그인 상태 확인
     @GetMapping("/check-login")
     public ResponseEntity<Map<String, Object>> checkLogin(HttpServletRequest request, HttpServletResponse response) {
