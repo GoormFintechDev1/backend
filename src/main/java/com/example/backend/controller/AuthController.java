@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.auth.*;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.TokenProvider;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -84,26 +85,58 @@ public class AuthController {
     // 로그인 상태 확인
     // TODO
     //  -> 이게 필요한가? 우선 개선해서 토큰 시간 띄우는걸로 변경하긴 했음.
+    // 로그인 상태 확인
     @GetMapping("/check-login")
-    public ResponseEntity<Map<String, Object>> checkLogin(HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> checkLogin(HttpServletRequest request, HttpServletResponse response) {
         log.info("로그인 상태 확인 요청");
 
         String accessToken = tokenProvider.resolveAccessToken(request);
-        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> responseMap = new HashMap<>();
 
-        if (accessToken != null && tokenProvider.validateToken(accessToken)) {
-            // 토큰이 유효한 경우 남은 유효 시간 확인
-            Date expiration = tokenProvider.getExpirationDate(accessToken);
-            long remainingTime = expiration.getTime() - new Date().getTime();
+        if (accessToken != null) {
+            try {
+                // accessToken 유효성 검증
+                if (tokenProvider.validateToken(accessToken)) {
+                    // 토큰이 유효한 경우 남은 유효 시간 확인
+                    Date expiration = tokenProvider.getExpirationDate(accessToken);
+                    long remainingTime = expiration.getTime() - new Date().getTime();
 
-            response.put("status", "로그인 상태 유효");
-            response.put("remainingTime", remainingTime);
+                    responseMap.put("status", "로그인 상태 유효");
+                    responseMap.put("remainingTime", remainingTime);
+                } else {
+                    throw new ExpiredJwtException(null, null, "Token has expired");
+                }
+            } catch (ExpiredJwtException e) {
+                log.info("Access token이 만료되었습니다. Refresh Token으로 갱신을 시도합니다...");
+
+                String loginId = e.getClaims().getSubject();
+                Long memberId = e.getClaims().get("memberId", Long.class);
+                String refreshToken = tokenProvider.getRefreshTokenFromRedis(loginId);
+
+                // Refresh Token 유효성 검증 후 새 Access Token 발급
+                if (refreshToken == null) {
+                    log.warn("Refresh Token이 없습니다. loginId: {}", loginId);
+                    responseMap.put("status", "로그인 상태 만료");
+                    responseMap.put("remainingTime", 0);
+                } else if (!tokenProvider.validateToken(refreshToken)) {
+                    log.warn("유효하지 않은 Refresh Token입니다. loginId: {}", loginId);
+                    responseMap.put("status", "로그인 상태 만료");
+                    responseMap.put("remainingTime", 0);
+                } else {
+                    String newAccessToken = tokenProvider.createAccessToken(loginId, memberId);
+                    tokenProvider.setAccessTokenCookie(newAccessToken, response);
+
+                    responseMap.put("status", "새로운 토큰 발급");
+                    responseMap.put("newAccessToken", newAccessToken);
+                    log.info("새로운 Access Token이 발급되었습니다. loginId: {}", loginId);
+                }
+            }
         } else {
-            // 토큰이 없거나 만료된 경우
-            response.put("status", "로그인 상태 만료");
-            response.put("remainingTime", 0);
+            responseMap.put("status", "로그인 상태 만료");
+            responseMap.put("remainingTime", 0);
         }
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.ok(responseMap);
     }
 
 

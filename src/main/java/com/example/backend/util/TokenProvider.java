@@ -27,7 +27,7 @@ public class TokenProvider {
 
     private byte[] keyBytes;
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 15; // 15분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1시간
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
 
     // SECRET_KEY를 Base64로 디코딩하여 바이트 배열로 변환
