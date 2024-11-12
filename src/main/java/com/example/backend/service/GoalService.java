@@ -1,9 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.goals.ExpenseGoalRequestDTO;
-import com.example.backend.dto.goals.ExpenseGoalResponseDTO;
-import com.example.backend.dto.goals.RevenueGoalResponseDTO;
-import com.example.backend.dto.goals.RevenueGoalRequestDTO;
+import com.example.backend.dto.goals.*;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.BusinessRegistration;
 import com.example.backend.model.Goals;
@@ -15,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Year;
 import java.time.YearMonth;
 
 @Service
@@ -27,6 +25,53 @@ public class GoalService {
     private final PosService posService;
     private final BusinessService businessService;
     private final GoalsRepository goalsRepository;
+
+    // 목표 설정하기
+
+    public void setGoal(Long memberId, GoalRequestDTO requestDTO) {
+        BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
+
+        QGoals qGoals = QGoals.goals;
+        Goals existingGoal = queryFactory
+                .selectFrom(qGoals)
+                .where(
+                        qGoals.businessId.id.eq(business.getId())
+                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth()))
+                )
+                .fetchOne();
+
+        if (existingGoal != null) {
+            // 매출 목표가 설정되지 않은 경우 업데이트
+            if (requestDTO.getRevenueGoal() != null && existingGoal.getRevenueGoal().compareTo(BigDecimal.ZERO) == 0) {
+                existingGoal.setRevenueGoal(requestDTO.getRevenueGoal());
+            }
+            // 지출 목표가 설정되지 않은 경우 업데이트
+            if (requestDTO.getExpenseGoal() != null && existingGoal.getExpenseGoal().compareTo(BigDecimal.ZERO) == 0) {
+                existingGoal.setExpenseGoal(requestDTO.getExpenseGoal());
+            }
+
+            // 두 목표 모두 이미 설정된 경우 예외 처리
+            if (existingGoal.getRevenueGoal().compareTo(BigDecimal.ZERO) > 0 && existingGoal.getExpenseGoal().compareTo(BigDecimal.ZERO) > 0) {
+                throw new BadRequestException("해당 연월에 목표가 이미 설정되어 있습니다.");
+            }
+
+            goalsRepository.save(existingGoal);
+        } else {
+            // 새로운 목표 생성, 매출 또는 지출이 null인 경우 기본값 0 설정
+            Goals goal = new Goals(
+                    null,
+                    business,
+                    requestDTO.getGoalMonth(),
+                    requestDTO.getRevenueGoal() != null ? requestDTO.getRevenueGoal() : BigDecimal.ZERO,
+                    requestDTO.getExpenseGoal() != null ? requestDTO.getExpenseGoal() : BigDecimal.ZERO,
+                    false,
+                    false
+            );
+            goalsRepository.save(goal);
+        }
+    }
+
+
 
     // 새로운 매출 목표 설정하기
     public void setRevenueGoal(Long memberId, RevenueGoalRequestDTO requestDTO) {

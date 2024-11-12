@@ -1,9 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.goals.ExpenseGoalRequestDTO;
-import com.example.backend.dto.goals.ExpenseGoalResponseDTO;
-import com.example.backend.dto.goals.RevenueGoalResponseDTO;
-import com.example.backend.dto.goals.RevenueGoalRequestDTO;
+import com.example.backend.dto.goals.*;
 import com.example.backend.service.GoalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +17,20 @@ public class GoalController {
 
     private final GoalService goalService;
 
+    // 목표 설정
+    @PostMapping("/set")
+    public ResponseEntity<String> setGoal(@AuthenticationPrincipal Long memberId, @RequestBody GoalRequestDTO goalRequestDTO) {
+        goalService.setGoal(memberId, goalRequestDTO);
+        return ResponseEntity.ok("목표 설정 완료!");
+    }
+
     // 매출 목표 설정
     @PostMapping("/set/revenue")
     public ResponseEntity<String> setRevenueGoal(@AuthenticationPrincipal Long memberId, @RequestBody RevenueGoalRequestDTO requestDTO) {
         goalService.setRevenueGoal(memberId, requestDTO);
         return ResponseEntity.ok("매출 목표 설정 완료!");
     }
+
     // 지출 목표 설정
     @PostMapping("/set/expense")
     public ResponseEntity<String> setExpenseGoal(@AuthenticationPrincipal Long memberId, @RequestBody ExpenseGoalRequestDTO requestDTO) {
