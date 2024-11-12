@@ -123,7 +123,6 @@ public class TokenProvider {
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(15 * 60); // 15분
         response.addCookie(accessTokenCookie);
     }
 
