@@ -20,18 +20,20 @@ public class TokenService {
     }
 
     // 레디스에 리프레시 토큰 저장
-    public void saveRefreshToken(String account, String refreshToken) {
-    redisTemplate.opsForValue().set("RT:" + account, refreshToken, Duration.ofDays(7));
+    public void saveRefreshToken(String loginId, String refreshToken) {
+    redisTemplate.opsForValue().set("RT:" + loginId, refreshToken, Duration.ofDays(7));
+    log.info("Redis에 리프레시 토큰 저장: key={}, refreshToken={}", "RT:" + loginId, refreshToken);
+
     }
 
     // 레디스에서 리프레시 토큰 꺼내기
-    public String getRefreshToken(String account) {
-        return redisTemplate.opsForValue().get("RT:" + account);
+    public String getRefreshToken(String loginId) {
+        return redisTemplate.opsForValue().get("RT:" + loginId);
     }
 
     // 리프레시 토큰 삭제
-    public void deleteRefreshToken(String account) {
-        boolean status = redisTemplate.delete("RT:" + account);
+    public void deleteRefreshToken(String loginId) {
+        boolean status = redisTemplate.delete("RT:" + loginId);
         log.info("삭제 상태 --> " + status);
     }
 }

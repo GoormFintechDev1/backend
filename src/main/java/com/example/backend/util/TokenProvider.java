@@ -50,19 +50,19 @@ public class TokenProvider {
 
     // 액세스 토큰 생성 로직
     public String createAccessToken(String loginId, Long memberId) {
-        log.info("Creating Access Token for account: {}", loginId);
+        log.info("Creating Access Token for loginId: {}", loginId);
         return createToken(loginId, memberId, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
     // 리프레시 토큰 생성 로직
     public String createRefreshToken(String loginId, Long memberId) {
-        log.info("Creating Refresh Token for account: {}", loginId);
+        log.info("Creating Refresh Token for loginId: {}", loginId);
         return createToken(loginId, memberId, REFRESH_TOKEN_EXPIRE_TIME);
     }
 
     // 토큰에서 account 추출
-    public String getAccountFromToken(String token) {
-        log.info("Extracting account from token");
+    public String getLoginIdFromToken(String token) {
+        log.info("Extracting loginId from token");
         return Jwts.parserBuilder()
                 .setSigningKey(keyBytes)
                 .build()
@@ -90,14 +90,11 @@ public class TokenProvider {
             return true;
         } catch (ExpiredJwtException e) {
             log.warn("만료된 JWT 토큰입니다."); // 만료된 토큰인 경우
-        } catch (SecurityException | MalformedJwtException e) {
-            log.warn("유효하지 않은 JWT 서명입니다."); // 서명 오류
-        } catch (UnsupportedJwtException e) {
-            log.warn("지원되지 않는 JWT 토큰입니다."); // 지원되지 않는 형식
-        } catch (IllegalArgumentException e) {
-            log.warn("JWT 토큰이 잘못되었습니다."); // 형식 오류 등
+            throw e;
+        } catch (JwtException e) {
+            log.warn("유효하지 않은 JWT 토큰입니다.");
         }
-        return false; // 유효하지 않은 토큰인 경우
+        return false; // 유효하지 않은 토큰인 경우 -> refreshToken
     }
 
     // 쿠키에서 액세스 토큰 추출
