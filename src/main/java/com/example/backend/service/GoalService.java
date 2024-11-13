@@ -198,14 +198,13 @@ public class GoalService {
 
 
         return new RevenueGoalResponseDTO(
-                currentGoal != null ? currentGoal.getGoalMonth() : null,
+                currentGoal != null ? currentGoal.getGoalMonth() : YearMonth.now(),
                 twoMonthGoal != null ? twoMonthGoal.getRevenueGoal() : BigDecimal.ZERO,
-                twoMonthRevenue,
+                twoMonthRevenue != null ? twoMonthRevenue : BigDecimal.ZERO,
                 oneMonthGoal != null ? oneMonthGoal.getRevenueGoal() : BigDecimal.ZERO,
-                oneMonthRevenue,
+                oneMonthRevenue != null ? oneMonthRevenue : BigDecimal.ZERO,
                 currentGoal != null ? currentGoal.getRevenueGoal() : BigDecimal.ZERO,
-                currentMonthRevenue
-
+                currentMonthRevenue != null ? currentMonthRevenue : BigDecimal.ZERO
         );
     }
 
@@ -250,13 +249,13 @@ public class GoalService {
         BigDecimal twoMonthExpense = accountService.calculateTotalExpenses(YearMonth.from(twoMonthsAgo), memberId);
 
         return new ExpenseGoalResponseDTO(
-                currentGoal != null ? currentGoal.getGoalMonth() : null,
+                currentGoal != null ? currentGoal.getGoalMonth() : YearMonth.now(),
                 twoMonthGoal != null ? twoMonthGoal.getExpenseGoal() : BigDecimal.ZERO,
-                twoMonthExpense,
+                twoMonthExpense != null ? twoMonthExpense : BigDecimal.ZERO,
                 oneMonthGoal != null ? oneMonthGoal.getExpenseGoal() : BigDecimal.ZERO,
-                oneMonthExpense,
+                oneMonthExpense != null ? oneMonthExpense : BigDecimal.ZERO,
                 currentGoal != null ? currentGoal.getExpenseGoal() : BigDecimal.ZERO,
-                currentMonthExpense
+                currentMonthExpense != null ? currentMonthExpense : BigDecimal.ZERO
         );
     }
 
