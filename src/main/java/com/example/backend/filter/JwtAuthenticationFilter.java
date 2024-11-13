@@ -44,15 +44,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     setAuthentication(accessToken);
                 }
             } catch (ExpiredJwtException e) {
-            /*
-              ExpiredJwtException을 활용하여 이미 만료된 토큰임을 처리함으로써
-              중복된 유효성 검사를 제거
-            */
                 log.info("Access token이 만료되었습니다. Refresh Token으로 갱신을 시도합니다...");
 
                 String loginId = e.getClaims().getSubject();
                 Long memberId = e.getClaims().get("memberId", Long.class);
-                String refreshToken = tokenProvider.getRefreshTokenFromRedis(loginId);
+                String refreshToken = tokenProvider.getRefreshTokenFromRedis("RT:" + loginId);
 
                 // Refresh Token 유효성 검증 후 새 Access Token 발급
                 if (refreshToken == null) {
