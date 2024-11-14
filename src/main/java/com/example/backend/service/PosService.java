@@ -347,7 +347,7 @@ public class PosService {
 
     }
 
-    public Map<String, BigDecimal> calculateAverageMonthlyMetrics(YearMonth month) {
+    public Map<String, Object> calculateAverageMonthlyMetrics(YearMonth month) {
         QPosSales qPosSales = QPosSales.posSales;
 
         // 1. 전체 사업자의 월 매출 평균
@@ -391,33 +391,62 @@ public class PosService {
                 ? totalCashIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
-        // 4. 전체 사업자의 평균 결제 시간 (초 단위로 계산 후 분 단위로 변환)
-        Double avgHourInSeconds = queryFactory.select(qPosSales.saleTime.hour().avg().multiply(3600).doubleValue()).from(qPosSales)
-                .where(qPosSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59)))
+        // 4. 아침, 점심, 저녁 시간대별 매출 합계 계산
+        BigDecimal morningSales = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.saleTime.hour().between(6, 11)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
 
-        Double avgMinuteInSeconds = queryFactory.select(qPosSales.saleTime.minute().avg().multiply(60).doubleValue()).from(qPosSales)
-                .where(qPosSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59)))
+        BigDecimal afternoonSales = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.saleTime.hour().between(12, 17)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
 
-        Double avgSecond = queryFactory.select(qPosSales.saleTime.second().avg().doubleValue()).from(qPosSales)
-                .where(qPosSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59)))
+        BigDecimal eveningSales = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.saleTime.hour().between(18, 23)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
 
-        // 결제 시간을 분 단위로 변환
-        BigDecimal averagePaymentTime = BigDecimal.valueOf((avgHourInSeconds != null ? avgHourInSeconds : 0) +
-                        (avgMinuteInSeconds != null ? avgMinuteInSeconds : 0) +
-                        (avgSecond != null ? avgSecond : 0))
-                .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+        // Null 처리
+        morningSales = morningSales != null ? morningSales : BigDecimal.ZERO;
+        afternoonSales = afternoonSales != null ? afternoonSales : BigDecimal.ZERO;
+        eveningSales = eveningSales != null ? eveningSales : BigDecimal.ZERO;
 
-        // 결과를 Map에 담아 반환
+        // 5. 매출이 가장 높은 시간대 판별
+        String peakSalesPeriod;
+        if (morningSales.compareTo(afternoonSales) > 0 && morningSales.compareTo(eveningSales) > 0) {
+            peakSalesPeriod = "Morning (06:00 - 11:59)";
+        } else if (afternoonSales.compareTo(morningSales) > 0 && afternoonSales.compareTo(eveningSales) > 0) {
+            peakSalesPeriod = "Afternoon (12:00 - 17:59)";
+        } else if (eveningSales.compareTo(morningSales) > 0 && eveningSales.compareTo(afternoonSales) > 0) {
+            peakSalesPeriod = "Evening (18:00 - 23:59)";
+        } else {
+            peakSalesPeriod = "No peak time";
+        }
 
-        // 결과를 Map에 담아 반환
-        Map<String, BigDecimal> averageMetrics = new HashMap<>();
+        // 6. 결과를 Map에 담아 반환
+        Map<String, Object> averageMetrics = new HashMap<>();
         averageMetrics.put("averageMonthlyIncome", averageMonthlyIncome);
         averageMetrics.put("averageMonthlyCardIncome", averageMonthlyCardIncome);
         averageMetrics.put("averageMonthlyCashIncome", averageMonthlyCashIncome);
-        averageMetrics.put("averagePaymentTimeMinutes", averagePaymentTime);
+        averageMetrics.put("morningSales", morningSales);
+        averageMetrics.put("afternoonSales", afternoonSales);
+        averageMetrics.put("eveningSales", eveningSales);
+
+        // 추가적으로 최고 매출 시간대 정보도 Map에 담음
+        averageMetrics.put("peakSalesPeriod", peakSalesPeriod); // peakSalesPeriod를 문자열로 저장
 
         return averageMetrics;
     }
