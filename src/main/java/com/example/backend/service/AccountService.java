@@ -137,7 +137,7 @@ public class AccountService {
     }
 
     // 월별 상세 지출 정보 가져오는 함수
-    private List<ExpenseDetailDTO.ExpenseDetail> getExpenseDetails(YearMonth month, Long memberId) {
+    public List<ExpenseDetailDTO.ExpenseDetail> getExpenseDetails(YearMonth month, Long memberId) {
         Long accountId = getAccountIdByMemberId(memberId);
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
 
@@ -407,27 +407,33 @@ public class AccountService {
 
     ///////////////////////////////////////////////////////////
     // 지역에 맞는 AccountHistory 데이터를 가져오는 메서드
-    public List<Map<String, Object>> getAccountHistoryByRegion(Long memberId) {
+    public Map<String, Object> getAccountHistoryByRegion(Long memberId, YearMonth month) {
+        // 1. Business Registration 조회
         QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
         BusinessRegistration registration = queryFactory.selectFrom(qBusinessRegistration)
                 .where(qBusinessRegistration.member.id.eq(memberId))
                 .fetchOne();
 
         if (registration == null || registration.getAddress() == null) {
-            return null;
+            return Collections.emptyMap();
         }
 
+        // 2. 주소에서 지역 추출
         String address = registration.getAddress();
         String region = extractRegionFromAddress(address);
 
+        // 3. AccountHistory 조회
         QAccountHistory qAccountHistory = QAccountHistory.accountHistory;
         QAccount qAccount = QAccount.account;
 
-        return queryFactory.selectFrom(qAccountHistory)
+        List<Map<String, Object>> accountHistoryList = queryFactory.selectFrom(qAccountHistory)
                 .join(qAccountHistory.accountId, qAccount)
                 .join(qAccount.business, qBusinessRegistration)
                 .where(qBusinessRegistration.address.contains(region)
-                        .and(qAccountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE)))
+                        .and(qAccountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(qAccountHistory.transactionDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetch()
                 .stream()
                 .map(record -> {
@@ -437,7 +443,49 @@ public class AccountService {
                     return map;
                 })
                 .collect(Collectors.toList());
+
+        // 4. 데이터가 없는 경우 기본값 반환
+        if (accountHistoryList.isEmpty()) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("averageExpense", BigDecimal.ZERO);
+            result.put("averageExpenseByCategory", Collections.emptyMap());
+            return result;
+        }
+
+        // 5. 총합 및 평균 계산
+        BigDecimal totalExpense = accountHistoryList.stream()
+                .map(record -> (BigDecimal) record.get("amount"))
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal averageExpense = totalExpense.divide(
+                BigDecimal.valueOf(accountHistoryList.size()), 2, RoundingMode.HALF_UP
+        );
+
+        // 6. 카테고리별 평균 계산
+        Map<String, List<BigDecimal>> categoryMap = accountHistoryList.stream()
+                .filter(record -> record.get("category") != null && record.get("amount") != null)
+                .collect(Collectors.groupingBy(
+                        record -> (String) record.get("category"),
+                        Collectors.mapping(record -> (BigDecimal) record.get("amount"), Collectors.toList())
+                ));
+
+        Map<String, BigDecimal> averageExpenseByCategory = new HashMap<>();
+        categoryMap.forEach((category, amounts) -> {
+            BigDecimal total = amounts.stream()
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal average = total.divide(BigDecimal.valueOf(amounts.size()), 2, RoundingMode.HALF_UP);
+            averageExpenseByCategory.put(category, average);
+        });
+
+        // 7. 결과 반환
+        Map<String, Object> result = new HashMap<>();
+        result.put("averageExpense", averageExpense);
+        result.put("averageExpenseByCategory", averageExpenseByCategory);
+
+        return result;
     }
+
 
     // 주소에서 "동" 추출
     private String extractRegionFromAddress(String address) {
@@ -451,54 +499,5 @@ public class AccountService {
             }
         }
         return "";
-    }
-
-    // 지역 기준 평균 총 지출
-    public BigDecimal getAverageExpense(Long memberId) {
-        // 1. 지역에 맞는 AccountHistory 데이터를 가져옴
-        List<Map<String, Object>> accountHistoryList = getAccountHistoryByRegion(memberId);
-
-        // 2. 데이터가 없는 경우 평균을 계산할 수 없으므로 0 반환
-        if (accountHistoryList == null || accountHistoryList.isEmpty()) {
-            return BigDecimal.ZERO;
-        }
-        // 3. amount 필드를 추출하여 총합을 계산
-        BigDecimal totalExpense = accountHistoryList.stream()
-                .map(record -> (BigDecimal) record.get("amount"))
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        // 4. 평균 계산 (총합 / 데이터 개수)
-        BigDecimal averageExpense = totalExpense.divide(
-                BigDecimal.valueOf(accountHistoryList.size()), 2, RoundingMode.HALF_UP
-        );
-
-        return averageExpense;
-    }
-
-    // 카테고리별 평균 총 지출
-    public Map<String, BigDecimal> getAverageExpenseByCategory(Long memberId) {
-        List<Map<String, Object>> accountHistoryList = getAccountHistoryByRegion(memberId);
-
-        if (accountHistoryList == null || accountHistoryList.isEmpty()) {
-            return new HashMap<>();
-        }
-
-        Map<String, List<BigDecimal>> categoryMap = accountHistoryList.stream()
-                .filter(record -> record.get("category") != null && record.get("amount") != null && record.get("amount") instanceof BigDecimal)
-                .collect(Collectors.groupingBy(
-                        record -> Optional.ofNullable((String) record.get("category")).orElse("UNKNOWN"),
-                        Collectors.mapping(record -> (BigDecimal) record.get("amount"), Collectors.toList())
-                ));
-
-        Map<String, BigDecimal> averageExpenseByCategory = new HashMap<>();
-        categoryMap.forEach((category, amounts) -> {
-            BigDecimal total = amounts.stream()
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            BigDecimal average = total.divide(BigDecimal.valueOf(amounts.size()), 2, RoundingMode.HALF_UP);
-            averageExpenseByCategory.put(category, average);
-        });
-
-        return averageExpenseByCategory;
     }
 }
