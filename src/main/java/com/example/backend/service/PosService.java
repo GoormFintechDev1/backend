@@ -16,10 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -336,11 +340,115 @@ public class PosService {
                 .select(qposSales.totalAmount.sum())
                 .from(qposSales)
                 .where(qposSales.pos.posId.eq(posId)
-                .and(qposSales.saleDate.between(
-                        month.atDay(1).atStartOfDay(),
-                        month.atEndOfMonth().atTime(23, 59, 59))))
+                        .and(qposSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
 
+    }
+
+    public Map<String, Object> calculateAverageMonthlyMetrics(YearMonth month) {
+        QPosSales qPosSales = QPosSales.posSales;
+
+        // 1. 전체 사업자의 월 매출 평균
+        BigDecimal totalMonthlyIncome = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.saleDate.between(
+                        month.atDay(1).atStartOfDay(),
+                        month.atEndOfMonth().atTime(23, 59, 59)))
+                .fetchOne();
+
+        BigDecimal averageMonthlyIncome = totalMonthlyIncome != null
+                ? totalMonthlyIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        // 2. 전체 사업자의 월 카드 매출 평균
+        BigDecimal totalCardIncome = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.paymentType.eq(PaymentTypeEnum.CARD)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        BigDecimal averageMonthlyCardIncome = totalCardIncome != null
+                ? totalCardIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        // 3. 전체 사업자의 월 현금 매출 평균
+        BigDecimal totalCashIncome = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.paymentType.eq(PaymentTypeEnum.CASH)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        BigDecimal averageMonthlyCashIncome = totalCashIncome != null
+                ? totalCashIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        // 4. 아침, 점심, 저녁 시간대별 매출 합계 계산
+        BigDecimal morningSales = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.saleTime.hour().between(6, 11)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        BigDecimal afternoonSales = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.saleTime.hour().between(12, 17)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        BigDecimal eveningSales = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.saleTime.hour().between(18, 23)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        // Null 처리
+        morningSales = morningSales != null ? morningSales : BigDecimal.ZERO;
+        afternoonSales = afternoonSales != null ? afternoonSales : BigDecimal.ZERO;
+        eveningSales = eveningSales != null ? eveningSales : BigDecimal.ZERO;
+
+        // 5. 매출이 가장 높은 시간대 판별
+        String peakSalesPeriod;
+        if (morningSales.compareTo(afternoonSales) > 0 && morningSales.compareTo(eveningSales) > 0) {
+            peakSalesPeriod = "Morning (06:00 - 11:59)";
+        } else if (afternoonSales.compareTo(morningSales) > 0 && afternoonSales.compareTo(eveningSales) > 0) {
+            peakSalesPeriod = "Afternoon (12:00 - 17:59)";
+        } else if (eveningSales.compareTo(morningSales) > 0 && eveningSales.compareTo(afternoonSales) > 0) {
+            peakSalesPeriod = "Evening (18:00 - 23:59)";
+        } else {
+            peakSalesPeriod = "No peak time";
+        }
+
+        // 6. 결과를 Map에 담아 반환
+        Map<String, Object> averageMetrics = new HashMap<>();
+        averageMetrics.put("averageMonthlyIncome", averageMonthlyIncome);
+        averageMetrics.put("averageMonthlyCardIncome", averageMonthlyCardIncome);
+        averageMetrics.put("averageMonthlyCashIncome", averageMonthlyCashIncome);
+        averageMetrics.put("morningSales", morningSales);
+        averageMetrics.put("afternoonSales", afternoonSales);
+        averageMetrics.put("eveningSales", eveningSales);
+
+        // 추가적으로 최고 매출 시간대 정보도 Map에 담음
+        averageMetrics.put("peakSalesPeriod", peakSalesPeriod); // peakSalesPeriod를 문자열로 저장
+
+        return averageMetrics;
     }
 
 }
