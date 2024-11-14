@@ -16,10 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -336,11 +340,86 @@ public class PosService {
                 .select(qposSales.totalAmount.sum())
                 .from(qposSales)
                 .where(qposSales.pos.posId.eq(posId)
-                .and(qposSales.saleDate.between(
-                        month.atDay(1).atStartOfDay(),
-                        month.atEndOfMonth().atTime(23, 59, 59))))
+                        .and(qposSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
 
+    }
+
+    public Map<String, BigDecimal> calculateAverageMonthlyMetrics(YearMonth month) {
+        QPosSales qPosSales = QPosSales.posSales;
+
+        // 1. 전체 사업자의 월 매출 평균
+        BigDecimal totalMonthlyIncome = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.saleDate.between(
+                        month.atDay(1).atStartOfDay(),
+                        month.atEndOfMonth().atTime(23, 59, 59)))
+                .fetchOne();
+
+        BigDecimal averageMonthlyIncome = totalMonthlyIncome != null
+                ? totalMonthlyIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        // 2. 전체 사업자의 월 카드 매출 평균
+        BigDecimal totalCardIncome = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.paymentType.eq(PaymentTypeEnum.CARD)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        BigDecimal averageMonthlyCardIncome = totalCardIncome != null
+                ? totalCardIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        // 3. 전체 사업자의 월 현금 매출 평균
+        BigDecimal totalCashIncome = queryFactory
+                .select(qPosSales.totalAmount.sum())
+                .from(qPosSales)
+                .where(qPosSales.paymentType.eq(PaymentTypeEnum.CASH)
+                        .and(qPosSales.saleDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        BigDecimal averageMonthlyCashIncome = totalCashIncome != null
+                ? totalCashIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        // 4. 전체 사업자의 평균 결제 시간 (초 단위로 계산 후 분 단위로 변환)
+        Double avgHourInSeconds = queryFactory.select(qPosSales.saleTime.hour().avg().multiply(3600).doubleValue()).from(qPosSales)
+                .where(qPosSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59)))
+                .fetchOne();
+
+        Double avgMinuteInSeconds = queryFactory.select(qPosSales.saleTime.minute().avg().multiply(60).doubleValue()).from(qPosSales)
+                .where(qPosSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59)))
+                .fetchOne();
+
+        Double avgSecond = queryFactory.select(qPosSales.saleTime.second().avg().doubleValue()).from(qPosSales)
+                .where(qPosSales.saleDate.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59)))
+                .fetchOne();
+
+        // 결제 시간을 분 단위로 변환
+        BigDecimal averagePaymentTime = BigDecimal.valueOf((avgHourInSeconds != null ? avgHourInSeconds : 0) +
+                        (avgMinuteInSeconds != null ? avgMinuteInSeconds : 0) +
+                        (avgSecond != null ? avgSecond : 0))
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+
+        // 결과를 Map에 담아 반환
+
+        // 결과를 Map에 담아 반환
+        Map<String, BigDecimal> averageMetrics = new HashMap<>();
+        averageMetrics.put("averageMonthlyIncome", averageMonthlyIncome);
+        averageMetrics.put("averageMonthlyCardIncome", averageMonthlyCardIncome);
+        averageMetrics.put("averageMonthlyCashIncome", averageMonthlyCashIncome);
+        averageMetrics.put("averagePaymentTimeMinutes", averagePaymentTime);
+
+        return averageMetrics;
     }
 
 }
