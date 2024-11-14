@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
@@ -41,6 +42,7 @@ public class AccountService {
         }
         return accountId;
     }
+
     // 로그인한 유저의 posId를 가져오는 로직
     private Long getPosIdByMemberId(Long memberId) {
         QPos qPos = QPos.pos;
@@ -76,6 +78,7 @@ public class AccountService {
                                 month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
     }
+
     // 월별 총수익 합계 구하는 함수
     private BigDecimal calculateTotalRevenue(YearMonth month, Long memberId) {
         Long accountId = getAccountIdByMemberId(memberId);
@@ -209,27 +212,27 @@ public class AccountService {
         LocalDate endDate = month.atEndOfMonth(); // 해당 월의 마지막 날
 
         // 순 이익
-        BigDecimal netProfit= showNetProfit(memberId,month);
+        BigDecimal netProfit = showNetProfit(memberId, month);
         // 총 수입
-        BigDecimal incomeTotal= calculateTotalRevenue(month, memberId);
+        BigDecimal incomeTotal = calculateTotalRevenue(month, memberId);
 
         // 원자재비 (지출에서 카테고리가 '재료비', '인건비,', '물류비')
         BigDecimal saleCost = queryFactory
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.accountId.accountId.eq(accountId)
-                    .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
-                    .and(accountHistory.category.in("재료비", "인건비", "물류비"))
-                    .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
+                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.category.in("재료비", "인건비", "물류비"))
+                        .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
 
         // 운영 비용 (지출에서 카테고리가 '임대료', '통신비', '유지보수비', '공과금')
-        BigDecimal operatingExpense= queryFactory
+        BigDecimal operatingExpense = queryFactory
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.accountId.accountId.eq(accountId)
                         .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
-                        .and(accountHistory.category.in("임대료", "통신비", "유지보수비","공과금"))
+                        .and(accountHistory.category.in("임대료", "통신비", "유지보수비", "공과금"))
                         .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
 
@@ -255,7 +258,7 @@ public class AccountService {
 //                .fetchOne();
         // 합산 (null 은 0으로 )
         if (accountTaxes == null) accountTaxes = BigDecimal.ZERO;
-       // if (posVatAmount == null) posVatAmount = BigDecimal.ZERO;
+        // if (posVatAmount == null) posVatAmount = BigDecimal.ZERO;
 
         // 3. 두 항목을 더하여 최종 세금 계산
         BigDecimal taxes = accountTaxes;
@@ -402,5 +405,100 @@ public class AccountService {
         return false;
     }
 
+    ///////////////////////////////////////////////////////////
+    // 지역에 맞는 AccountHistory 데이터를 가져오는 메서드
+    public List<Map<String, Object>> getAccountHistoryByRegion(Long memberId) {
+        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+        BusinessRegistration registration = queryFactory.selectFrom(qBusinessRegistration)
+                .where(qBusinessRegistration.member.id.eq(memberId))
+                .fetchOne();
 
+        if (registration == null || registration.getAddress() == null) {
+            return null;
+        }
+
+        String address = registration.getAddress();
+        String region = extractRegionFromAddress(address);
+
+        QAccountHistory qAccountHistory = QAccountHistory.accountHistory;
+        QAccount qAccount = QAccount.account;
+
+        return queryFactory.selectFrom(qAccountHistory)
+                .join(qAccountHistory.accountId, qAccount)
+                .join(qAccount.business, qBusinessRegistration)
+                .where(qBusinessRegistration.address.contains(region)
+                        .and(qAccountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE)))
+                .fetch()
+                .stream()
+                .map(record -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("amount", record.getAmount());
+                    map.put("category", record.getCategory());
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 주소에서 "동" 추출
+    private String extractRegionFromAddress(String address) {
+        if (address == null || address.isEmpty()) {
+            return "";
+        }
+        String[] parts = address.split(" ");
+        for (String part : parts) {
+            if (part.endsWith("동")) {
+                return part;
+            }
+        }
+        return "";
+    }
+
+    // 지역 기준 평균 총 지출
+    public BigDecimal getAverageExpense(Long memberId) {
+        // 1. 지역에 맞는 AccountHistory 데이터를 가져옴
+        List<Map<String, Object>> accountHistoryList = getAccountHistoryByRegion(memberId);
+
+        // 2. 데이터가 없는 경우 평균을 계산할 수 없으므로 0 반환
+        if (accountHistoryList == null || accountHistoryList.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        // 3. amount 필드를 추출하여 총합을 계산
+        BigDecimal totalExpense = accountHistoryList.stream()
+                .map(record -> (BigDecimal) record.get("amount"))
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // 4. 평균 계산 (총합 / 데이터 개수)
+        BigDecimal averageExpense = totalExpense.divide(
+                BigDecimal.valueOf(accountHistoryList.size()), 2, RoundingMode.HALF_UP
+        );
+
+        return averageExpense;
+    }
+
+    // 카테고리별 평균 총 지출
+    public Map<String, BigDecimal> getAverageExpenseByCategory(Long memberId) {
+        List<Map<String, Object>> accountHistoryList = getAccountHistoryByRegion(memberId);
+
+        if (accountHistoryList == null || accountHistoryList.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<String, List<BigDecimal>> categoryMap = accountHistoryList.stream()
+                .filter(record -> record.get("category") != null && record.get("amount") != null && record.get("amount") instanceof BigDecimal)
+                .collect(Collectors.groupingBy(
+                        record -> Optional.ofNullable((String) record.get("category")).orElse("UNKNOWN"),
+                        Collectors.mapping(record -> (BigDecimal) record.get("amount"), Collectors.toList())
+                ));
+
+        Map<String, BigDecimal> averageExpenseByCategory = new HashMap<>();
+        categoryMap.forEach((category, amounts) -> {
+            BigDecimal total = amounts.stream()
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal average = total.divide(BigDecimal.valueOf(amounts.size()), 2, RoundingMode.HALF_UP);
+            averageExpenseByCategory.put(category, average);
+        });
+
+        return averageExpenseByCategory;
+    }
 }

@@ -22,6 +22,4 @@ public class RevenueGoalResponseDTO {
     private BigDecimal revenueGoal0Ago; // 매출 목표
     private BigDecimal monthlyRevenue0Ago; // 실제 매출
 
-
-
 }
