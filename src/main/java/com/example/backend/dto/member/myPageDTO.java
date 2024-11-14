@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class myPageDTO {
     /////////// member
+    private String loginId;
     // 이름
     private String name;
     // 전화번호

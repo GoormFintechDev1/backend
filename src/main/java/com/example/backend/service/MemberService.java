@@ -23,6 +23,7 @@ public class MemberService {
 
         Tuple result = queryFactory
                 .select(
+                        qMember.loginId,
                         qMember.name,
                         qMember.phoneNumber,
                         qMember.email,
@@ -39,6 +40,7 @@ public class MemberService {
 
 
         return new myPageDTO(
+                    result.get(qMember.loginId),
                     result.get(qMember.name),
                     result.get(qMember.phoneNumber),
                     result.get(qMember.email),
