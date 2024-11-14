@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.YearMonth;
 import java.util.Map;
 
 @RestController
@@ -33,10 +34,12 @@ public class ReportController {
     /// 2. 동종 업계 비교 분석 보고서 생성 (지역 기반)
     @GetMapping("/industry-comparison")
     public ResponseEntity<String> getIndustryComparison(
-            @AuthenticationPrincipal Long memberId  // JWT에서 추출한 memberId
-    ) {
+            @AuthenticationPrincipal Long memberId,  // JWT에서 추출한 memberId
+            @RequestParam YearMonth month
+
+            ) {
         try {
-            String report = reportService.generateIndustryComparisonReport(memberId);
+            String report = reportService.generateIndustryComparisonReport(memberId, month);
             return ResponseEntity.ok(report);
         } catch (Exception e) {
             log.error("동종 업계 비교 분석 실패", e);

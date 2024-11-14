@@ -1,5 +1,7 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.account.ExpenseDetailDTO;
+import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.model.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.annotation.PostConstruct;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.math.BigDecimal;
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,20 +22,22 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ReportService {
+
+    private final PosService posService;
+    private final AccountService accountService;
+    private final JPAQueryFactory queryFactory;
 
     @Value("${OPENAI_API_KEY}")
     private String openAiApiKey;
-    private final JPAQueryFactory queryFactory;
-    private static final String OPENAI_API_URL = "https://api.openai.com/v1";
+
     private WebClient webClient;
+    private static final String OPENAI_API_URL = "https://api.openai.com/v1";
 
-    // 생성자를 통해 WebClient를 초기화
-    @Autowired
-    public ReportService(@Value("${OPENAI_API_KEY}") String openAiApiKey, JPAQueryFactory queryFactory) {
-        this.openAiApiKey = openAiApiKey;
-        this.queryFactory = queryFactory;
-
+    // 생성자에서 WebClient를 초기화합니다.
+    @PostConstruct
+    public void init() {
         log.info("API 키 확인: {}", openAiApiKey);
 
         if (openAiApiKey == null || openAiApiKey.isEmpty()) {
@@ -49,11 +55,11 @@ public class ReportService {
     //////////////////// 1. 경제 지표 활용 시장 동향 보고서 생성
     public String generateMarketReport() {
         Map<String, Object> requestBody = Map.of(
-                "model", "gpt-3.5-turbo",
+                "model", "gpt-4o",
                 "messages", List.of(
                         Map.of("role", "system", "content", "당신은 카페를 운영하는 사장님을 위한 시장 동향 보고서를 작성하는 AI입니다."),
-                        Map.of("role", "user", "content", "커피 원두, 우유, 설탕 등의 주요 재료 가격 변동과 외식 소비 동향을 JSON 형식으로 정리해주세요.")
-                )
+                        Map.of("role", "user", "content", "**커피 원두, 우유, 설탕 등 주요 재료 가격 변동**과 이를 포함한 **환율 및 소비자 물가** 동향을 정리하고, **소비자 외식 심리**, **카페 소비 트렌드**를 포함해 다음과 같은 형식으로 이번 달 경제 지표를 분석하고, 카페 운영자가 참고할 수 있는 시장 동향을 JSON 형식으로 정리해주세요..\n\n- month : (이번달 숫자)\n- BSI_index : (실제 이번달 BSI 지수)\n- BSI_description : (이번달 BSI 지수에 대한 설명)\n- price_index : (환율 및 소비자 물가에 대한 설명)\n- food_trend : (외식업 소비 동향에 대한 설명)")
+                        )
         );
 
         try {
@@ -73,30 +79,32 @@ public class ReportService {
     }
 
     /////////////////////// 2. 동종 업계 비교 분석 보고서 생성 (지역 기반)
-    public String generateIndustryComparisonReport(Long memberId) {
+    public String generateIndustryComparisonReport(Long memberId, YearMonth month) {
         try {
-            // 사업장 정보 가져오기
-            Map<String, Object> businessRegistration = fetchBusinessRegistration(memberId);
-            if (businessRegistration == null) {
-                return "사업장 정보 없음";
-            }
-            String region = (String) businessRegistration.get("region");
+            Map<String, Object> monthlyIncome = posService.calculateAverageMonthlyMetrics(month);
+            Map<String, Object> categoryExpense = accountService.getAccountHistoryByRegion(memberId, month);
+            MonthlyIncomeDTO myIncome  = posService.getMonthlyIncomeSummary(memberId, month);
+            List<ExpenseDetailDTO.ExpenseDetail> myExpense = accountService.getExpenseDetails(month,memberId);
 
-            List<Map<String, Object>> accountHistory = fetchAccountHistoryByRegion(region);
-            List<Map<String, Object>> posSales = fetchPosSalesByRegion(region);
 
             String content = String.format("""
-                다음 데이터는 카페 운영 관련 지출 및 매출 데이터입니다.
-                - accountHistory: %s
-                - posSales: %s
-                """, accountHistory, posSales);
+                다음 데이터는 평균 카페 운영 관련 지출 및 매출 데이터입니다.
+                - 평균 매출 정보: %s
+                - 평균 지출 정보: %s
+                
+                다음 데이터는 나의 카페 운영 관련 지출 및 매출 데이터입니다.
+                - 평균 나의 매출 정보: %s
+                - 평균 나의 지출 정보: %s
+                """, monthlyIncome, categoryExpense, myIncome, myExpense
+                    );
 
-            Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", "gpt-4");
-            requestBody.put("messages", List.of(
-                    Map.of("role", "system", "content", "당신은 카페를 운영하는 사장님을 위한 시장 동향 보고서를 작성하는 AI입니다. 동종 업계와 비교한 분석을 JSON 형식으로 작성하세요."),
-                    Map.of("role", "user", "content", content)
-            ));
+            Map<String, Object> requestBody = Map.of(
+                    "model", "gpt-4o",
+                    "messages", List.of(
+                            Map.of("role", "system", "content", "당신은 카페를 운영하는 사장님을 위한 시장 동향 보고서를 작성하는 AI입니다. 다음 데이터는 카페 운영 관련 지출 및 매출 데이터입니다. 이를 바탕으로 동종 업계와 비교하여 분석 결과를 JSON 형식으로 제공해주세요.\n\n- accountHistory: (지출 데이터)\n- posSales: (매출 데이터)\n- businessRegistration: (사업장 주소를 기준으로 같은 동에 있는 데이터 비교)\n\n응답 형식은 아래와 같이 해주세요:\n\n- average_sale: (약 ~ 만원 형식으로 된 매출 평균)\n- average_expense: (약 ~ 만원 형식으로 된 지출 평균)\n- sale_description: (주변 카페와 비교한 카테고리 별 지출 분석 결과. 예시: '주변 카페 평균보다 임대료 관련 지출이 높아요!')\n- expense_description: (주변 카페와 비교한 시간과 매출 타입(카드/현금) 분석 결과. 예시: '주변 카페들은 카드 거래가 대부분이고, 주로 아침 시간대에 매출이 높아요!'"),
+                            Map.of("role", "user", "content", content)
+                    )
+            );
 
             return webClient.post()
                     .uri("/chat/completions")
@@ -112,76 +120,5 @@ public class ReportService {
             log.error("보고서 생성 중 예외 발생", e);
             return "보고서 생성 중 오류 발생";
         }
-    }
-
-
-    // 사용자의 사업장 정보 가져오기
-    private Map<String, Object> fetchBusinessRegistration(Long memberId) {
-        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
-        BusinessRegistration registration = queryFactory.selectFrom(qBusinessRegistration)
-                .where(qBusinessRegistration.member.id.eq(memberId))
-                .fetchOne();
-
-        if (registration == null) return null;
-
-        String address = registration.getAddress();
-        String region = extractRegionFromAddress(address);
-
-        return Map.of(
-                "address", address,
-                "region", region,
-                "companyName", registration.getCompanyName()
-        );
-    }
-
-    // 특정 지역의 지출 내역 평균 내기
-    private List<Map<String, Object>> fetchAccountHistoryByRegion(String region) {
-        QAccountHistory qAccountHistory = QAccountHistory.accountHistory;
-        QAccount qAccount = QAccount.account;
-        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
-
-        return queryFactory.selectFrom(qAccountHistory)
-                .join(qAccountHistory.accountId, qAccount)
-                .join(qAccount.business, qBusinessRegistration)
-                .where(qBusinessRegistration.address.contains(region))
-                .fetch()
-                .stream()
-                .map(record -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("date", record.getTransactionDate() != null ? record.getTransactionDate().toString() : "");
-                    map.put("amount", record.getAmount());
-                    map.put("category", record.getCategory());
-                    return map;
-                })
-                .collect(Collectors.toList());
-    }
-
-    // 특정 지역의 POS 매출 내역 평균 내기
-    private List<Map<String, Object>> fetchPosSalesByRegion(String region) {
-        QPosSales qPosSales = QPosSales.posSales;
-        QPos qPos = QPos.pos;
-        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
-
-        return queryFactory.selectFrom(qPosSales)
-                .join(qPosSales.pos, qPos)
-                .join(qPos.businessRegistration, qBusinessRegistration)
-                .where(qBusinessRegistration.address.contains(region))
-                .fetch()
-                .stream()
-                .map(record -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("date", record.getSaleTime() != null ? record.getSaleTime().toString() : "");
-                    map.put("amount", record.getTotalAmount());
-                    map.put("paymentType", record.getPaymentType());
-                    return map;
-                })
-                .collect(Collectors.toList());
-    }
-
-    // 주소에서 구(region) 추출
-    private String extractRegionFromAddress(String address) {
-        if (address == null || address.isEmpty()) return "";
-        String[] parts = address.split(" ");
-        return parts.length > 1 ? parts[1] : "";
     }
 }
