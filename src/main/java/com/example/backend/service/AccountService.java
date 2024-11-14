@@ -192,7 +192,7 @@ public class AccountService {
         BigDecimal totalRevenue = calculateTotalRevenue(month, memberId);
         if (totalRevenue == null) totalRevenue = BigDecimal.ZERO;
 
-        // 총지출 계산
+        // 총지출 계산 (세금)
         BigDecimal totalExpenses = calculateTotalExpenses(month, memberId);
         if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;
 
@@ -203,23 +203,24 @@ public class AccountService {
     /////// 순이익 상세
     public ProfitDetailDTO showProfitDetail(Long memberId, YearMonth month) {
         Long accountId = getAccountIdByMemberId(memberId);
-        Long posId = getPosIdByMemberId(memberId);
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
-        QPosSales posSales= QPosSales.posSales;
-        QPos pos= QPos.pos;
+
+        LocalDate startDate = month.atDay(1); // 해당 월의 첫째 날
+        LocalDate endDate = month.atEndOfMonth(); // 해당 월의 마지막 날
 
         // 순 이익
         BigDecimal netProfit= showNetProfit(memberId,month);
         // 총 수입
         BigDecimal incomeTotal= calculateTotalRevenue(month, memberId);
 
-        // 매출 원가 (지출에서 카테고리가 '재료비', '인건비,', '물류비')
+        // 원자재비 (지출에서 카테고리가 '재료비', '인건비,', '물류비')
         BigDecimal saleCost = queryFactory
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.accountId.accountId.eq(accountId)
                     .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
-                    .and(accountHistory.category.in("재료비", "인건비", "물류비")))
+                    .and(accountHistory.category.in("재료비", "인건비", "물류비"))
+                    .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
 
         // 운영 비용 (지출에서 카테고리가 '임대료', '통신비', '유지보수비', '공과금')
@@ -228,7 +229,8 @@ public class AccountService {
                 .from(accountHistory)
                 .where(accountHistory.accountId.accountId.eq(accountId)
                         .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
-                        .and(accountHistory.category.in("임대료", "통신비", "유지보수비","공과금")))
+                        .and(accountHistory.category.in("임대료", "통신비", "유지보수비","공과금"))
+                        .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
 
 
@@ -239,22 +241,24 @@ public class AccountService {
                 .from(accountHistory)
                 .where(accountHistory.accountId.accountId.eq(accountId)
                         .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
-                        .and(accountHistory.category.eq("세금")))
+                        .and(accountHistory.category.eq("세금"))
+                        .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
-        // 2. posSales에서 vatAmount 항목의 합계 구하기
-        BigDecimal posVatAmount = queryFactory
-                .select(posSales.vatAmount.sum())
-                .from(posSales)
-                .join(posSales.pos, pos)
-                .where(pos.posId.eq(posSales.pos.posId)
-                        .and(pos.account.accountId.eq(accountId)))
-                .fetchOne();
+//        // 2. posSales에서 vatAmount 항목의 합계 구하기
+//        BigDecimal posVatAmount = queryFactory
+//                .select(posSales.vatAmount.sum())
+//                .from(posSales)
+//                .join(posSales.pos, pos)
+//                .where(pos.posId.eq(posSales.pos.posId)
+//                        .and(pos.account.accountId.eq(accountId))
+//                        .and(posSales.saleDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
+//                .fetchOne();
         // 합산 (null 은 0으로 )
         if (accountTaxes == null) accountTaxes = BigDecimal.ZERO;
-        if (posVatAmount == null) posVatAmount = BigDecimal.ZERO;
+       // if (posVatAmount == null) posVatAmount = BigDecimal.ZERO;
 
         // 3. 두 항목을 더하여 최종 세금 계산
-        BigDecimal taxes = accountTaxes.add(posVatAmount);
+        BigDecimal taxes = accountTaxes;
 
 
         return new ProfitDetailDTO(
@@ -384,7 +388,6 @@ public class AccountService {
         accountRepository.save(existingAccount);
         return dto;
     }
-
 
 
     // 삭제
