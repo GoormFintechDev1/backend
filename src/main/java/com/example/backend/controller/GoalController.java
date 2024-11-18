@@ -9,7 +9,9 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.YearMonth;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -74,12 +76,12 @@ public class GoalController {
     }
 
 
-    ////// 월 별 목표
-    @GetMapping("/monthly")
-    public ResponseEntity<GoalResponseDTO> getMonthlyGoal(
+    ////// 연간 목표
+    @GetMapping("/total")
+    public ResponseEntity<List<GoalYearlyResponseDTO> > getMonthlyGoal(
             @AuthenticationPrincipal Long memberId,
-            @RequestParam YearMonth goalMonth) {
-        GoalResponseDTO  responseDTO = goalService.getMonthlyGoal(memberId, goalMonth);
+            @RequestParam Year goalYear) {
+        List<GoalYearlyResponseDTO> responseDTO = goalService.getYearlyGoals(memberId, goalYear);
         return ResponseEntity.ok(responseDTO);
     }
 
