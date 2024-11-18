@@ -259,4 +259,40 @@ public class GoalService {
         );
     }
 
+    /// 월 별 목표
+    public GoalResponseDTO getMonthlyGoal(Long memberId, YearMonth goalMonth) {
+        BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
+        QGoals qGoals = QGoals.goals;
+
+        // 이번 달 목표 및 실제 매출
+        Goals revenueGoal = queryFactory
+                .selectFrom(qGoals)
+                .where(
+                        qGoals.businessId.id.eq(business.getId())
+                                .and(qGoals.goalMonth.eq(goalMonth))
+                )
+                .fetchOne();
+
+        BigDecimal realRevenue = posService.calculateMonthlyRevenue(memberId, YearMonth.from(goalMonth));
+
+        // 이번 달 목표 및 실제 지출
+        Goals expenseGoal = queryFactory
+                .selectFrom(qGoals)
+                .where(
+                        qGoals.businessId.id.eq(business.getId())
+                                .and(qGoals.goalMonth.eq(goalMonth))
+                )
+                .fetchOne();
+
+        BigDecimal realExpense = accountService.calculateTotalExpenses(YearMonth.from(goalMonth), memberId);
+
+        return new GoalResponseDTO(
+                revenueGoal != null ? revenueGoal.getGoalMonth() : YearMonth.now(),
+                revenueGoal != null ? revenueGoal.getRevenueGoal() : BigDecimal.ZERO,
+                realRevenue != null ? realRevenue : BigDecimal.ZERO,
+                expenseGoal != null ? expenseGoal.getExpenseGoal() : BigDecimal.ZERO,
+                realExpense != null ? realExpense : BigDecimal.ZERO
+        );
+    }
+
 }

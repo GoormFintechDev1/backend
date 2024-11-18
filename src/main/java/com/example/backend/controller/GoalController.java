@@ -59,17 +59,27 @@ public class GoalController {
 //        return ResponseEntity.ok("지출 목표 재설정 완료!");
 //    }
 
-    // 목표 달성 여부 확인
+    // 지난 2개월 매출 목표 조회
     @GetMapping("/check/revenue")
     public ResponseEntity<RevenueGoalResponseDTO> checkRevenueGoal(@AuthenticationPrincipal Long memberId, @RequestParam YearMonth goalMonth) {
         RevenueGoalResponseDTO responseDTO = goalService.checkRevenueGoal(memberId, goalMonth);
         return ResponseEntity.ok(responseDTO);
     }
 
-    // 목표 달성 여부 확인
+    // 지난 2개월 지출 목표 조회
     @GetMapping("/check/expense")
     public ResponseEntity<ExpenseGoalResponseDTO> checkExpenseGoal(@AuthenticationPrincipal Long memberId, @RequestParam YearMonth goalMonth) {
         ExpenseGoalResponseDTO responseDTO = goalService.checkExpenseGoal(memberId, goalMonth);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+
+    ////// 월 별 목표
+    @GetMapping("/monthly")
+    public ResponseEntity<GoalResponseDTO> getMonthlyGoal(
+            @AuthenticationPrincipal Long memberId,
+            @RequestParam YearMonth goalMonth) {
+        GoalResponseDTO  responseDTO = goalService.getMonthlyGoal(memberId, goalMonth);
         return ResponseEntity.ok(responseDTO);
     }
 

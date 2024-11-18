@@ -12,8 +12,8 @@ public class GoalResponseDTO {
 
     private YearMonth goalMonth; // 목표 월
 
-    private BigDecimal revenueGoal0Ago; // 현재 달 매출 목표
-    private BigDecimal monthlyRevenue0Ago; // 현재 달 실제 매출
-    private BigDecimal expenseGoal0Ago; // 현재 달 지출 목표
-    private BigDecimal monthlyExpense0Ago; // 현재 달 실제 지출
+    private BigDecimal revenueGoal; // 현재 달 매출 목표
+    private BigDecimal realRevenue; // 현재 달 실제 매출
+    private BigDecimal expenseGoal; // 현재 달 지출 목표
+    private BigDecimal realExpense; // 현재 달 실제 지출
 }
