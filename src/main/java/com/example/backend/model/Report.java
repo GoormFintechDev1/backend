@@ -22,11 +22,20 @@ public class Report extends BaseTime{
     // 사업자 식별 번호
     @ManyToOne
     @JoinColumn(name = "business_registration_id", nullable = false)
-    private BusinessRegistration businessRegistrationId;
+    private BusinessRegistration businessRegistration;
 
     // 레포트 대상 월
     @Column(name = "report_month")
     private LocalDate reportMonth;
+
+    // 레포트 유형 (MARKET_REPORT, INDUSTRY_COMPARISON
+    @Column(name = "report_type", nullable = false, length = 50)
+    private String reportType;
+
+    // 보고서 내용 (JSON 형태)
+    @Lob
+    @Column(name="content", nullable = false, columnDefinition = "JSON")
+    private String content;
 
     // 해당 월의 매출 총액
     @Column(name = "revenue")

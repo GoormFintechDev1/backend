@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
                 .authorizeRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()  // 인증 및 회원가입 엔드포인트 접근 허용
-                        //.requestMatchers("/api/member/**").authenticated() // 회원 정보 수정은 인증된 사용자만 접근
+//                        .requestMatchers("/api/member/**").authenticated() // 회원 정보 수정은 인증된 사용자만 접근
                         .anyRequest().authenticated()  // 나머지 엔드포인트는 인증 필요
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider),
@@ -53,6 +53,7 @@ public class SecurityConfig {
 
         org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000"); // 허용할 프론트엔드 도메인
+        configuration.addAllowedOrigin("http://localhost"); // 허용할 프론트엔드 도메인 nginx
         configuration.setAllowCredentials(true); // 쿠키 및 인증 정보를 포함한 요청 허용
         configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용

@@ -2,19 +2,27 @@ package com.example.backend.service;
 
 import com.example.backend.dto.account.ExpenseDetailDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
-import com.example.backend.model.Member;
+import com.example.backend.model.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +35,10 @@ public class ReportService {
     private final PosService posService;
     private final AccountService accountService;
     private final JPAQueryFactory queryFactory;
+    private final RedisService redisService;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Value("${OPENAI_API_KEY}")
     private String openAiApiKey;
@@ -51,6 +63,106 @@ public class ReportService {
                 .build();
     }
 
+    @Transactional
+    public String getOrCreateReport(Long memberId, YearMonth month, String reportType) {
+
+        BusinessRegistration businessRegistration = queryFactory.selectFrom(QBusinessRegistration.businessRegistration)
+                .where(QBusinessRegistration.businessRegistration.member.id.eq(memberId))
+                .fetchOne();
+
+        if (businessRegistration == null) {
+            throw new IllegalArgumentException("Member ID: " + memberId + "에 대한 BusinessRegistration이 존재하지 않습니다.");
+        }
+
+        LocalDate reportMonth = month.atDay(1);
+
+        // 1. 리포트 조회
+        Report existingReport = queryFactory.selectFrom(QReport.report)
+                .where(
+                        QReport.report.businessRegistration.id.eq(businessRegistration.getId()),
+                        QReport.report.reportMonth.eq(reportMonth),
+                        QReport.report.reportType.eq(reportType)
+                )
+                .fetchOne();
+
+        // 2. 존재하면 JSON 반환
+        if (existingReport != null) {
+            return existingReport.getContent();
+        }
+
+        // 3. 리포트가 없으면 GPT API 호출 및 저장
+        Map<String, Object> reportData = generateReportFromAPI(memberId, month, reportType);
+        saveReport(businessRegistration, reportMonth, reportType, reportData);
+
+
+        try {
+            String generatedContent = objectMapper.writeValueAsString(reportData); // JSON 직렬화
+            log.info("생성된 리포트 반환: {}", generatedContent);
+            return generatedContent;
+        } catch (JsonProcessingException e) {
+            log.error("JSON 직렬화 오류: {}", e.getMessage());
+            throw new RuntimeException("JSON 직렬화 중 오류 발생", e);
+        }
+
+
+    }
+
+    @Transactional
+    public Map<String, Map<String, Object>> getAllReports(Long memberId, YearMonth month) {
+        Map<String, Map<String, Object>> reports = new HashMap<>();
+
+        // MARKET_REPORT 가져오기
+        String marketReport = getOrCreateReport(memberId, month, "MARKET_REPORT");
+        reports.put("MARKET_REPORT", parseJson(marketReport));
+
+        // INDUSTRY_REPORT 가져오기
+        String industryReport = getOrCreateReport(memberId, month, "INDUSTRY_REPORT");
+        reports.put("INDUSTRY_REPORT", parseJson(industryReport));
+        return reports;
+    }
+
+    private Map<String, Object> generateReportFromAPI(Long memberId, YearMonth month, String reportType) {
+        if ("MARKET_REPORT".equals(reportType)) {
+            return generateMarketReport();
+        } else if ("INDUSTRY_REPORT".equals(reportType)) {
+            return generateIndustryComparisonReport(memberId, month);
+        }
+        throw new IllegalArgumentException("Invalid report type: " + reportType);
+    }
+
+
+    private Map<String, Object> parseJson(String json) {
+        try {
+            // 입력 JSON 문자열 확인
+            if (json == null || json.isBlank()) {
+                throw new IllegalArgumentException("JSON 데이터가 비어있습니다.");
+            }
+            return objectMapper.readValue(json, Map.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON 파싱 오류: " + e.getMessage(), e);
+        }
+    }
+
+
+    @Transactional
+    public void saveReport(BusinessRegistration businessRegistration, LocalDate reportMonth, String reportType, Map<String, Object> reportData) {
+        try {
+            String content = objectMapper.writeValueAsString(reportData);
+
+
+            Report newReport = new Report();
+            newReport.setBusinessRegistration(businessRegistration);
+            newReport.setReportMonth(reportMonth);
+            newReport.setReportType(reportType);
+            newReport.setContent(content);
+
+            em.persist(newReport);
+//        em.flush();
+        } catch (Exception e) {
+            throw new RuntimeException("JSON 오류", e);
+        }
+    }
+
     //////////////////// 1. 경제 지표 활용 시장 동향 보고서 생성
     private final ObjectMapper objectMapper;
 
@@ -61,7 +173,7 @@ public class ReportService {
         String priceDescription = "원두 가격 5% 상승, 우유 가격 3% 상승, 설탕 가격 안정적";  // 실제 API에서 가져온 데이터 예시
 
         Map<String, Object> requestBody = Map.of(
-                "model", "gpt-4o-2024-08-06",
+                "model", "gpt-4o",
                 "messages", List.of(
                         Map.of("role", "system", "content", "당신은 2024년 11월 15일 한국의 경제 뉴스를 기반으로 카페 운영자를 위한 시장 동향 보고서를 작성하는 AI입니다. " +
                                 "실제 최신 뉴스와 공공 데이터(예: 한국은행, 기상청, 농림축산식품부, 통계청 등)를 기반으로 보고서를 작성하세요. 20대의 친근한 여성처럼 대답하세요." +
@@ -156,7 +268,7 @@ public class ReportService {
                     """, monthlyIncome, categoryExpense, myIncome, myExpense
             );
             Map<String, Object> requestBody = Map.of(
-                    "model", "gpt-4o-2024-08-06",
+                    "model", "gpt-4o",
                     "messages", List.of(
                             Map.of("role", "system", "content", "당신은 카페를 운영하는 사장님을 위한 시장 동향 보고서를 작성하는 AI입니다." +
                                     " 다음 데이터는 카페 운영 관련 지출 및 매출 데이터입니다. " + content +

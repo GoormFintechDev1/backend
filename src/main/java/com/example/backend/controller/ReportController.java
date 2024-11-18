@@ -47,4 +47,23 @@ public class ReportController {
             return null;
         }
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, Object>> getAllReport(
+            @AuthenticationPrincipal Long memberId,
+            @RequestParam YearMonth month
+    ) {
+        try {
+            Map<String, Map<String, Object>> reports = reportService.getAllReports(memberId, month);
+            return ResponseEntity.ok(Map.of("reports", reports));
+        } catch (IllegalArgumentException e) {
+            log.error("잘못된 요청: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(Map.<String, Object>of("error", "잘못된 요청: " + e.getMessage()));
+        } catch (Exception e) {
+            log.error("보고서 생성 오류", e);
+            return ResponseEntity.status(500).body(Map.of("error", "보고서 생성 중 오류 발생"));
+        }
+    }
+
+
 }
