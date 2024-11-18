@@ -21,29 +21,30 @@ public class ReportController {
 
     /// 1. 경제 지표 활용 시장 동향 보고서 생성
     @GetMapping("/market-trend")
-    public ResponseEntity<String> getMarketReport() {
+    public ResponseEntity<Map<String, Object>> getMarketReport() {
         try {
-            String report = reportService.generateMarketReport();
+            Map<String, Object> report = reportService.generateMarketReport();
             return ResponseEntity.ok(report);
+
         } catch (Exception e) {
             log.error("시장 동향 생성 실패", e);
-            return ResponseEntity.status(500).body("시장 동향 생성 실패");
+            return null;
         }
     }
 
     /// 2. 동종 업계 비교 분석 보고서 생성 (지역 기반)
     @GetMapping("/industry-comparison")
-    public ResponseEntity<String> getIndustryComparison(
+    public ResponseEntity<Map<String, Object>> getIndustryComparison(
             @AuthenticationPrincipal Long memberId,  // JWT에서 추출한 memberId
             @RequestParam YearMonth month
 
             ) {
         try {
-            String report = reportService.generateIndustryComparisonReport(memberId, month);
+            Map<String, Object> report  = reportService.generateIndustryComparisonReport(memberId, month);
             return ResponseEntity.ok(report);
         } catch (Exception e) {
             log.error("동종 업계 비교 분석 실패", e);
-            return ResponseEntity.status(500).body("동종 업계 비교 분석 실패");
+            return null;
         }
     }
 }
