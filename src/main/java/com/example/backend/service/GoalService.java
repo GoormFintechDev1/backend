@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Year;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -259,40 +261,53 @@ public class GoalService {
         );
     }
 
-    /// 월 별 목표
-    public GoalResponseDTO getMonthlyGoal(Long memberId, YearMonth goalMonth) {
+    /// 연간 목표
+    public List<GoalYearlyResponseDTO> getYearlyGoals(Long memberId, Year goalYear) {
         BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
         QGoals qGoals = QGoals.goals;
 
-        // 이번 달 목표 및 실제 매출
-        Goals revenueGoal = queryFactory
-                .selectFrom(qGoals)
-                .where(
-                        qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(goalMonth))
-                )
-                .fetchOne();
+        List<GoalYearlyResponseDTO> yearlyGoals = new ArrayList<>();
 
-        BigDecimal realRevenue = posService.calculateMonthlyRevenue(memberId, YearMonth.from(goalMonth));
+        // 1월부터 12월까지 반복하여 각 월의 목표와 실제 데이터를 가져옴
+        for (int month = 1; month <= 12; month++) {
+            YearMonth goalMonth = YearMonth.of(goalYear.getValue(), month);
 
-        // 이번 달 목표 및 실제 지출
-        Goals expenseGoal = queryFactory
-                .selectFrom(qGoals)
-                .where(
-                        qGoals.businessId.id.eq(business.getId())
-                                .and(qGoals.goalMonth.eq(goalMonth))
-                )
-                .fetchOne();
+            // 매출 목표 조회
+            Goals revenueGoal = queryFactory
+                    .selectFrom(qGoals)
+                    .where(
+                            qGoals.businessId.id.eq(business.getId())
+                                    .and(qGoals.goalMonth.eq(goalMonth))
+                    )
+                    .fetchOne();
 
-        BigDecimal realExpense = accountService.calculateTotalExpenses(YearMonth.from(goalMonth), memberId);
+            BigDecimal realRevenue = posService.calculateMonthlyRevenue(memberId, goalMonth);
 
-        return new GoalResponseDTO(
-                revenueGoal != null ? revenueGoal.getGoalMonth() : YearMonth.now(),
-                revenueGoal != null ? revenueGoal.getRevenueGoal() : BigDecimal.ZERO,
-                realRevenue != null ? realRevenue : BigDecimal.ZERO,
-                expenseGoal != null ? expenseGoal.getExpenseGoal() : BigDecimal.ZERO,
-                realExpense != null ? realExpense : BigDecimal.ZERO
-        );
+            // 지출 목표 조회
+            Goals expenseGoal = queryFactory
+                    .selectFrom(qGoals)
+                    .where(
+                            qGoals.businessId.id.eq(business.getId())
+                                    .and(qGoals.goalMonth.eq(goalMonth))
+                    )
+                    .fetchOne();
+
+            BigDecimal realExpense = accountService.calculateTotalExpenses(goalMonth, memberId);
+
+            // GoalResponseDTO 생성 및 리스트에 추가
+            GoalYearlyResponseDTO goalResponse = new GoalYearlyResponseDTO(
+                    month,
+                    revenueGoal != null ? revenueGoal.getRevenueGoal() : BigDecimal.ZERO,
+                    realRevenue != null ? realRevenue : BigDecimal.ZERO,
+                    expenseGoal != null ? expenseGoal.getExpenseGoal() : BigDecimal.ZERO,
+                    realExpense != null ? realExpense : BigDecimal.ZERO
+            );
+
+            yearlyGoals.add(goalResponse);
+        }
+
+        return yearlyGoals;
     }
+
 
 }
