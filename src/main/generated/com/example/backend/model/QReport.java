@@ -26,7 +26,9 @@ public class QReport extends EntityPathBase<Report> {
 
     public final NumberPath<Float> bsiIndex = createNumber("bsiIndex", Float.class);
 
-    public final QBusinessRegistration businessRegistrationId;
+    public final QBusinessRegistration businessRegistration;
+
+    public final StringPath content = createString("content");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -47,6 +49,8 @@ public class QReport extends EntityPathBase<Report> {
     public final NumberPath<Long> reportId = createNumber("reportId", Long.class);
 
     public final DatePath<java.time.LocalDate> reportMonth = createDate("reportMonth", java.time.LocalDate.class);
+
+    public final StringPath reportType = createString("reportType");
 
     public final NumberPath<Long> revenue = createNumber("revenue", Long.class);
 
@@ -73,7 +77,7 @@ public class QReport extends EntityPathBase<Report> {
 
     public QReport(Class<? extends Report> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.businessRegistrationId = inits.isInitialized("businessRegistrationId") ? new QBusinessRegistration(forProperty("businessRegistrationId"), inits.get("businessRegistrationId")) : null;
+        this.businessRegistration = inits.isInitialized("businessRegistration") ? new QBusinessRegistration(forProperty("businessRegistration"), inits.get("businessRegistration")) : null;
     }
 
 }
