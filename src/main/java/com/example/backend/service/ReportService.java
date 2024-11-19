@@ -276,10 +276,12 @@ public class ReportService {
                             Map.of("role", "user", "content", String.format("""
                                     다음 정보를 JSON 형식으로 정리해주세요 : 
                               
-                                    1. **average_sale** : 약 ~ 만원 형식으로 된 매출 평균
-                                    2. **average_expense**: 약 ~ 만원 형식으로 된 지출 평균
-                                    3. **sale_description**: 주변 카페와 비교한 카테고리 별 지출 분석 결과. (예시: '주변 카페 평균보다 임대료 관련 지출이 높아요!')
-                                    4. **expense_description**: 주변 카페와 비교한 시간과 매출 타입(카드/현금) 분석 결과 (예시: '주변 카페들은 카드 거래가 대부분이고, 주로 아침 시간대에 매출이 높아요!'"),
+                                    1. **average_sale** : 약 ~ 만원 형식으로 된 주변 동종 업계 매출 평균 (예시: 약 1181만원)
+                                    2. **average_expense**: 약 ~ 만원 형식으로 된 주변 동종 업계 지출 평균 (예시: 약 821만원)
+                                    3. **my_income : 약 ~ 만원 형식으로 된 나의 매출 (예시: 약 281만원)
+                                    4. **my_expense : 약 ~ 만원 형식으로 된 나의 지출 (예시: 약 181만원)
+                                    3. **sale_description**: 주변 카페와 비교한 시간과 매출 타입(카드/현금) 분석 결과 (예시: '주변 카페들은 카드 거래가 대부분이고, 주로 아침 시간대에 매출이 높아요!'")
+                                    4. **expense_description**: 주변 카페와 비교한 카테고리 별 지출 분석 결과. (예시: '주변 카페 평균보다 임대료 관련 지출이 높아요!'),
                       
                                     """))
                     ),
@@ -292,11 +294,13 @@ public class ReportService {
                                             "properties", Map.of(
                                                 "average_sale", Map.of("type", "string", "description", "약 ~ 만원 형식으로 된 매출 평균"),
                                                 "average_expense", Map.of("type", "string", "description", "약 ~ 만원 형식으로 된 지출 평균"),
+                                                "my_income", Map.of("type", "string", "description", "약 ~ 만원 형식으로 된 나의 매출"),
+                                                "my_expense", Map.of("type", "string", "description", "약 ~ 만원 형식으로 된 나의 지출"),
                                                 "sale_description", Map.of("type", "string", "description", "주변 카페와 비교한 카테고리 별 지출 분석 결과"),
                                                 "expense_description", Map.of("type", "string", "description", "주변 카페와 비교한 시간과 매출 타입(카드/현금) 분석 결과")
                                             )
                                     ),
-                                    "required", List.of("average_sale", "average_expense","sale_description","expense_description")
+                                    "required", List.of("average_sale", "average_expense","my_income", "my_expense", "sale_description","expense_description")
                             )
                     ),
                     "function_call", Map.of("name", "generateIndustryComparisonReport")
