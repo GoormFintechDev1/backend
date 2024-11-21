@@ -2,6 +2,8 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.account.*;
 import com.example.backend.service.AccountService;
+import com.example.backend.service.CardService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/account")
@@ -18,6 +22,7 @@ import java.time.YearMonth;
 public class AccountController {
 
     private final AccountService accountService;
+    private final CardService cardService;
 
     // 지출 간단 보기
     @GetMapping("/expense")
@@ -26,6 +31,11 @@ public class AccountController {
             @AuthenticationPrincipal Long memberId) {  // JWT에서 추출한 memberId
         YearMonth yearMonth = YearMonth.parse(month);
         ExpenseDTO expenseSummary = accountService.showSimpleExpense(memberId, yearMonth);
+        
+        List<Map<String, Object>> recommends = cardService.recommendCards(yearMonth, memberId);
+        
+        log.info("할인정보:: " + recommends);
+        
         return ResponseEntity.ok(expenseSummary);
     }
 

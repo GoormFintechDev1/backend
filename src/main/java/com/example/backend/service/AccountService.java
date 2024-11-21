@@ -97,7 +97,7 @@ public class AccountService {
 
 
     // 월별 카테고리별 지출 합계 구하는 함수
-    private Map<String, BigDecimal> calculateCategoryWiseExpenses(YearMonth month, Long memberId) {
+    public Map<String, BigDecimal> calculateCategoryWiseExpenses(YearMonth month, Long memberId) {
         Long accountId = getAccountIdByMemberId(memberId);
 
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
