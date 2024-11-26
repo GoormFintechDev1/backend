@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +18,9 @@ public class myPageDTO {
     private String phoneNumber;
     // 이메일
     private String email;
+
+    // 가입 날짜
+    private LocalDateTime createAt;
 
 
     /////////// business_registration

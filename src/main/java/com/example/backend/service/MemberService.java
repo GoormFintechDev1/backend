@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class MemberService {
                         qMember.name,
                         qMember.phoneNumber,
                         qMember.email,
+                        qMember.createdAt,
                         qBusinessRegistration.brNum,
                         qBusinessRegistration.address,
                         qBusinessRegistration.businessStartDate,
@@ -44,6 +46,7 @@ public class MemberService {
                     result.get(qMember.name),
                     result.get(qMember.phoneNumber),
                     result.get(qMember.email),
+                    result.get(qMember.createdAt),
                     result.get(qBusinessRegistration.brNum),
                     result.get(qBusinessRegistration.address),
                     result.get(qBusinessRegistration.businessStartDate),
