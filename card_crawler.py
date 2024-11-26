@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 import pandas as pd
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,8 +8,20 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 import json
 
-# 웹드라이버 시작
-driver = webdriver.Chrome()
+# Chrome 옵션 설정
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # Headless 모드
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
+
+# ChromeDriver 경로 지정
+# service = Service("/usr/local/bin/chromedriver")
+
+# WebDriver 초기화
+driver = webdriver.Chrome(options=chrome_options)
+
+# url 접속 및 시작
 url = 'https://www.card-gorilla.com/chart/top100?term=weekly'
 driver.get(url)
 
@@ -23,15 +36,24 @@ image_urls = []
 wait = WebDriverWait(driver, 10)
 
 # ul.rk_lst > li 를 조회
+winner_element = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='num1_card']")))
 cards_elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//ul[@class='rk_lst']/li")))
 
-for card in cards_elements[:10]:
+for card in cards_elements:
     if "ad" not in card.get_attribute("class"):
         rank_element = card.find_element(By.XPATH, ".//div[@class='num']")
         
         card_name_element = card.find_element(By.XPATH, ".//p[@class='card_name']")
         card_name = card_name_element.text.split('\n')[0]
         corp_name = ' '.join(card.find_element(By.XPATH, ".//p[@class='corp_name']").text.split())
+        
+        # 1위 카드의 정보는 winner_element 에서 따로 꺼내온다
+        if rank_element.text == "" and card_name == "" and corp_name == "":
+            rank_element = winner_element.find_element(By.XPATH, ".//div[@class='winner']")
+
+            card_name_element = winner_element.find_element(By.XPATH, ".//span[@class='card_name']")
+            card_name = card_name_element.text.split('\n')[0]
+            corp_name = ' '.join(winner_element.find_element(By.XPATH, ".//p[@class='corp_name']").text.split())
 
         # card 에서 href attribute 를 찾아서 값을 detail_url 에 대입
         detail_url = card.find_element(By.XPATH, ".//a").get_attribute('href')
