@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -62,6 +65,7 @@ public class AuthService {
                 .name(signupRequest.getName())
                 .phoneNumber(signupRequest.getPhoneNumber())
                 .email(signupRequest.getEmail())
+                .createdAt(LocalDateTime.now())
                 .identityNumber(encryptedIdentityNumber) // 암호화 된 주민등록번호 설정
                 .build();
 

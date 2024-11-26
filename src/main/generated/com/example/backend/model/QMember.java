@@ -23,8 +23,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<com.example.backend.model.enumSet.MemberActiveEnum> activity = createEnum("activity", com.example.backend.model.enumSet.MemberActiveEnum.class);
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
