@@ -1,4 +1,4 @@
-package com.example.backend.dto.account;
+package com.example.backend.dto.card;
 
 import java.util.List;
 
