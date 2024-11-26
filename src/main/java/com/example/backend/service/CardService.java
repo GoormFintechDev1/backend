@@ -1,7 +1,7 @@
 package com.example.backend.service;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -33,12 +33,15 @@ public class CardService {
 		log.info(filePath + " :: filePath");
 		
 		try {
-			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
-			if (inputStream == null) {
-				throw new RuntimeException("File not found: " + filePath);
-			}
+			// 파일의 경로를 resources 로 설정했을 때,
+//			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
+//			if (inputStream == null) {
+//				throw new RuntimeException("File not found: " + filePath);
+//			}
+			// 파일의 경로를 root 로 설정했을 때,
+			File jsonFile = new File(filePath);
 			// JSON 파일을 읽어서 Card 리스트로 변환
-			return objectMapper.readValue(inputStream, new TypeReference<List<CardDTO>>() {});
+			return objectMapper.readValue(jsonFile, new TypeReference<List<CardDTO>>() {});
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to load cards from JSON file: " + filePath, e);
 		}
