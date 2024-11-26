@@ -24,6 +24,15 @@ public class AccountController {
     private final AccountService accountService;
     private final CardService cardService;
 
+    // accountNum을 통해 account 정보 가져오기
+    // bank 에서 사용
+    @GetMapping("/info")
+    public ResponseEntity<AccountInfoDTO> getInfo(
+            @RequestParam String accountNum) {
+        AccountInfoDTO accountInfo = accountService.getInfo(accountNum);
+        return ResponseEntity.ok(accountInfo);
+    }
+
     // 지출 간단 보기
     @GetMapping("/expense")
     public ResponseEntity<ExpenseDTO> expense(
@@ -31,11 +40,7 @@ public class AccountController {
             @AuthenticationPrincipal Long memberId) {  // JWT에서 추출한 memberId
         YearMonth yearMonth = YearMonth.parse(month);
         ExpenseDTO expenseSummary = accountService.showSimpleExpense(memberId, yearMonth);
-        
-        List<Map<String, Object>> recommends = cardService.recommendCards(yearMonth, memberId);
-        
-        log.info("할인정보:: " + recommends);
-        
+
         return ResponseEntity.ok(expenseSummary);
     }
 
