@@ -66,4 +66,23 @@ public class ReportController {
     }
 
 
+    @GetMapping("/previous-month/check")
+    public ResponseEntity<Boolean> checkPreviousMonthReports(
+            @AuthenticationPrincipal Long memberId,  // JWT에서 추출한 memberId
+            @RequestParam YearMonth month // 클라이언트가 요청한 현재 달
+    ) {
+        try {
+            // 전 달 리포트 존재 여부 확인
+            boolean reportsAvailable = reportService.previousMonthReportChecker(memberId);
+            return ResponseEntity.ok(reportsAvailable);
+        } catch (IllegalArgumentException e) {
+            log.error("리포트 확인 실패 - 잘못된 요청: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(false);
+        } catch (Exception e) {
+            log.error("리포트 확인 중 서버 오류", e);
+            return ResponseEntity.status(500).body(false);
+        }
+    }
+
+
 }
