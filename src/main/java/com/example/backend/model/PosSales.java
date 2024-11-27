@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PosSales {
 
     @Id
@@ -46,4 +47,10 @@ public class PosSales {
 
     @Column(name = "approval_number", length = 20)
     private String approvalNumber;
+
+    @Column(name = "product_name", nullable = false)
+    private String productName;
+
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
 }
