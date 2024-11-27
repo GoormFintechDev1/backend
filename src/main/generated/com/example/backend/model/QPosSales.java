@@ -30,6 +30,10 @@ public class QPosSales extends EntityPathBase<PosSales> {
 
     public final QPos pos;
 
+    public final StringPath productName = createString("productName");
+
+    public final NumberPath<Integer> quantity = createNumber("quantity", Integer.class);
+
     public final DateTimePath<java.time.LocalDateTime> saleDate = createDateTime("saleDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> saleId = createNumber("saleId", Long.class);
