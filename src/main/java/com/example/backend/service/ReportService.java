@@ -341,9 +341,9 @@ public class ReportService {
     @Transactional
     public boolean previousMonthReportChecker(Long memberId) {
         // 현재 날짜 기준 전 달 계산
-        YearMonth now = YearMonth.now();
-        YearMonth previousMonth = now.minusMonths(1);
-        LocalDate reportMonth = previousMonth.atDay(1); // 전 달의 첫 번째 날
+        YearMonth currentMonth = YearMonth.now();
+        YearMonth previousMonth = currentMonth.minusMonths(1);
+        LocalDate previousReportMonth = previousMonth.atDay(1); // 전 달의 첫 번째 날
 
         // BusinessRegistration 조회
         BusinessRegistration businessRegistration = queryFactory.selectFrom(QBusinessRegistration.businessRegistration)
@@ -351,30 +351,24 @@ public class ReportService {
                 .fetchOne();
 
         if (businessRegistration == null) {
-            throw new IllegalArgumentException("Member ID: " + memberId + "에 대한 BusinessRegistration이 존재하지 않습니다.");
+            throw new IllegalArgumentException("회원 ID: " + memberId + "에 해당하는 사업자 등록 정보가 존재하지 않습니다.");
         }
 
         // 리포트 타입 리스트 (MARKET_REPORT와 INDUSTRY_REPORT)
         List<String> reportTypes = List.of("MARKET_REPORT", "INDUSTRY_REPORT");
 
         // 각 리포트 타입에 대해 존재 여부 확인
-        for (String reportType : reportTypes) {
-            boolean reportExists = queryFactory.selectFrom(QReport.report)
-                    .where(
-                            QReport.report.businessRegistration.id.eq(businessRegistration.getId()),
-                            QReport.report.reportMonth.eq(reportMonth),
-                            QReport.report.reportType.eq(reportType)
-                    )
-                    .fetchOne() != null;
+        boolean allReportsExist = reportTypes.stream().allMatch(reportType ->
+                queryFactory.selectFrom(QReport.report)
+                        .where(
+                                QReport.report.businessRegistration.id.eq(businessRegistration.getId()),
+                                QReport.report.reportMonth.eq(previousReportMonth),
+                                QReport.report.reportType.eq(reportType)
+                        )
+                        .fetchOne() != null
+        );
 
-            // 하나라도 없으면 false 반환
-            if (!reportExists) {
-                return false;
-            }
-        }
-
-        // 모든 리포트가 존재하면 true 반환
-        return true;
+        return allReportsExist;
     }
 
 
