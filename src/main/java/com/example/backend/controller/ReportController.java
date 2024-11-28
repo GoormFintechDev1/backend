@@ -38,9 +38,9 @@ public class ReportController {
             @AuthenticationPrincipal Long memberId,  // JWT에서 추출한 memberId
             @RequestParam YearMonth month
 
-            ) {
+    ) {
         try {
-            Map<String, Object> report  = reportService.generateIndustryComparisonReport(memberId, month);
+            Map<String, Object> report = reportService.generateIndustryComparisonReport(memberId, month);
             return ResponseEntity.ok(report);
         } catch (Exception e) {
             log.error("동종 업계 비교 분석 실패", e);
@@ -68,8 +68,7 @@ public class ReportController {
 
     @GetMapping("/previous-month/check")
     public ResponseEntity<Boolean> checkPreviousMonthReports(
-            @AuthenticationPrincipal Long memberId,  // JWT에서 추출한 memberId
-            @RequestParam YearMonth month // 클라이언트가 요청한 현재 달
+            @AuthenticationPrincipal Long memberId // JWT에서 추출한 memberId
     ) {
         try {
             // 전 달 리포트 존재 여부 확인
@@ -82,7 +81,7 @@ public class ReportController {
             log.error("리포트 확인 중 서버 오류", e);
             return ResponseEntity.status(500).body(false);
         }
+
+
     }
-
-
 }
