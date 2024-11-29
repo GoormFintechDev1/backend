@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CrawlingScheduler {
-	@Value("${card.py.file.path:card_crawler.py}")
+	@Value("${card.py.file.path:/crawler/card_crawler.py}")
 	private String pythonScriptPath; // Pythen 파일 경로
 	private String pythonCommand = "python"; // 시스템에 설치된 Python 실행 경로
 
-	@Scheduled(cron = "0 0 9 * * Mon") // 매주 월요일 오전 9시
+	@Scheduled(cron = "0 0 9 * * MON") // 매주 월요일 오전 9시
 	public void runPythonScript() {
 		
 		try {
