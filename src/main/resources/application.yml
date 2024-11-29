@@ -4,6 +4,13 @@ server:
 JWT:
   SECRET: ${JWT_SECRET}
 
+card:
+  py:
+    data:
+      path: ${CRAWLER_JSON:./crawler/card_data.json}
+    file:
+      path: ${CRAWLER_PY:/crawler/card_crawler.py}
+
 spring:
   application:
     name: backend
@@ -36,7 +43,7 @@ spring:
   datasource:
     url: jdbc:mariadb://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/doubly_db?useSSL=false&useServerPrepStmts=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: ${DATABASE_USERNAME:root}
-    password: ${DATABASE_PASSWORD:root}
+    password: ${DATABASE_PASSWORD:root1234}
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
@@ -55,14 +62,6 @@ spring:
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-  
-#  card:
-#    py:
-#      file:
-#        path: ${CRAWLER_PY:/crawler/card_crawler.py}
-#      data:
-#        path: ${CRAWLER_JSON:/crawler/card_data.json}
-
 
 # Swagger 3.0 ??
 springdoc:

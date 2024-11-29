@@ -1,0 +1,1409 @@
+[
+  {
+    "Ranking": "1",
+    "Card Name": "신한카드 Mr.Life",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "공과금 월납요금(공과금) 10% 할인서비스",
+      "편의점 편의점 10% 할인",
+      "병원/약국 병원/약국업종 10% 할인",
+      "생활 세탁소 업종 10% 할인",
+      "온라인쇼핑 온라인 쇼핑 10% 할인",
+      "택시 택시 10% 할인",
+      "푸드 식음료 10% 할인",
+      "대형마트 3대 마트 10% 할인",
+      "주유소 4대 정유사 리터당 60원 할인",
+      "온라인쇼핑 인테이크몰 20% 할인",
+      "유의사항 꼭 확인해주세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/13/card_img/28201/13card.png"
+  },
+  {
+    "Ranking": "2",
+    "Card Name": "삼성카드 taptap O",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "선택형 라이프스타일 패키지 선택",
+      "대중교통 대중교통·택시 10% 결제일할인",
+      "통신 이동통신요금 10% 결제일할인",
+      "영화 CGV 및 롯데시네마 5,000원 결제일할인",
+      "해외 해외 1.3% 적립",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/51/card_img/37691/51card.png"
+  },
+  {
+    "Ranking": "3",
+    "Card Name": "삼성카드 & MILEAGE PLATINUM (스카이패스)",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "대한항공 모든 가맹점 이용금액 1,000원당 1마일리지 기본적립",
+      "백화점 백화점 이용금액 1,000원당 2마일리지 특별적립",
+      "주유소 주유 이용금액 1,000원당 2마일리지 특별적립",
+      "카페 커피 이용금액 1,000원당 2마일리지 특별적립",
+      "편의점 편의점 이용금액 1,000원당 2마일리지 특별적립",
+      "택시 택시 이용금액 1,000원당 2마일리지 특별적립",
+      "공항라운지 인천공항 라운지 본인 무료 이용",
+      "공항 인천공항 발렛파킹 무료 이용",
+      "공항 공항 커피 서비스",
+      "프리미엄 서비스 아멕스 PLATINUM 등급 서비스",
+      "선택형 여행의 설레임을 담은 디자인으로 리뉴얼 된 삼성카드 & MILEAGE PLATINUM"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/49/card_img/27705/49card.png"
+  },
+  {
+    "Ranking": "4",
+    "Card Name": "KB국민 My WE:SH 카드",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "간편결제 [나한테 진심 서비스] KB Pay 10% 할인",
+      "푸드 [나한테 진심 서비스] 음식점, 편의점 10% 할인",
+      "통신 [나한테 진심 서비스] 이동통신요금 10% 할인",
+      "디지털구독 [나한테 진심 서비스] OTT 30% 할인",
+      "선택형 [더욱 진심 서비스] 먹는데 진심-배달/커피 5% 할인",
+      "선택형 [더욱 진심 서비스] 노는데 진심-택시/커피 5%, 영화관 30% 할인",
+      "선택형 [더욱 진심 서비스] 관리에 진심-미용실, 스포츠, 온라인서점, 올리브영 5% 할인",
+      "기타 WE:SH 서비스",
+      "선택형 카드 플레이트 선택 가능",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2441/card_img/37123/2441card_3.png"
+  },
+  {
+    "Ranking": "5",
+    "Card Name": "현대카드 M",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "적립 [기본 혜택] 국내외 가맹점 1.5% M포인트 적립 전월 이용 금액 50만원 이상 이용 시",
+      "적립 [추가 혜택] 온라인 쇼핑몰・외식・해외 가맹점 5% M포인트 적립(월 1만 M포인트 한도) 전월 이용 금액 100만원 이상 이용 시",
+      "적립 M 긴급적립(선지급 포인트 서비스)",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2669/card_img/32807/2669card.png"
+  },
+  {
+    "Ranking": "6",
+    "Card Name": "카드의정석 EVERY MILE SKYPASS",
+    "Corporate Name": "우리카드",
+    "Benefits": [
+      "대한항공 SKYPASS 최대 2마일리지 적립",
+      "수수료우대 해외수수료 면제",
+      "공항라운지 국내 공항라운지 동반 1인 동시 이용 가능",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2553/card_img/36834/2553card.png"
+  },
+  {
+    "Ranking": "7",
+    "Card Name": "LOCA LIKIT 1.2",
+    "Corporate Name": "롯데카드",
+    "Benefits": [
+      "모든가맹점 어디서나 1.2% 결제일 할인 국내 모든 가맹점 1.2%, 해외 모든 이용금액 1.2%",
+      "온라인쇼핑 온라인 1.5% 결제일 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2261/card_img/21011/2261card.png"
+  },
+  {
+    "Ranking": "8",
+    "Card Name": "현대카드ZERO Edition3(할인형)",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "할인 실적・한도 제한 없이 국내외 가맹점 이용 금액의 0.8% 청구 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2646/card_img/37932/2646card.png"
+  },
+  {
+    "Ranking": "9",
+    "Card Name": "JADE Classic",
+    "Corporate Name": "하나카드",
+    "Benefits": [
+      "바우처 [PREMIUM VOUCHER] 바우처 5가지 중 1가지를 선택하여 이용 (연 1회)",
+      "공항라운지 전세계 공항 라운지 무료이용 (본인/가족/동반자 통합 연 3회, 일 3회)",
+      "적립 [기본 적립] 국내외 가맹점 1% 하나머니 적립",
+      "적립 [특별 적립] 영역별 1.5~1.2% 하나머니 적립 제공",
+      "디지털구독 디지털 컨텐츠 자동이체 시, 50% 하나머니 적립 제공",
+      "카페 커피 이용금액 50% 하나머니 적립 제공",
+      "택시 택시 이용금액 50% 하나머니 적립 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2657/card_img/32434/2657card.png"
+  },
+  {
+    "Ranking": "10",
+    "Card Name": "BC 바로 클리어 플러스",
+    "Corporate Name": "BC 바로카드",
+    "Benefits": [
+      "점심 점심식사 7% 할인",
+      "배달앱 배달앱 7% 할인",
+      "대중교통 대중교통 7% 할인",
+      "편의점 편의점 10% 할인",
+      "온라인쇼핑 온라인쇼핑 10% 할인",
+      "드럭스토어 뷰티 10% 할인",
+      "통신 통신 10% 할인",
+      "디지털구독 스트리밍 10% 할인",
+      "무이자할부 전국 모든 가맹점 2~3개월 상시 무이자할부",
+      "프리미엄 서비스 MasterCard Platinum/ VISA Platinum 기본 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2346/card_img/32523/2346card.png"
+  },
+  {
+    "Ranking": "11",
+    "Card Name": "신한카드 처음(ANNIVERSE)",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "적립 [오늘도 5% 적립 서비스] 음식점·카페·편의점·온라인쇼핑 5% 마이신한포인트 적립",
+      "생활 [일상 속 5% 적립 서비스] 생활·여행·패션 5% 마이신한포인트적립",
+      "디지털구독 [정기결제 최대 20% 적립 서비스] 통신 10% , OTT 15%, 멤버십 20% 마이신한포인트 적립",
+      "적립 [소비관리 보너스] ①계획소비 적립",
+      "적립 [소비관리 보너스] ②즉시결제 적립",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2759/card_img/37240/2759card.png"
+  },
+  {
+    "Ranking": "12",
+    "Card Name": "DA카드의정석Ⅱ",
+    "Corporate Name": "우리카드",
+    "Benefits": [
+      "모든가맹점 기본 Discount - 0.8% 기본 청구할인",
+      "할인 추가 Discount - 0.5% 추가 청구할인 (기본 0.8% + 추가 0.5% = 1.3% 청구할인)",
+      "공항라운지 국내 공항라운지 무료 이용 서비스 안내",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2655/card_img/32217/2655card.png"
+  },
+  {
+    "Ranking": "13",
+    "Card Name": "신한카드 Deep Oil",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "주유 4개의 정유사 중 직접 고른 1개 정유사 주유 이용금액 10% 결제일 할인",
+      "자동차/하이패스 정비소(스피드메이트), 주차장 이용금액 10% 결제일 할인",
+      "편의점 GS25, CU 5% 결제일 할인",
+      "카페 스타벅스, 이디야 5% 결제일 할인",
+      "택시 택시 5% 결제일 할인",
+      "영화 롯데시네마 일반관 5천원 현장 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/39/card_img/31864/39card.png"
+  },
+  {
+    "Ranking": "14",
+    "Card Name": "현대카드 Summit",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "적립 적립한도 제한 없는 1.5% M포인트 적립",
+      "유치원 [추가 혜택] 학원/유치원 업종 5% M포인트 적립",
+      "학원 [추가 혜택] 학원/유치원 업종 5% M포인트 적립",
+      "병원/약국 [추가혜택] 병원/약국 업종 5% M포인트 적립",
+      "여행/숙박 [추가혜택] 국내 항공사/여행사/특급호텔 업종 5% M포인트 적립",
+      "바우처 15만원 상당 선택 제공 기프트 ①~④ 택1 (연1회)",
+      "기타 공항 및 특급호텔 발레파킹 무료 이용",
+      "공항라운지 THE LOUNGE : 공항 라운지 무료 이용 (연5회)",
+      "유의사항 꼭 확인해 주세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2692/card_img/33549/2692card.png"
+  },
+  {
+    "Ranking": "15",
+    "Card Name": "ALL 우리카드 Infinite",
+    "Corporate Name": "우리카드",
+    "Benefits": [
+      "프리미엄 [아코르 서비스] 14,000 ALL 리워드 포인트 기프트 제공",
+      "프리미엄 [아코르 서비스] 아코르 플러스 유료 멤버십 자동 가입",
+      "프리미엄 [아코르 서비스] ALL 회원 GOLD 등급 제공 및 업그레이드",
+      "프리미엄 [아코르 서비스] ALL 리워드 포인트 적립",
+      "프리미엄 [아코르 서비스] 5,000 ALL 리워드 포인트 보너스 제공",
+      "공항라운지 [Premium Service] 국내외 공항 라운지 무료이용 서비스 제공",
+      "여행/숙박 [Premium Service] KAL 리무진 버스 무료이용 서비스 제공",
+      "골프 [Premium Service] 국내 지정 골프장 무료 커피 또는 지정 골프연습장 무료 타석권 제공",
+      "여행/숙박 [Premium Service] 국내외 여행자 보험 서비스 제공",
+      "호텔 [Premium Service] 아코르 호텔 프리미엄 서비스 제공",
+      "선택형 플레이트 선택",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2613/card_img/31307/2613card.png"
+  },
+  {
+    "Ranking": "16",
+    "Card Name": "삼성 iD SIMPLE 카드",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "모든가맹점 국내외 가맹점 0.7% 할인",
+      "모든가맹점 국내외 가맹점 1% 할인",
+      "온라인쇼핑 온라인쇼핑몰 멤버십 50% 할인",
+      "영화 영화 3,000원 할인",
+      "선택형 내 마음대로 고르는 디자인!",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2376/card_img/27725/2376card.png"
+  },
+  {
+    "Ranking": "17",
+    "Card Name": "LOCA 365 카드",
+    "Corporate Name": "롯데카드",
+    "Benefits": [
+      "공과금 [생활업종]아파트관리비 10% 할인",
+      "공과금 [생활업종]공과금(도시가스비, 전기료) 10% 할인",
+      "대중교통 [생활업종]대중교통 10% 할인",
+      "통신 [생활업종]SKT, KT, LG U+ 10% 할인",
+      "배달앱 [생활업종]배달의 민족, 요기요, 쿠팡이츠 10% 할인",
+      "보험사 [생활업종]생명보험, 손해보험 10% 할인",
+      "학습지 [생활업종]학습지 10% 할인",
+      "디지털구독 [생활업종]넷플릭스, 유튜브, 왓챠, 멜론, 지니뮤직, 디즈니 플러스 1,500원 할인",
+      "무이자할부 국내 가맹점 2~3개월 무이자 할부",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2330/card_img/24131/2330card.png"
+  },
+  {
+    "Ranking": "18",
+    "Card Name": "신한카드 처음",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "적립 [오늘도 5% 적립 서비스] 음식점·카페·편의점·온라인쇼핑 5% 마이신한포인트 적립",
+      "생활 [일상 속 5% 적립 서비스] 생활·여행·패션 5% 마이신한포인트 적립",
+      "디지털구독 [정기결제 최대 20% 적립 서비스] 통신 10% , OTT 15%, 멤버십 20% 마이신한포인트 적립",
+      "적립 소비관리 보너스 적립 서비스 소개",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2694/card_img/33709/2694card_1.png"
+  },
+  {
+    "Ranking": "19",
+    "Card Name": "올바른 FLEX 카드",
+    "Corporate Name": "NH농협카드",
+    "Benefits": [
+      "카페 스타벅스(사이렌오더 포함) 50% 청구할인",
+      "생활 유튜브프리미엄, 넷플릭스, 멜론 정기결제 20% 청구할인 배달의민족, 요기요 10% 청구할인",
+      "영화 CGV, 롯데시네마 30% 청구할인",
+      "기타 지하철, 버스 7% 청구할인 SKT, KT, LGU+ 7% 청구할인",
+      "쇼핑 쿠팡, G마켓, 11번가, 티몬, 농협몰 5% 청구할인 CU, GS25 5% 청구할인",
+      "간편결제 올원페이(NH앱카드)로 결제 시 건당 1천원 청구할인",
+      "공항라운지 국제공항 라운지 무료이용 연 1회 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/666/card_img/21431/666card.png"
+  },
+  {
+    "Ranking": "20",
+    "Card Name": "현대카드 MX Black Edition2",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "국내외가맹점 적립한도 제한없이 국내외 가맹점 1% M포인트 적립",
+      "온라인쇼핑 [추가혜택] 전월 이용금액 100만원 이상 시 10% 할인",
+      "백화점 [추가혜택] 전월 이용금액 100만원 이상 시 10% 할인",
+      "카페 [추가혜택] 전월 이용금액 100만원 이상 시 10% 할인",
+      "베이커리 [추가혜택] 전월 이용금액 100만원 이상 시 10% 할인",
+      "편의점 [추가혜택] 전월 이용금액 100만원 이상 시 10% 할인",
+      "주유 [추가혜택] 전월 이용금액 100만원 이상 시 10% 할인",
+      "대중교통 [추가혜택] 전월 이용금액 100만원 이상 시 10% 할인",
+      "공항라운지 THE LOUNGE : 공항 라운지 연5회 무료 이용",
+      "기타 공항 및 특급호텔 발레파킹 무료 이용",
+      "유의사항"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2697/card_img/33888/2697card.png"
+  },
+  {
+    "Ranking": "21",
+    "Card Name": "삼성 iD GLOBAL 카드",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "수수료우대 해외 수수료 할인",
+      "해외이용 해외 2% 할인",
+      "삼성페이 삼성페이로 결제 시 해외 오프라인 가맹점 5% 할인",
+      "공항라운지 공항 라운지 서비스 (The Lounge)",
+      "디지털구독 인앱 결제/디지털콘텐츠/멤버십 50% 할인",
+      "생활 일상 필수 영역 1% 할인",
+      "할인 국내 가맹점 0.5% 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2676/card_img/32887/2676card_2.png"
+  },
+  {
+    "Ranking": "22",
+    "Card Name": "카드의정석 EVERY DISCOUNT",
+    "Corporate Name": "우리카드",
+    "Benefits": [
+      "국내외가맹점 [기본 할인] 국내외 가맹점 0.8% 청구할인",
+      "간편결제 [추가 할인] 국내 온라인 간편결제 2% 추가 청구할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2719/card_img/35783/2719card.jpg"
+  },
+  {
+    "Ranking": "23",
+    "Card Name": "하나 스카이패스 아멕스 플래티늄 카드",
+    "Corporate Name": "하나카드",
+    "Benefits": [
+      "대한항공 스카이패스 마일리지 적립",
+      "공항라운지 인천공항 라운지 이용 시 무료서비스 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2237/card_img/20939/2237card.png"
+  },
+  {
+    "Ranking": "24",
+    "Card Name": "현대카드Z work Edition2",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "온라인쇼핑 온라인 쇼핑몰 10% 청구 할인",
+      "편의점 편의점 10% 청구 할인",
+      "카페 커피전문점 10% 청구 할인",
+      "대중교통 대중교통 10% 청구 할인",
+      "도서 도서 10% 청구 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2680/card_img/32828/2680card.png"
+  },
+  {
+    "Ranking": "25",
+    "Card Name": "Easy all 티타늄카드",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "선택형 Easy all 선택 서비스(택1)",
+      "선택형 1. Auto 모드 (많이 쓴 영역에서 자동 캐시백) 2. DIY 모드 (원하는 영역에서 자유롭게 청구할인)",
+      "프리미엄 티타늄 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/634/card_img/21400/634card.png"
+  },
+  {
+    "Ranking": "26",
+    "Card Name": "American Express® Green Card Edition2",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "바우처 국내 트래블・패션/뷰티 영역에서 사용 가능한 12만원 상당 바우처 제공(연 1회)",
+      "적립 대상점에 따라 이용 금액 1,000원당 최대 2MR 적립",
+      "공항라운지 전 세계 공항 라운지 이용, 공항 리무진・공항철도서비스",
+      "프리미엄 서비스 공항 및 국내 특급 호텔 무료 발레파킹 서비스",
+      "프리미엄 서비스 Be My Guest 호텔 델리/레스토랑, 패밀리 레스토랑 할인"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2662/card_img/32405/2662card.png"
+  },
+  {
+    "Ranking": "27",
+    "Card Name": "신한카드 The BEST-F",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "바우처 Gift Option Service",
+      "선택형 캐시백(캐시백형 선택 시) 마일리지 적립(마일리지 적립형 선택 시)",
+      "여행/숙박 JEJU 할인",
+      "공항라운지 공항라운지",
+      "카페 커피 할인",
+      "베이커리 베이커리 할인",
+      "쇼핑 쇼핑 할인",
+      "생활 생활 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/37/card_img/36924/37card.png"
+  },
+  {
+    "Ranking": "28",
+    "Card Name": "굿데이올림카드",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "주유 주유소, 충전소 업종 리터당 60원 청구할인",
+      "대형마트 대형마트 10% 청구할인",
+      "통신 전화요금, 인터넷이용료, 케이블TV 업종 10% 청구할인",
+      "교통 버스, 지하철, 택시 업종 10% 청구할인",
+      "해외 해외이용(해외직구) 5% 할인 캐시백",
+      "생활 음식점, 커피전문점, 편의점, 약국 업종 10% 추가 청구할인",
+      "교육/육아 학원, 휘트니스센터 업종 10% 추가 청구할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/115/card_img/20273/115card.png"
+  },
+  {
+    "Ranking": "29",
+    "Card Name": "네이버 현대카드",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "디지털구독 네이버플러스 멤버십 무료 이용권 제공",
+      "네이버페이 네이버페이 포인트 최대 5% 적립",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2233/card_img/20932/2233card.png"
+  },
+  {
+    "Ranking": "30",
+    "Card Name": "American Express Blue",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "생활 편의점·배달앱 7% 멤버십리워즈 적립",
+      "디지털구독 스트리밍서비스 20% 결제일 할인",
+      "카페 스타벅스·이디야 20% 결제일 할인",
+      "통신 교통·통신 5% 멤버십리워즈 적립",
+      "쇼핑 쇼핑 1.5% 멤버십리워즈 적립",
+      "해외이용 해외 5% 멤버십리워즈 적립",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/45/card_img/37925/45card.png"
+  },
+  {
+    "Ranking": "31",
+    "Card Name": "BLISS.5 카드(마일리지)",
+    "Corporate Name": "IBK기업은행",
+    "Benefits": [
+      "대한항공 국내외 일시불, 유이자할부금액에 대해서 1,500원당 1마일 적립 제휴항공사 | 대한항공",
+      "기차 KTX/SRT 승차권 및 철도 여행상품 3%~10% 할인 서비스",
+      "영화 영화예매 할인 서비스・CGV 콤보 무료 이용 서비스",
+      "카페 카페아티제 본인 음료 구매 시 동반자 1인에게 무료 음료 제공",
+      "금융 바로알림(SMS) 서비스 무료 가입",
+      "바우처 Voucher Service 종류(택1)",
+      "프리미엄 서비스 Premium Service",
+      "유의사항"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/772/card_img/22246/772card.png"
+  },
+  {
+    "Ranking": "32",
+    "Card Name": "아시아나 신한카드 Air 1.5",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "아시아나항공 이용금액 1,000원당 1.5~3 아시아나 마일리지 적립",
+      "공항라운지 국내 공항라운지 무료 이용(mastercard PLATINUM)",
+      "프리미엄 mastercard PLATINUM 서비스 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/27/card_img/25865/27card.png"
+  },
+  {
+    "Ranking": "33",
+    "Card Name": "올바른 NEW HAVE카드",
+    "Corporate Name": "NH농협카드",
+    "Benefits": [
+      "적립 국내/외 이용가맹점 0.7% NH포인트 적립",
+      "적립 6개 영역 중 당월(1일~말일) 이용금액 1위/2위 영역은 기본적립의 3배/2배 자동적용",
+      "공항라운지 국제공항 라운지 무료이용",
+      "금융 농협 인터넷·모바일·스마트·텔레뱅킹 이체수수료 통합 월 10회",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/635/card_img/28872/635card.png"
+  },
+  {
+    "Ranking": "34",
+    "Card Name": "신한카드 Point Plan",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "적립 [일상 생활비 적립 서비스] 국내 건당 결제금액별 0.5~3% 포인트 적립·해외 결제금액 1% 포인트 적립 가족행사월(5월,12월) 적립 한도 1만 포인트 추가 제공",
+      "적립 [필수 생활비 적립 서비스] 주말 외식비 포인트 적립",
+      "적립 [필수 생활비 적립 서비스] 정기결제 자동납부 포인트 적립",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2666/card_img/32452/2666card.png"
+  },
+  {
+    "Ranking": "35",
+    "Card Name": "American Express® Gold Card Edition2",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "바우처 국내 트래블·패션/뷰티 영역에서 사용 가능한 25만원 상당 바우처 제공(연 1회)",
+      "적립 대상점에 따라 이용 금액 1,000원당 최대 3MR 적립",
+      "공항라운지 전 세계 공항 라운지 이용, 공항 리무진・공항철도서비스",
+      "프리미엄 서비스 공항 및 국내 특급 호텔 무료 발레파킹 서비스",
+      "프리미엄 서비스 Be My Guest 호텔 델리/레스토랑, 패밀리 레스토랑 할인",
+      "프리미엄 서비스 The Hotel Collection 객실 업그레이드 및 호텔 크레딧 100달러(USD) 제공",
+      "프리미엄 서비스 메탈 플레이트 제공"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2663/card_img/32407/2663card.png"
+  },
+  {
+    "Ranking": "36",
+    "Card Name": "I-Mileage (대한항공)",
+    "Corporate Name": "IBK기업은행",
+    "Benefits": [
+      "대한항공 대한항공 마일리지 적립",
+      "공항라운지 전 세계 공항 라운지 무료 이용 서비스",
+      "공항 공항 발레파킹 무료 이용 서비스",
+      "카페 스타벅스 할인 서비스",
+      "프리미엄 서비스 국제 브랜드 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2674/card_img/32666/2674card_2.png"
+  },
+  {
+    "Ranking": "37",
+    "Card Name": "LOCA Professional",
+    "Corporate Name": "롯데카드",
+    "Benefits": [
+      "국내외가맹점 어디서나 1% 캐시백 국내 모든 가맹점 1%, 해외 모든 이용금액 1%",
+      "캐시백 즉시결제 1% 추가 캐시백 일시불 이용 후 5일 이내 즉시결제 시 1%",
+      "기타 LOCA 나누기 혜택",
+      "바우처 Special Gift 혜택",
+      "프리미엄 서비스 Master World 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2636/card_img/31863/2636card.png"
+  },
+  {
+    "Ranking": "38",
+    "Card Name": "CLUB SK 카드",
+    "Corporate Name": "하나카드",
+    "Benefits": [
+      "SKT SK텔레콤 이동통신 요금 최대 15,000원 청구할인",
+      "주유소 SK주유소 리터당 최대 150원 청구할인 SK충전소 리터당 최대 70원 청구할인",
+      "생활 교통, 영화, 외식, 커피 등 최대 10% 청구할인",
+      "대형마트 이마트, 홈플러스, 롯데마트 최대 10% 청구할인",
+      "학원 학원 업종 최대 10% 청구할인",
+      "멤버십포인트 SK멤버십 서비스",
+      "프리미엄 서비스 브랜드 서비스",
+      "기타 면세점/여행 관련 서비스, 하나은행 결제 계좌 고객 우대 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/227/card_img/37251/227card.png"
+  },
+  {
+    "Ranking": "39",
+    "Card Name": "현대카드ZERO Edition3(포인트형)",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "적립 실적・한도 제한 없이 국내외 가맹점 이용 금액의 1.2% M포인트 적립",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2647/card_img/37933/2646card.png"
+  },
+  {
+    "Ranking": "40",
+    "Card Name": "BC 바로 MACAO 카드",
+    "Corporate Name": "BC 바로카드",
+    "Benefits": [
+      "주유 모든 주유소에서 많이 넣을수록 크게 할인",
+      "대형마트 장보기 가맹점에서 많이 담을수록 크게 할인",
+      "해외 해외 전 가맹점에서도 전월 실적, 한도 없이 할인",
+      "프리미엄 서비스 Mastercard Platinum 등급 기본 서비스 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2728/card_img/36134/2728card.png"
+  },
+  {
+    "Ranking": "41",
+    "Card Name": "K-패스 신한카드",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "대중교통 대중교통(버스, 지하철) 이용 시 10% 결제일 할인",
+      "간편결제 간편결제로 결제 시 5% 결제일 할인",
+      "생활 생활서비스 5% 결제일 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2690/card_img/33494/2690card.png"
+  },
+  {
+    "Ranking": "42",
+    "Card Name": "대한항공카드 300",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "대한항공 대한항공 마일리지 적립",
+      "적립 연간 보너스 1만 마일리지 적립(연 1회)",
+      "프리미엄 우대 서비스",
+      "프리미엄 서비스 MasterCard World 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2711/card_img/35455/2711card_4.png"
+  },
+  {
+    "Ranking": "43",
+    "Card Name": "zgm.the pay카드",
+    "Corporate Name": "NH농협카드",
+    "Benefits": [
+      "할인 국내/해외 전 가맹점 1.0% 청구 할인",
+      "간편결제 온라인 간편결제 최대 1.7% 청구 할인",
+      "선택형 디자인 선택 가능",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2427/card_img/27201/2427card.png"
+  },
+  {
+    "Ranking": "44",
+    "Card Name": "다담카드",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "대중교통 버스, 지하철 10% 청구할인",
+      "통신 SKT, KT Olleh, LG U+ 10% 청구할인",
+      "주유소 SK주유소(충전소) 리터당 60원 청구할인",
+      "영화 CGV/메가박스 온라인 영화예매시 승인건당 3,500원 청구 할인",
+      "테마파크 롯데월드, 에버랜드, 캐리비안베이 30~50% 할인",
+      "해외 해외가맹점 5% 할인캐시백",
+      "해외 KB투어할인 서비스",
+      "선택형 선택 적립 서비스팩 - 생활/교육/쇼핑/직장인/레저팩 중 택 1",
+      "기타 연간 이용에 따른 다담리워드 서비스, 함께하는 기부 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/121/card_img/20353/121card.png"
+  },
+  {
+    "Ranking": "45",
+    "Card Name": "디지로카 London",
+    "Corporate Name": "롯데카드",
+    "Benefits": [
+      "국내외가맹점 어디서나 0.7% 캐시백",
+      "캐시백 즉시 결제 1% 추가 캐시백",
+      "무이자할부 LOCA 나누기 혜택",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2632/card_img/31797/2362card.png"
+  },
+  {
+    "Ranking": "46",
+    "Card Name": "삼성 iD CLASSY 카드",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "할인 [기프트 서비스] 할인점에서 건별 35,000원 이상 결제 시 35,000원 결제일 할인 (연 1회)",
+      "적립 [국내외 가맹점 적립] 국내외 가맹점 0.5~2% 빅포인트 적립",
+      "카페 [커피전문점 할인] 커피전문점 20% 결제일 할인",
+      "영화 [영화 할인] 영화 5천원 결제일할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2702/card_img/34202/2702card.png"
+  },
+  {
+    "Ranking": "47",
+    "Card Name": "신한카드 RPM+ Platinum#",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "주유 모든 주유소 리터당 40~150포인트/충전소 리터당 10~50포인트 적립",
+      "쇼핑 1~5% 특별적립",
+      "마트/편의점 1~5% 특별적립",
+      "택시 1~5% 특별적립",
+      "정비 1~5% 특별적립",
+      "모든가맹점 국내/외 모든 가맹점 0.2~2.0% 적립",
+      "프리미엄 Platinum # 서비스",
+      "유의사항 꼭 확인해주세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/16/card_img/28929/16card.png"
+  },
+  {
+    "Ranking": "48",
+    "Card Name": "삼성 iD ON 카드",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "할인 많이 쓰는 영역 30% 자동 맞춤 할인 (커피전문점·배달앱·델리 영역)",
+      "생활 교통·이동통신·스트리밍 10% 할인",
+      "할인 온라인 간편결제·해외 3%·1% 할인",
+      "유의사항 꼭 확인하세요!",
+      "선택형 내 마음대로 고르는 디자인- 다양한 스타일로 새롭게 선보이는 삼성 iD 카드를 소개합니다."
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2235/card_img/28314/2235card.png"
+  },
+  {
+    "Ranking": "49",
+    "Card Name": "현대카드Z family Edition2",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "온라인쇼핑 온라인 쇼핑몰 10% 청구 할인",
+      "병원/약국 병원・약국 10% 청구 할인",
+      "학원 학원 10% 청구 할인",
+      "주유 주유 10% 청구 할인",
+      "생활 생활 요금 정기 결제 10% 청구 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2683/card_img/32811/2683card.png"
+  },
+  {
+    "Ranking": "50",
+    "Card Name": "taptap DIGITAL",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "간편결제 온라인 간편결제 5% 결제일할인",
+      "디지털구독 스트리밍 50% 결제일할인",
+      "마트/편의점 편의점·헬스&뷰티·생활잡화 10% 결제일할인",
+      "해외 해외 1.5% 결제일할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/657/card_img/27715/657card.png"
+  },
+  {
+    "Ranking": "51",
+    "Card Name": "우리 K-패스(신용)",
+    "Corporate Name": "우리카드",
+    "Benefits": [
+      "대중교통 K-패스 사업 지역 안내",
+      "할인 생활 편의 서비스",
+      "할인 생활 밀착 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/583/card_img/33530/583card.png"
+  },
+  {
+    "Ranking": "52",
+    "Card Name": "신한카드 Air One",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "대한항공 대한항공 마일리지 적립",
+      "프리미엄 서비스 AMEX PLATINUM 서비스 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/466/card_img/37854/466card.png"
+  },
+  {
+    "Ranking": "53",
+    "Card Name": "JADE Prime",
+    "Corporate Name": "하나카드",
+    "Benefits": [
+      "바우처 [PREMIUM VOUCHER] 바우처 4가지 중 1가지를 선택하여 이용 (연 1회)",
+      "바우처 [BONUS VOUCHER] 연 누적 이용금액 2,400만원 이상 시 10만 하나머니 적립 제공(연 1회)",
+      "공항라운지 [AIRPORT] 전세계 공항 라운지 무료 이용 (본인/가족/동반자 통합 연 6회, 일 3회)",
+      "적립 [REWARD] 국내 전 가맹점 1.5%~1.0% 하나머니 적립 제공・영역별 3.0% 하나머니 적립",
+      "주유 [REWARD] 주유(LPG) 리터당 150하나머니・EV충전 30% 하나머니 적립 제공",
+      "택시 [REWARD] 택시 이용금액 50% 하나머니 적립 제공",
+      "디지털구독 [REWARD] 디지털 컨텐츠 자동납부 시, 50% 하나머니 적립 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2703/card_img/34566/2703_1card.png"
+  },
+  {
+    "Ranking": "54",
+    "Card Name": "기후동행 삼성카드",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "카페 커피전문점/편의점 10% 결제일할인",
+      "통신 이동통신요금 정기결제 시 5%/7% 결제일할인",
+      "생활 배달앱/온라인쇼핑몰/헬스&뷰티/생활잡화 5%/7% 결제일할인",
+      "디지털구독 디지털콘텐츠 정기결제 시 30% 결제일할인",
+      "해외 전월 이용금액에 관계없이, 할인한도 없이 해외 1% 결제일 할인",
+      "선택형 특수 소재 카드 신청 가능",
+      "교통 후불 기후동행카드 안내",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2771/card_img/38066/2771card_1.png"
+  },
+  {
+    "Ranking": "55",
+    "Card Name": "THE iD. PLATINUM(포인트)",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "바우처 [GIFT] 5가지 기프트 중에서 매년 1가지를 선택",
+      "적립 [REWARD] 국내 가맹점 1%, 생활 편의 영역 1.2%, 특별 가맹점 1.5% 빅포인트 적립",
+      "디지털구독 [DAILY LIFESTYLE] 디지털콘텐츠 50% 할인",
+      "카페 [DAILY LIFESTYLE] 스타벅스 3,000원 할인",
+      "공항라운지 [PREMIUM LIFESTYLE] 공항 라운지 서비스(The Lounge)",
+      "선택형 [SPECIAL PLATE] 특수 소재 카드",
+      "프리미엄 서비스 국제브랜드 서비스(해외겸용카드 전용)",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2460/card_img/28298/2460card.png"
+  },
+  {
+    "Ranking": "56",
+    "Card Name": "원더카드 (원더 Life)",
+    "Corporate Name": "하나카드",
+    "Benefits": [
+      "할인 [자동이체] 영상 스트리밍 40% 할인",
+      "할인 [자동이체] 생활요금 10% 할인",
+      "배달앱 딜리버리 10% 할인",
+      "대중교통 대중교통 10% 할인",
+      "카페 커피 10% 할인",
+      "편의점 편의점 10% 할인",
+      "유의사항 꼭 확인하세요"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2654/card_img/32266/2654card.png"
+  },
+  {
+    "Ranking": "57",
+    "Card Name": "카드의정석 SHOPPING+",
+    "Corporate Name": "우리카드",
+    "Benefits": [
+      "온라인쇼핑 [쇼핑 할인의 정석] 온라인 쇼핑 10% 청구할인",
+      "쇼핑 [쇼핑 할인의 정석] 오프라인 쇼핑 10% 청구할인",
+      "간편결제 [추가 할인의 정석] 온라인 업종 4대 PAY 결제 시 5% 추가할인",
+      "주유 [생활밀착 할인의 정석] 4대 주유소 주말 주유시 리터당 60원 청구할인",
+      "카페 [생활밀착 할인의 정석] 스타벅스, 폴바셋 10% 청구할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2687/card_img/33239/2687card.png"
+  },
+  {
+    "Ranking": "58",
+    "Card Name": "IBK무민카드(신용)",
+    "Corporate Name": "IBK기업은행",
+    "Benefits": [
+      "카페 주요 커피전문점 20% 할인",
+      "온라인쇼핑 쿠팡, 티몬, 위메프 20% 할인",
+      "쇼핑 GS25, CU, 세븐일레븐, 올리브영 10% 할인, 이마트, 홈플러스, 롯데마트 5% 할인",
+      "영화 CGV, 롯데시네마, 메가박스 1만원 할인",
+      "대중교통 버스, 지하철 이용건당 200원 할인",
+      "주유 전 주유소 리터당 60원 할인(LPG포함)",
+      "금융 금융우대서비스(각종 수수료 면제)",
+      "테마파크 놀이공원 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/723/card_img/22197/723card.png"
+  },
+  {
+    "Ranking": "59",
+    "Card Name": "Oil & Life카드(Oil카드)",
+    "Corporate Name": "IBK기업은행",
+    "Benefits": [
+      "통신 [기본서비스] 휴대폰 이용금액의 3% 할인",
+      "주유 [특화서비스] GS칼텍스 리터당 120원 청구할인(LPG 포함)",
+      "영화 [기본서비스] CGV, 롯데시네마 2천원 현장할인",
+      "테마파크 [기본서비스] 주요 놀이공원 할인",
+      "은행사 [기본서비스] 금융수수료 면제",
+      "기타 [기본서비스] GS&POINT 포인트 적립 및 다양한 혜택 제공",
+      "프리미엄 서비스 Life Prime/Oil Prime 서비스 중 한가지 선택가능",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/258/card_img/33952/258card.png"
+  },
+  {
+    "Ranking": "60",
+    "Card Name": "BC 바로 에어 플러스 스카이패스",
+    "Corporate Name": "BC 바로카드",
+    "Benefits": [
+      "대한항공 대한항공 마일리지 기본적립 1천원당 1스카이패스 마일리지",
+      "대한항공 대한항공 마일리지 보너스 적립: 1백만원당 200스카이패스 마일리지",
+      "무이자할부 무이자할부 서비스 전국 모든 가맹점 2~3개월",
+      "프리미엄 서비스 MasterCard Platinum/ VISA Platinum 기본 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2458/card_img/31078/2458card_1.png"
+  },
+  {
+    "Ranking": "61",
+    "Card Name": "트래블월렛 우리카드",
+    "Corporate Name": "우리카드",
+    "Benefits": [
+      "적립 트래블 포인트 적립 포인트",
+      "수수료우대 해외 이용 수수료 면제 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2569/card_img/30756/2569card.png"
+  },
+  {
+    "Ranking": "62",
+    "Card Name": "신한 후불 기후동행 신용카드",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "교통 후불 기후동행카드 서비스 안내",
+      "할인 온라인 10% 할인",
+      "할인 오프라인 10% 혜택",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2766/card_img/38056/2766card.png"
+  },
+  {
+    "Ranking": "63",
+    "Card Name": "zgm.일본여행중 카드",
+    "Corporate Name": "NH농협카드",
+    "Benefits": [
+      "수수료우대 해외결제 시 해외서비스수수료 면제",
+      "해외 일본 오프라인 전매장 10% NH포인트 적립",
+      "온라인 여행사 익스피디아 이용 시 객실요금 9% 즉시 할인",
+      "적립 해외 및 국내 생활업종 NH포인트 적립",
+      "공항라운지 전세계 공항 라운지 무료 이용(The lounge/더 라운지)",
+      "프리미엄 서비스 JCB PLATINUM PREMIUM SERVICES",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2593/card_img/30936/2593card.png"
+  },
+  {
+    "Ranking": "64",
+    "Card Name": "NH올원 Shopping&11번가카드(R2타입)",
+    "Corporate Name": "NH농협카드",
+    "Benefits": [
+      "온라인쇼핑 [공통서비스] 온라인쇼핑 5~22% 청구할인",
+      "대형마트 [R2-type 알찬서비스2] 대형마트/하나로클럽·마트 5% 청구할인",
+      "백화점 [R2-type 알찬서비스2] 백화점 5% 청구할인",
+      "병원 [R2-type 알찬서비스2] 병·의원/약국 5% 청구할인",
+      "카페 [R2-type 알찬서비스2] 커피 10% 청구할인",
+      "베이커리 [R2-type 알찬서비스2] 베이커리 10% 청구할인",
+      "주유소 [R2-type 알찬서비스2] 주유 60원/L 청구할인",
+      "테마파크 [특별서비스] 전국 주요 놀이공원 30~50% 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/179/card_img/37250/179card.png"
+  },
+  {
+    "Ranking": "65",
+    "Card Name": "삼성 iD ALL 카드",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "할인 많이 쓰는 영역 5% 자동 맞춤 할인 (백화점·할인점·슈퍼마켓 영역)",
+      "생활 주유·이동통신·아파트 관리비 2.5% 할인",
+      "모든가맹점 국내외 가맹점 0.5% 할인",
+      "선택형 내 마음대로 고르는 디자인- 다양한 스타일로 새롭게 선보이는 삼성 iD 카드를 소개합니다.",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2234/card_img/27720/2234card.png"
+  },
+  {
+    "Ranking": "66",
+    "Card Name": "신한카드 Deep On Platinum+",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "간편결제 국내 온라인 이용 건, 온라인 배달/온라인 슈퍼 10% 할인",
+      "생활 4대 편의점, 생활/잡화, 커피, 월납 20% 할인",
+      "프리미엄 서비스 제주항공, 에어부산 10% 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/41/card_img/20122/41card.png"
+  },
+  {
+    "Ranking": "67",
+    "Card Name": "BeV V카드(스카이패스형)",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "바우처 쿠폰서비스",
+      "항공마일리지 대한항공 마일리지 적립",
+      "프리미엄 BeV Ⅴ카드 공통 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/131/card_img/20360/131card.png"
+  },
+  {
+    "Ranking": "68",
+    "Card Name": "현대카드 MM",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "적립 [기본 혜택] 국내외 가맹점 1.5% M포인트 적립 전월 이용 금액 50만원 이상 이용 시",
+      "적립 [추가 혜택] 온라인 쇼핑몰・외식・해외 가맹점 10% M포인트 적립(월 2만 M포인트 한도) 전월 이용 금액 100만원 이상 이용 시",
+      "적립 M 긴급적립(선지급 포인트 서비스)",
+      "공항라운지 인천국제공항 라운지 무료 이용",
+      "공항 인천공항 발렛파킹 무료 이용",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2670/card_img/32841/2670card.png"
+  },
+  {
+    "Ranking": "69",
+    "Card Name": "GOAT BC 바로카드",
+    "Corporate Name": "BC 바로카드",
+    "Benefits": [
+      "적립 [페이북 머니 매일 적립] 국내 가맹점 최대 1.5%, 국외 가맹점 최대 3% 적립",
+      "적립 [페이북 머니 연간 적립] 연간 카드사용액 3천만원 이상 시 10% 추가적립",
+      "프리미엄 서비스 [국제 브랜드 서비스] Mastercard/VISA Platinum 기본 서비스 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2644/card_img/32094/2644card.png"
+  },
+  {
+    "Ranking": "70",
+    "Card Name": "K-패스 (신용)",
+    "Corporate Name": "IBK기업은행",
+    "Benefits": [
+      "대중교통 [교통특화 서비스] 대중교통 최대 300원 할인",
+      "교통 [교통특화 서비스] 일반교통 5% 할인",
+      "주유소 [생활 서비스] 주유 리터당 40원 할인",
+      "통신 [생활 서비스] 통신 3% 할인",
+      "패밀리레스토랑 [생활 서비스] 외식 10% 할인",
+      "영화 [생활 서비스] 영화 2천원 할인",
+      "무이자할부 [생활 서비스] 무이자 할부 2~3개월",
+      "테마파크 [생활 서비스] 놀이공원 본인 무료입장 또는 자유이용권 최대 50% 할인",
+      "수수료우대 [특별우대 서비스] 환전 우대 환율 50% 우대",
+      "보험사 [특별우대 서비스] 보험 1천만원 대중교통 상해보험 무료가입",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2559/card_img/33437/2690card.png"
+  },
+  {
+    "Ranking": "71",
+    "Card Name": "the Green Edition3",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "적립 [기본 혜택] 국내외 가맹점 1.5% M포인트 적립",
+      "적립 [추가 혜택] 여행, 해외 영역 5% M포인트 적립",
+      "적립 [우대 서비스] M 긴급적립(선지급 포인트 서비스)",
+      "공항 [우대 서비스] 공항 라운지 연간 5회 무료 이용·공항 및 특급호텔 발레파킹 무료 이용",
+      "프리미엄 서비스 [우대 서비스] 메탈 플레이트 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2753/card_img/36948/2753card_2.png"
+  },
+  {
+    "Ranking": "72",
+    "Card Name": "The Easy카드",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "선택형 [적립형] 국내/외 전 가맹점 0.7% 기본적립, 7대 영역 중 월간 이용횟수가 가장 높은 2개 영역 3% 추가적립",
+      "선택형 [할인형] 국내/외 전 가맹점 0.7% 기본할인, 7대 영역 중 월간 이용횟수가 가장 높은 2개 영역 5% 추가할인",
+      "선택형 추가 적립/할인 7대 영역 안내",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/146/card_img/20372/146card.png"
+  },
+  {
+    "Ranking": "73",
+    "Card Name": "카드의정석 Dear, Shopper(디어쇼퍼)",
+    "Corporate Name": "우리카드",
+    "Benefits": [
+      "바우처 프리미엄 기프트 제공(①-④ 중 택 1, 연 1회)",
+      "쇼핑 [퍼스널 쇼핑 적립] 패션/럭셔리/라이프/해외 5% 적립",
+      "적립 [기본 적립] 국내 가맹점 1% 적립",
+      "적립 [FLEX 적립] 국내 가맹점 건당 100만원 이상 결제 시 5% 적립",
+      "적립 [보너스 적립] 본인카드로 국내 가맹점 1천만원 이상 이용 시 5만점 적립",
+      "공항라운지 [더라운지 서비스] 국내외 공항라운지 무료 이용 (본인+동반 1인까지 제공)",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2677/card_img/32696/2677card.png"
+  },
+  {
+    "Ranking": "74",
+    "Card Name": "LOCA X 기후동행카드",
+    "Corporate Name": "롯데카드",
+    "Benefits": [
+      "할인 국내 가맹점 0.5% 할인",
+      "교통 기후동행요금 결제일 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2765/card_img/38055/2765card.png"
+  },
+  {
+    "Ranking": "75",
+    "Card Name": "카드의정석 TEN",
+    "Corporate Name": "우리카드",
+    "Benefits": [
+      "할인 [TEN Discount] 5대 일상영역 10% 청구할인",
+      "할인 [ONE Discount] 음식점/주점 및 온라인 간편결제 1% 청구할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2699/card_img/34252/2699card.png"
+  },
+  {
+    "Ranking": "76",
+    "Card Name": "디지로카 Auto",
+    "Corporate Name": "롯데카드",
+    "Benefits": [
+      "주유 주유 캐시백 혜택",
+      "무이자할부 국내 가맹점 2~3개월 무이자할부",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2717/card_img/35572/2717card.png"
+  },
+  {
+    "Ranking": "77",
+    "Card Name": "SKYPASS 롯데 아멕스카드",
+    "Corporate Name": "롯데카드",
+    "Benefits": [
+      "대한항공 SKYPASS 1,000원당 1마일, 해외결제는 더블마일 적립",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/432/card_img/30755/432card.png"
+  },
+  {
+    "Ranking": "78",
+    "Card Name": "the Red (항공 마일리지형)",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "대한항공 [기본 혜택] 국내외 가맹점 1,500원당 1 대한항공 마일리지 적립",
+      "바우처 [연간 보너스] 다양한 라이프스타일 영역에서 사용 가능한 바우처 제공(연 1회)",
+      "공항 [우대 서비스] 공항 라운지 연간 10회 무료 이용·공항 및 특급호텔 발레파킹 무료 이용",
+      "프리미엄 서비스 [우대 서비스] 메탈 플레이트 제공",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2737/card_img/36950/2751card_2.jpg"
+  },
+  {
+    "Ranking": "79",
+    "Card Name": "가온올림카드(실속형)",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "적립 [기본적립] 국내 가맹점 0.7% 기본적립",
+      "적립 [추가 적립] 주말/공휴일 국내 가맹점 0.5% 추가적립",
+      "푸드 [추가 적립] 음식점, 커피 전문점 업종 0.5% 추가적립",
+      "교통 [추가 적립] 버스/지하철, 택시 0.5% 추가적립",
+      "통신 [추가 적립] 이동통신요금 0.5% 추가적립",
+      "할인 해외이용금액 1.7% 할인 캐시백",
+      "영화 CGV/메가박스 온라인 영화 예매 청구할인",
+      "테마파크 롯데월드/에버랜드/캐리비안베이 현장할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/769/card_img/22243/769card.png"
+  },
+  {
+    "Ranking": "80",
+    "Card Name": "THE iD. TITANIUM(포인트)",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "바우처 [GIFT] 5가지 기프트 중에서 매년 2가지를 선택",
+      "적립 [REWARD] 국내 가맹점 1.2%, 생활 편의 영역 1.5%",
+      "생활 [PREMIUM LIFESTYLE] 라이프스타일 50,000원 할인",
+      "공항라운지 [PREMIUM LIFESTYLE] 공항 라운지 서비스(THE Lounge)",
+      "프리미엄 서비스 국제브랜드 서비스(해외겸용카드 전용)",
+      "선택형 [SPECIAL PLATE] 특수 소재 카드",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2461/card_img/28297/2461card.png"
+  },
+  {
+    "Ranking": "81",
+    "Card Name": "KB국민 기후동행카드",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "교통 후불 기후동행카드 안내",
+      "할인 청구할인 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2769/card_img/38059/2769card.png"
+  },
+  {
+    "Ranking": "82",
+    "Card Name": "국민행복 삼성카드 V2",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "국민행복 정부지원 국가바우처 이용 가능",
+      "쇼핑 백화점·프리미엄 아울렛·할인점·온라인쇼핑몰·생활잡화·신선식품 배송 7% 결제일할인",
+      "교육/육아 의료·산후조리원·학원·학습지·온라인서점·어린이집·유치원·주유 7% 결제일할인",
+      "공과금 아파트 관리비·도시가스요금·전기요금·4대 사회보험·보험·통신·렌탈 자동납부 연결 시 7% 결제일할인",
+      "디지털구독 스트리밍 3,000원 결제일할인",
+      "해외 해외 1.5% 결제일할인",
+      "기타 임신, 출산, 육아 등 국가가 지원하는 바우처를 해당 카드로 이용 가능, 신세계백화점 제휴 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/718/card_img/28063/718card.png"
+  },
+  {
+    "Ranking": "83",
+    "Card Name": "LOCA LIKIT Eat",
+    "Corporate Name": "롯데카드",
+    "Benefits": [
+      "일반음식점 음식점 60% 결제일 할인",
+      "배달앱 배달의 민족, 쿠팡이츠, 요기요 60% 결제일 할인",
+      "카페 스타벅스, 투썸플레이스, 할리스커피, 폴바셋 60% 결제일 할인",
+      "디지털구독 쿠팡 로켓와우, 네이버플러스 멤버십 60% 결제일 할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2262/card_img/20704/2262card.png"
+  },
+  {
+    "Ranking": "84",
+    "Card Name": "별다줄카드",
+    "Corporate Name": "NH농협카드",
+    "Benefits": [
+      "온라인쇼핑 [기본할인] 국내 온라인 전 가맹점 7% 청구할인",
+      "할인 [더블할인] FLEX, RE-SELL, FUN 가맹점 14% 청구할인",
+      "생활 [생활할인] 6대 생활업종 5% 청구 할인",
+      "공항라운지 국제공항 라운지 무료이용 연2회 제공",
+      "테마파크 전국 주요 놀이공원 현장할인 최대 50%",
+      "선택형 원하는 플레이트 디자인 선택 가능",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2305/card_img/23590/2305card.png"
+  },
+  {
+    "Ranking": "85",
+    "Card Name": "현대백화점카드",
+    "Corporate Name": "현대백화점",
+    "Benefits": [
+      "백화점 현대백화점 5% 할인",
+      "백화점 현대백화점 2시간 무료주차",
+      "기타 3개월 무이자 할부",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2344/card_img/24463/2344card.png"
+  },
+  {
+    "Ranking": "86",
+    "Card Name": "디지로카 Edu",
+    "Corporate Name": "롯데카드",
+    "Benefits": [
+      "교육/육아 학원, 유치원 캐시백 혜택",
+      "무이자할부 국내 가맹점 2~3개월 무이자 할부",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2714/card_img/35527/2714card.png"
+  },
+  {
+    "Ranking": "87",
+    "Card Name": "티머니 Pay & GO 신한카드",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "대중교통 K-패스 안내",
+      "대중교통 [교통서비스 할인(모바일티머니)] 대중교통(버스, 지하철) 30% 결제일 할인",
+      "교통 [교통서비스 할인(티머니GO)] 고속/시외 버스, 따릉이, 킥보드, 택시 20% 결제일 할인",
+      "백화점 [생활서비스 할인] 4대 백화점 5% 결제일 할인",
+      "편의점 [생활서비스 할인] 5대 편의점 5% 결제일 할인",
+      "통신 [생활서비스 할인] 이동통신요금 자동이체 5% 결제일 할인",
+      "카페 [생활서비스 할인] 커피전문점 5% 결제일 할인",
+      "선택형 카드 플레이트 선택 가능",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2386/card_img/33356/2386card_3.png"
+  },
+  {
+    "Ranking": "88",
+    "Card Name": "삼성 iD ENERGY 카드",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "주유소 주유 10,000원 결제일할인",
+      "대중교통 대중교통·택시·전기차 충전요금 10% 결제일할인",
+      "자동차 주차장·대리운전 10% 결제일할인",
+      "기타 고속도로 통행료 10% 결제일할인",
+      "카페 스타벅스 드라이브 스루 30% 결제일할인",
+      "자동차 엔진오일(오일필터/에어클리너 포함) 교환 시 2만원 현장할인(연 2회) 차량 안전점검/타이어 펑크 수리/타이어 위치 교환 무료(연1회)",
+      "선택형 미래지향적 라이프스타일-친환경 소재(Recycling-PVC)를 50% 이상 사용한 삼성 iD ENERGY 카드",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2290/card_img/27723/2290card.png"
+  },
+  {
+    "Ranking": "89",
+    "Card Name": "HERITAGE Smart [대한항공 마일리지형]",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "바우처 [HERITAGE 전용혜택] 쿠폰서비스 (연 1회 제공, 3가지 중 택1)",
+      "국내외가맹점 국내 가맹점 1천원 당 대한항공 1마일리지 적립 해외 가맹점 1천원 당 대한항공 2마일리지 적립",
+      "간편결제 KB Pay 2천원당 '대한항공 1마일리지' 적립",
+      "금융 [HERITAGE 전용혜택] 금융서비스",
+      "프리미엄 [HERITAGE 전용혜택] Mastercard World 서비스",
+      "프리미엄 [HERITAGE Smart 서비스] 전용고객센터",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2451/card_img/27738/2451card.png"
+  },
+  {
+    "Ranking": "90",
+    "Card Name": "네이버페이 taptap",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "선택형 라이프스타일 옵션 패키지",
+      "네이버페이 [일상팩] 네이버페이 온라인 간편결제 시 10% 네이버페이 포인트 적립",
+      "카페 [일상팩] 커피전문점·편의점·배달앱 5% 네이버페이 포인트 적립",
+      "네이버페이 [온라인팩] 네이버페이 온라인 간편결제 시 10% 네이버페이 포인트 적립",
+      "네이버페이 [온라인팩] 네이버페이 온라인 간편결제 시 3,000 네이버페이 포인트 추가적립",
+      "적립 국내외 온오프라인 가맹점 기본 0.5% 네이버페이 포인트 적립",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/458/card_img/28058/458card.png"
+  },
+  {
+    "Ranking": "91",
+    "Card Name": "I-Mileage (아시아나)",
+    "Corporate Name": "IBK기업은행",
+    "Benefits": [
+      "아시아나항공 아시아나항공 마일리지 적립",
+      "공항라운지 전 세계 공항 라운지 무료 이용 서비스",
+      "공항 공항 발레파킹 무료 이용 서비스",
+      "카페 스타벅스 할인 서비스",
+      "프리미엄 서비스 국제 브랜드 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2675/card_img/32668/2675card.png"
+  },
+  {
+    "Ranking": "92",
+    "Card Name": "삼성 iD 달달할인",
+    "Corporate Name": "삼성카드",
+    "Benefits": [],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/1149/card_img/27718/1149card.png"
+  },
+  {
+    "Ranking": "93",
+    "Card Name": "신한카드 The CLASSIC+",
+    "Corporate Name": "신한카드",
+    "Benefits": [
+      "바우처 Gift Option",
+      "항공마일리지 항공 마일리지 적립 서비스",
+      "면세점 제주 JDC 면세점 8% 결제일 할인",
+      "공항라운지 더라운지",
+      "주유소 GS칼텍스 주유 시 리터당 40원 결제일 할인",
+      "카페 스타벅스 3,000원 할인",
+      "유의사항 꼭 확인해주세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/15/card_img/20097/15card.png"
+  },
+  {
+    "Ranking": "94",
+    "Card Name": "대한항공카드 120",
+    "Corporate Name": "현대카드",
+    "Benefits": [
+      "대한항공 대한항공 마일리지 적립",
+      "적립 연간 보너스 6천 마일리지 적립(연 1회)",
+      "프리미엄 우대 서비스",
+      "프리미엄 서비스 MasterCard Platinum 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2710/card_img/35451/2710card_1.png"
+  },
+  {
+    "Ranking": "95",
+    "Card Name": "K-22(Mileage)",
+    "Corporate Name": "IBK기업은행",
+    "Benefits": [
+      "항공마일리지 대한항공(Skypass) 마일리지 적립",
+      "바우처 바우처서비스 (연 1회 제공, 5가지 중 택 1)",
+      "프리미엄 서비스 프리미엄 서비스",
+      "프리미엄 서비스 특별서비스",
+      "프리미엄 서비스 브랜드 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2536/card_img/29417/2536card.png"
+  },
+  {
+    "Ranking": "96",
+    "Card Name": "하나 CLUB H 아메리칸 익스프레스 리저브 카드",
+    "Corporate Name": "하나카드",
+    "Benefits": [
+      "항공마일리지 국내 이용금액 1천원당 1마일리지 적립",
+      "항공마일리지 해외 이용금액 1천원당 2마일리지 적립",
+      "공항라운지 인천공항 라운지 무료 서비스",
+      "프리미엄 서비스 Special Service 메탈 플레이트 기본 제공",
+      "프리미엄 서비스 국제 브랜드 서비스",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2406/card_img/26473/2406card.png"
+  },
+  {
+    "Ranking": "97",
+    "Card Name": "청춘대로 톡톡카드",
+    "Corporate Name": "KB국민카드",
+    "Benefits": [
+      "카페/디저트 [Great 서비스] 스타벅스 50% 청구할인",
+      "패스트푸드 [Enjoy 서비스] 버거/패스트푸드 업종 20% 청구할인",
+      "간편결제 [Check 서비스] 간편결제(Pay) 10% 청구할인",
+      "생활 [Basic 서비스] 대중교통, 택시/이동통신요금 10% 청구할인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/129/card_img/20358/129card.png"
+  },
+  {
+    "Ranking": "98",
+    "Card Name": "모니모카드",
+    "Corporate Name": "삼성카드",
+    "Benefits": [
+      "선택형 [맞춤혜택] 옵션 서비스 1(Needs & Identity Option) 온라인패션·오늘의집 30% 할인 / 스타벅스 50%, 교보문고·스트리밍 30% 할인",
+      "선택형 [맞춤혜택] 옵션 서비스 2(My Shopping Otion) 온라인쇼핑몰 / 편의점·다이소·올리브영 / 해외 7% 할인",
+      "생활 이동통신요금·아파트 관리비 10% 결제일 할인",
+      "교통 대중교통·택시 10% 결제일 할인",
+      "배달앱 배달앱 10% 결제일 할인",
+      "선택형 내 마음대로 고르는 디자인",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2349/card_img/28096/2349card.png"
+  },
+  {
+    "Ranking": "99",
+    "Card Name": "JADE First Centum",
+    "Corporate Name": "하나카드",
+    "Benefits": [
+      "바우처 [PREMIUM VOUCHER] 바우처 2가지 중 1가지를 선택하여 이용 (연 1회)",
+      "바우처 [DINING VOUCHER] 특급호텔 레스토랑 20만원 현장 할인 (연 1회)",
+      "바우처 [BONUS VOUCHER] 연 누적 이용금액별 골프/프리미엄 아울렛 50% 청구 할인",
+      "공항라운지 [AIRPORT] 전세계 공항 라운지 무료 이용 (본인/가족/동반자 통합 연 10회, 일 3회)",
+      "적립 [REWARD] 국내 전 가맹점 1.5%~1.0% 하나머니 적립 제공・영역별 3.0% 하나머니 적립",
+      "자동차 [DRIVING] 주유(LPG) 리터당 200하나머니・EV충전 50% 하나머니 적립 제공 ・제휴 주차장 무료 주차 제공",
+      "선택형 [SPECIAL PLATE] 특수 소재 카드 신청 가능 (신청 건별 발급수수료 10만원)",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2705/card_img/34596/2705card_1.png"
+  },
+  {
+    "Ranking": "100",
+    "Card Name": "zgm.휴가중카드",
+    "Corporate Name": "NH농협카드",
+    "Benefits": [
+      "해외 해외 이용액 2~5% NH포인트 적립",
+      "모든가맹점 국내 이용액 0.5% NH포인트 기본적립",
+      "적립 항공권, 면세점 업종 0.5% NH포인트 추가적립",
+      "호텔 호텔스닷컴 이용 시 20% 즉시할인(월 이용 한도 4회)",
+      "공항라운지 전 세계 공항 라운지 무료 이용(The lounge / 더 라운지)",
+      "보험사 여행자보험 무료 가입",
+      "프리미엄 서비스 MASTERCARD TITANUM / PLATINUM PREMIUM SERVICES",
+      "선택형 플레이트 디자인 선택가능",
+      "유의사항 꼭 확인하세요!"
+    ],
+    "Image URLs": "https://d1c5n4ri2guedi.cloudfront.net/card/2464/card_img/28156/2464card.png"
+  }
+]
