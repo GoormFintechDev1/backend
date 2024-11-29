@@ -32,7 +32,7 @@ import lombok.extern.log4j.Log4j2;
 public class CardService {
 	@Autowired
 	private AccountService accountService;
-	@Value("${card.json.file.path:card_data.json}")
+	@Value("${card.py.data.path:/crawler/card_data.json}")
 	private String jsonFilePath;
 	
 	public List<CardDTO> loadCardsFromJson(String filePath) {

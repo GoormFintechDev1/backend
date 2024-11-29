@@ -55,6 +55,13 @@ spring:
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+  
+#  card:
+#    py:
+#      file:
+#        path: ${CRAWLER_PY:/crawler/card_crawler.py}
+#      data:
+#        path: ${CRAWLER_JSON:/crawler/card_data.json}
 
 
 # Swagger 3.0 ??
