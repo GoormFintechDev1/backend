@@ -9,7 +9,7 @@ card:
     data:
       path: ${CRAWLER_JSON:./crawler/card_data.json}
     file:
-      path: ${CRAWLER_PY:/crawler/card_crawler.py}
+      path: ${CRAWLER_PY:./crawler/card_crawler.py}
 
 spring:
   application:

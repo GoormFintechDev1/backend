@@ -49,7 +49,9 @@ public class CardService {
 			// 파일의 경로를 root 로 설정했을 때,
 			File jsonFile = new File(filePath);
 			// JSON 파일을 읽어서 Card 리스트로 변환
-			return objectMapper.readValue(jsonFile, new TypeReference<List<CardDTO>>() {});
+			List<CardDTO> cardList = objectMapper.readValue(jsonFile, new TypeReference<List<CardDTO>>() {});
+			log.info(cardList);
+			return cardList;
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to load cards from JSON file: " + filePath, e);
 		}
@@ -105,7 +107,7 @@ public class CardService {
 			result.put("corporateName", card.getCorporateName());
 			result.put("totalSaving", totalSavings);
 			result.put("ranking", ranking);
-			result.put("imageURL", card.getImageUrl());
+			result.put("imageURL", card.getImageURL());
 			recommendations.add(result);
 		}
 

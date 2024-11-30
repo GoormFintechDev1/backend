@@ -97,7 +97,7 @@ df = pd.DataFrame({
     'cardName': card_names,
     'corporateName': corp_names,
     'benefits': benefits_cleaned,
-    'imageURLs': image_urls
+    'imageURL': image_urls
 })
 
 # DataFrame을 리스트-딕셔너리 형태로 변환

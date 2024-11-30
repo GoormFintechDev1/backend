@@ -2,14 +2,12 @@ package com.example.backend.dto.card;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class CardDTO {
     private String ranking;
     private String cardName;
     private String corporateName;
     private List<String> benefits;
-    private String imageUrl;
+    private String imageURL;
 
     // Getters and Setters
     public String getRanking() {
@@ -44,11 +42,11 @@ public class CardDTO {
         this.benefits = benefits;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 }
