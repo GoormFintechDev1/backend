@@ -93,11 +93,11 @@ for benefit_list in benefits:
 
 # 수집한 데이터를 pandas DataFrame으로 변환
 df = pd.DataFrame({
-    'Ranking': rankings,
-    'Card Name': card_names,
-    'Corporate Name': corp_names,
-    'Benefits': benefits_cleaned,
-    'Image URLs': image_urls
+    'ranking': rankings,
+    'cardName': card_names,
+    'corporateName': corp_names,
+    'benefits': benefits_cleaned,
+    'imageURLs': image_urls
 })
 
 # DataFrame을 리스트-딕셔너리 형태로 변환
