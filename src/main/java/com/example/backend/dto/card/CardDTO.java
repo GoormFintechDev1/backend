@@ -5,19 +5,10 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CardDTO {
-	@JsonProperty("Ranking")
     private String ranking;
-    
-    @JsonProperty("Card Name")
     private String cardName;
-    
-    @JsonProperty("Corporate Name")
     private String corporateName;
-    
-    @JsonProperty("Benefits")
     private List<String> benefits;
-    
-    @JsonProperty("Image URLs")
     private String imageUrl;
 
     // Getters and Setters

@@ -101,19 +101,19 @@ public class CardService {
 			int ranking = Integer.parseInt(card.getRanking());
 
 			Map<String, Object> result = new HashMap<>();
-			result.put("Card Name", card.getCardName());
-			result.put("Corporate Name", card.getCorporateName());
-			result.put("Total Saving", totalSavings);
-			result.put("Ranking", ranking);
-			result.put("Image URL", card.getImageUrl());
+			result.put("cardName", card.getCardName());
+			result.put("corporateName", card.getCorporateName());
+			result.put("totalSaving", totalSavings);
+			result.put("ranking", ranking);
+			result.put("imageURL", card.getImageUrl());
 			recommendations.add(result);
 		}
 
 		// 정렬: 총 절약 금액 내림차순 -> 랭킹 오름차순
 		recommendations.sort((a, b) -> {
-			int compareSavings = ((BigDecimal) b.get("Total Saving")).compareTo((BigDecimal) a.get("Total Saving"));
+			int compareSavings = ((BigDecimal) b.get("totalSaving")).compareTo((BigDecimal) a.get("totalSaving"));
 			if (compareSavings != 0) return compareSavings;
-			return Integer.compare((int) a.get("Ranking"), (int) b.get("Ranking"));
+			return Integer.compare((int) a.get("ranking"), (int) b.get("ranking"));
 		});
 
 		// 상위 5개 카드 반환
