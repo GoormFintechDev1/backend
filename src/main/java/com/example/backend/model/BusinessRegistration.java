@@ -13,17 +13,20 @@ public class BusinessRegistration extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "business_registration_id")
-    private Long id;
+    private Long businessRegistrationId;
 
     // 회원 식별 번호
     @OneToOne
     @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
-    // 사업 카테고리 식별번호
-    @ManyToOne
-    @JoinColumn(name = "business_category_id", nullable = false)
-    private BusinessCategory businessCategory;
+    // 업태
+    @Column(name = "business_type", nullable = false)
+    private String businessType ;
+
+    // 종목
+    @Column(name = "business_item", nullable = false)
+    private String businessItem;
 
     // 사업자등록번호 -> String으로 받기 v
     @Column(name = "br_num", nullable = false, unique = true)
@@ -44,5 +47,16 @@ public class BusinessRegistration extends BaseTime {
     // 상호
     @Column(name = "company_name")
     private String companyName;
+
+    // 포스 식별 번호
+    @OneToOne
+    @JoinColumn(name = "pos_id", nullable = true)
+    private Pos posId;
+
+    // 계좌 식별 번호
+    @OneToOne
+    @JoinColumn(name = "account_id", nullable = true)
+    private Account accountId;
+
 
 }

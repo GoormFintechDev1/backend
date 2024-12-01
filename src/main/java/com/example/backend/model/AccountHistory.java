@@ -19,8 +19,8 @@ public class AccountHistory {
     // 기록 식별 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "history_id")
-    private Long historyId;
+    @Column(name = "account_history_id")
+    private Long accountHistoryId;
 
     // 계좌ID
     @ManyToOne
@@ -44,10 +44,6 @@ public class AccountHistory {
     // 거래금액
     @Column(name = "amount", precision = 15, scale = 0)
     private BigDecimal amount;
-
-    // 거래 후 잔액
-    @Column(name = "balance_after", precision = 15, scale = 0)
-    private BigDecimal balanceAfter;
 
     // 카테고리 (공과금, 임대료, 재료비..)
     @Column(name = "category", length = 50)

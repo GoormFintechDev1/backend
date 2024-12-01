@@ -40,6 +40,4 @@ public class Goals extends BaseTime{
     @Column(name = "expense_goal", precision = 15, scale = 0)
     private BigDecimal expenseGoal;
 
-    private Boolean revenueAchieved = false; // 매출 목표 달성 여부
-    private Boolean expenseAchieved = false; // 지출 목표 달성 여부
 }

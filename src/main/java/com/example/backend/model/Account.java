@@ -19,11 +19,6 @@ public class Account extends BaseTime{
     @Column(name = "account_id")
     private Long accountId;
 
-    // 사업자번호
-    @ManyToOne
-    @JoinColumn(name = "business_id")
-    private BusinessRegistration business;
-
     // 계좌번호
     @Column(name = "account_num")
     private String accountNumber;
@@ -32,7 +27,11 @@ public class Account extends BaseTime{
     @Column(name = "bank_name")
     private String bankName;
 
-    // 잔고
+    // 계좌 잔액
     @Column(name = "balance", precision = 15, scale = 0)
     private BigDecimal balance;
+
+    // 외부API에서 받아온 사업자 번호 (초기 인증용)
+    @Column(name = "br_num", nullable = false, unique = true)
+    private String brNum;
 }

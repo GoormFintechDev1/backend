@@ -1,56 +1,64 @@
-package com.example.backend.model;
+package com.example.pos.model.pos;
 
-import com.example.backend.model.enumSet.PaymentTypeEnum;
+
+import com.example.backend.model.Pos;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
-@Entity
-@Table(name = "pos_sale")
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
+@Table(name = "pos_sales")
 public class PosSales {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "sale_id")
-    private Long saleId;
+    @Column(name = "pos_sales_id")
+    private Long posSalesId;
 
     @ManyToOne
     @JoinColumn(name = "pos_id", nullable = false)
-    private Pos pos;
+    private Pos posId;
 
-    @Column(name = "sale_date", nullable = false)
-    private LocalDateTime saleDate;
+    @Column(name = "order_time", nullable = false)
+    private LocalDateTime orderTime;
 
-    @Column(name = "sale_time", nullable = false)
-    private LocalDateTime saleTime;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "payment_type", nullable = false)
-    private PaymentTypeEnum paymentType;
+    @Column(name = "total_price", nullable = false)
+    private BigDecimal totalPrice;
 
-    @Column(name = "total_amount", nullable = false, precision = 15, scale = 2)
-    private BigDecimal totalAmount;
-
-    @Column(name = "vat_amount", precision = 15, scale = 2)
+    // totalPrice의 10%
+    @Column(name = "vat_amount", nullable = false)
     private BigDecimal vatAmount;
-
-    @Column(name = "card_company", length = 50)
-    private String cardCompany;
-
-    @Column(name = "approval_number", length = 20)
-    private String approvalNumber;
 
     @Column(name = "product_name", nullable = false)
     private String productName;
 
+
     @Column(name = "quantity", nullable = false)
     private int quantity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status", nullable = false)
+    private OrderStatus orderStatus; // 주문 상태
+
+    // 결제 유형 ( CARD / CASH )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_type", nullable = false)
+    private PaymentType paymentType;
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status", nullable = false)
+    private PaymentStatus paymentStatus; // 결제 상태
+
+
 }

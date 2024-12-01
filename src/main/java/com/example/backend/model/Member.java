@@ -19,7 +19,7 @@ public class Member extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    private Long id;
+    private Long memberId;
 
     @Column(name = "login_id", nullable = false, unique = true, length = 20)
     private String loginId; // 아이디
