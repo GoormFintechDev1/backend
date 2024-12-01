@@ -108,6 +108,7 @@ public class CardService {
 			result.put("totalSaving", totalSavings);
 			result.put("ranking", ranking);
 			result.put("imageURL", card.getImageURL());
+			result.put("benefits", card.getBenefits());
 			recommendations.add(result);
 		}
 
