@@ -24,13 +24,19 @@ public class QBusinessRegistration extends EntityPathBase<BusinessRegistration> 
 
     public final QBaseTime _super = new QBaseTime(this);
 
+    public final QAccount accountId;
+
     public final StringPath address = createString("address");
 
     public final StringPath brNum = createString("brNum");
 
-    public final QBusinessCategory businessCategory;
+    public final StringPath businessItem = createString("businessItem");
+
+    public final NumberPath<Long> businessRegistrationId = createNumber("businessRegistrationId", Long.class);
 
     public final DatePath<java.time.LocalDate> businessStartDate = createDate("businessStartDate", java.time.LocalDate.class);
+
+    public final StringPath businessType = createString("businessType");
 
     public final StringPath companyName = createString("companyName");
 
@@ -40,9 +46,9 @@ public class QBusinessRegistration extends EntityPathBase<BusinessRegistration> 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
     public final QMember member;
+
+    public final com.example.backend.model.POS.QPos posId;
 
     public final StringPath representativeName = createString("representativeName");
 
@@ -67,8 +73,9 @@ public class QBusinessRegistration extends EntityPathBase<BusinessRegistration> 
 
     public QBusinessRegistration(Class<? extends BusinessRegistration> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.businessCategory = inits.isInitialized("businessCategory") ? new QBusinessCategory(forProperty("businessCategory")) : null;
+        this.accountId = inits.isInitialized("accountId") ? new QAccount(forProperty("accountId")) : null;
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
+        this.posId = inits.isInitialized("posId") ? new com.example.backend.model.POS.QPos(forProperty("posId")) : null;
     }
 
 }

@@ -22,17 +22,15 @@ public class QAccountHistory extends EntityPathBase<AccountHistory> {
 
     public static final QAccountHistory accountHistory = new QAccountHistory("accountHistory");
 
+    public final NumberPath<Long> accountHistoryId = createNumber("accountHistoryId", Long.class);
+
     public final QAccount accountId;
 
     public final NumberPath<java.math.BigDecimal> amount = createNumber("amount", java.math.BigDecimal.class);
 
-    public final NumberPath<java.math.BigDecimal> balanceAfter = createNumber("balanceAfter", java.math.BigDecimal.class);
-
     public final StringPath category = createString("category");
 
     public final BooleanPath fixedExpenses = createBoolean("fixedExpenses");
-
-    public final NumberPath<Long> historyId = createNumber("historyId", Long.class);
 
     public final StringPath note = createString("note");
 
@@ -62,7 +60,7 @@ public class QAccountHistory extends EntityPathBase<AccountHistory> {
 
     public QAccountHistory(Class<? extends AccountHistory> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.accountId = inits.isInitialized("accountId") ? new QAccount(forProperty("accountId"), inits.get("accountId")) : null;
+        this.accountId = inits.isInitialized("accountId") ? new QAccount(forProperty("accountId")) : null;
     }
 
 }
