@@ -385,8 +385,8 @@ public class AccountService {
                 .build();
 
         accountRepository.save(accountHistory);
-        log.info("계좌 기록 생성 성공 : {}", accountHistory.getHistoryId());
-        return accountHistory.getHistoryId();
+        log.info("계좌 기록 생성 성공 : {}", accountHistory.getAccountHistoryId());
+        return accountHistory.getAccountHistoryId();
     }
 
     // 수정
