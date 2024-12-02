@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package com.example.backend.model.BUSINESS;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,15 +16,15 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QGoals extends EntityPathBase<Goals> {
 
-    private static final long serialVersionUID = -2105848112L;
+    private static final long serialVersionUID = 1501559490L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QGoals goals = new QGoals("goals");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final com.example.backend.model.QBaseTime _super = new com.example.backend.model.QBaseTime(this);
 
-    public final QBusinessRegistration businessId;
+    public final QBusinessRegistration businessRegistration;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -61,7 +61,7 @@ public class QGoals extends EntityPathBase<Goals> {
 
     public QGoals(Class<? extends Goals> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.businessId = inits.isInitialized("businessId") ? new QBusinessRegistration(forProperty("businessId"), inits.get("businessId")) : null;
+        this.businessRegistration = inits.isInitialized("businessRegistration") ? new QBusinessRegistration(forProperty("businessRegistration"), inits.get("businessRegistration")) : null;
     }
 
 }

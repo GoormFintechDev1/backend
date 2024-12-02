@@ -1,9 +1,12 @@
+/*
 package com.example.backend.service.BUSINESS;
 
 import com.example.backend.dto.account.ExpenseDetailDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.model.*;
 import com.example.backend.model.BUSINESS.BusinessRegistration;
+import com.example.backend.model.BUSINESS.QBusinessRegistration;
+import com.example.backend.model.BUSINESS.QReport;
 import com.example.backend.model.BUSINESS.Report;
 import com.example.backend.service.BANK.AccountService;
 import com.example.backend.service.POS.PosService;
@@ -69,9 +72,13 @@ public class ReportService {
     @Transactional
     public String getOrCreateReport(Long memberId, YearMonth month, String reportType) {
 
-        BusinessRegistration businessRegistration = queryFactory.selectFrom(QBusinessRegistration.businessRegistration)
-                .where(QBusinessRegistration.businessRegistration.member.id.eq(memberId))
+        BusinessRegistration businessRegistration = queryFactory
+                .selectFrom(QBusinessRegistration.businessRegistration)
+                .join(QBusinessRegistration.businessRegistration)
+                .on(QBusinessRegistration.businessRegistration.businessRegistrationId.eq(QMember.member.businessRegistration.businessRegistrationId))
+                .where(QMember.member.memberId.eq(memberId))
                 .fetchOne();
+
 
         if (businessRegistration == null) {
             throw new IllegalArgumentException("Member ID: " + memberId + "에 대한 BusinessRegistration이 존재하지 않습니다.");
@@ -82,7 +89,7 @@ public class ReportService {
         // 1. 리포트 조회
         Report existingReport = queryFactory.selectFrom(QReport.report)
                 .where(
-                        QReport.report.businessRegistration.id.eq(businessRegistration.getId()),
+                        QReport.report.businessRegistration.businessRegistrationId.eq(businessRegistration.getBusinessRegistrationId()),
                         QReport.report.reportMonth.eq(reportMonth),
                         QReport.report.reportType.eq(reportType)
                 )
@@ -349,8 +356,11 @@ public class ReportService {
         LocalDate previousReportMonth = previousMonth.atDay(1); // 전 달의 첫 번째 날
 
         // BusinessRegistration 조회
-        BusinessRegistration businessRegistration = queryFactory.selectFrom(QBusinessRegistration.businessRegistration)
-                .where(QBusinessRegistration.businessRegistration.member.id.eq(memberId))
+        BusinessRegistration businessRegistration = queryFactory
+                .selectFrom(QBusinessRegistration.businessRegistration)
+                .join(QBusinessRegistration.businessRegistration)
+                .on(QBusinessRegistration.businessRegistration.businessRegistrationId.eq(QMember.member.businessRegistration.businessRegistrationId)) // 연결
+                .where(QMember.member.memberId.eq(memberId)) // memberId 조건
                 .fetchOne();
 
         if (businessRegistration == null) {
@@ -364,7 +374,7 @@ public class ReportService {
         boolean allReportsExist = reportTypes.stream().allMatch(reportType ->
                 queryFactory.selectFrom(QReport.report)
                         .where(
-                                QReport.report.businessRegistration.id.eq(businessRegistration.getId()),
+                                QReport.report.businessRegistration.businessRegistrationId.eq(businessRegistration.getBusinessRegistrationId()),
                                 QReport.report.reportMonth.eq(previousReportMonth),
                                 QReport.report.reportType.eq(reportType)
                         )
@@ -377,3 +387,4 @@ public class ReportService {
 
 
 }
+*/

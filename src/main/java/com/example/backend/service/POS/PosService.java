@@ -1,16 +1,15 @@
+/*
 package com.example.backend.service.POS;
 
 import com.example.backend.dto.pos.DailyIncomeDTO;
 import com.example.backend.dto.pos.IncomeHistoryDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
-import com.example.backend.model.*;
-import com.example.backend.model.BANK.Account;
+import com.example.backend.model.BUSINESS.QBusinessRegistration;
 import com.example.backend.model.POS.QPos;
 import com.example.backend.model.POS.QPosSales;
+import com.example.backend.model.QMember;
 import com.example.backend.model.enumSet.PaymentTypeEnum;
-import com.example.backend.model.enumSet.TransactionMeansEnum;
-import com.example.backend.model.enumSet.TransactionTypeEnum;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +36,14 @@ public class PosService {
     private Long getPosIdByMemberId(Long memberId) {
         QPos qPos = QPos.pos;
         QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+        QMember qMember = QMember.member;
 
         Long posId = queryFactory
                 .select(qPos.posId)
-                .from(qPos)
-                .join(qPos.businessRegistration, qBusinessRegistration)
-                .where(qBusinessRegistration.member.id.eq(memberId))
+                .from(qMember)
+                .join(qMember.businessRegistration, qBusinessRegistration)
+                .join(qBusinessRegistration.pos, qPos)
+                .where(qMember.memberId.eq(memberId))
                 .fetchOne();
 
         if (posId == null) {
@@ -64,7 +64,7 @@ public class PosService {
         Boolean isAuthorized = queryFactory
                 .selectOne()
                 .from(qPos)
-                .join(qPos.businessRegistration, qBusinessRegistration)
+                .join(qPos, qBusinessRegistration.pos)
                 .where(
                         qBusinessRegistration.member.id.eq(memberId)
                                 .and(qPos.posId.eq(posId))
@@ -384,4 +384,4 @@ public class PosService {
         return averageMetrics;
     }
 
-}
+}*/

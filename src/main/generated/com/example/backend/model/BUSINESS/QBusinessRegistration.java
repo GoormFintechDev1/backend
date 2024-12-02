@@ -1,8 +1,7 @@
-package com.example.backend.model;
+package com.example.backend.model.BUSINESS;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.example.backend.model.BUSINESS.BusinessRegistration;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -17,15 +16,15 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QBusinessRegistration extends EntityPathBase<BusinessRegistration> {
 
-    private static final long serialVersionUID = 484503433L;
+    private static final long serialVersionUID = -2005622441L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QBusinessRegistration businessRegistration = new QBusinessRegistration("businessRegistration");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final com.example.backend.model.QBaseTime _super = new com.example.backend.model.QBaseTime(this);
 
-    public final QAccount accountId;
+    public final com.example.backend.model.BANK.QAccount account;
 
     public final StringPath address = createString("address");
 
@@ -47,9 +46,7 @@ public class QBusinessRegistration extends EntityPathBase<BusinessRegistration> 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
 
-    public final QMember member;
-
-    public final com.example.backend.model.POS.QPos posId;
+    public final com.example.backend.model.POS.QPos pos;
 
     public final StringPath representativeName = createString("representativeName");
 
@@ -74,9 +71,8 @@ public class QBusinessRegistration extends EntityPathBase<BusinessRegistration> 
 
     public QBusinessRegistration(Class<? extends BusinessRegistration> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.accountId = inits.isInitialized("accountId") ? new QAccount(forProperty("accountId")) : null;
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
-        this.posId = inits.isInitialized("posId") ? new com.example.backend.model.POS.QPos(forProperty("posId")) : null;
+        this.account = inits.isInitialized("account") ? new com.example.backend.model.BANK.QAccount(forProperty("account")) : null;
+        this.pos = inits.isInitialized("pos") ? new com.example.backend.model.POS.QPos(forProperty("pos")) : null;
     }
 
 }

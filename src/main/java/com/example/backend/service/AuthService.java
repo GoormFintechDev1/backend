@@ -67,6 +67,7 @@ public class AuthService {
                 .email(signupRequest.getEmail())
                 .createdAt(LocalDateTime.now())
                 .identityNumber(encryptedIdentityNumber) // 암호화 된 주민등록번호 설정
+                .activity(MemberActiveEnum.ACTIVE)
                 .build();
 
         // 3. DB에 저장
@@ -159,7 +160,6 @@ public class AuthService {
         log.info("회원 활성화 성공: {}", activityMemberRequest);
     }
 
-    //TODO 신고 횟수 5회 누적 시 유저 정지 SUSPENDED 로 변환 하는 로직 구현하기.
 
     // 아이디 중복 확인 (true - 중복, false - 중복 아님)
     public boolean checkLoginID(CheckIdRequestDTO checkIdRequest) {

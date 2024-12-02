@@ -19,11 +19,6 @@ public class BusinessRegistration extends BaseTime {
     @Column(name = "business_registration_id")
     private Long businessRegistrationId;
 
-    // 회원 식별 번호
-    @OneToOne
-    @JoinColumn(name = "member_id", nullable = true)
-    private Member member;
-
     // 업태
     @Column(name = "business_type", nullable = false)
     private String businessType ;
@@ -55,12 +50,12 @@ public class BusinessRegistration extends BaseTime {
     // 포스 식별 번호
     @OneToOne
     @JoinColumn(name = "pos_id", nullable = true)
-    private Pos posId;
+    private Pos pos;
 
     // 계좌 식별 번호
     @OneToOne
     @JoinColumn(name = "account_id", nullable = true)
-    private Account accountId;
+    private Account account;
 
 
 }

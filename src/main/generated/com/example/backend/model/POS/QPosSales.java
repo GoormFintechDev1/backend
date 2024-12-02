@@ -22,8 +22,6 @@ public class QPosSales extends EntityPathBase<PosSales> {
 
     public static final QPosSales posSales = new QPosSales("posSales");
 
-    public final ListPath<OrderItem, QOrderItem> orderItems = this.<OrderItem, QOrderItem>createList("orderItems", OrderItem.class, QOrderItem.class, PathInits.DIRECT2);
-
     public final EnumPath<com.example.backend.model.enumSet.OrderStatus> orderStatus = createEnum("orderStatus", com.example.backend.model.enumSet.OrderStatus.class);
 
     public final DateTimePath<java.time.LocalDateTime> orderTime = createDateTime("orderTime", java.time.LocalDateTime.class);

@@ -1,16 +1,13 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.member.myPageDTO;
-import com.example.backend.model.QBusinessRegistration;
+import com.example.backend.model.BUSINESS.QBusinessRegistration;
 import com.example.backend.model.QMember;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +33,8 @@ public class MemberService {
                 )
                 .from(qMember)
                 .leftJoin(qBusinessRegistration)
-                .on(qMember.id.eq(qBusinessRegistration.member.id))
-                .where(qMember.id.eq(memberId))
+                .on(qMember.businessRegistration.businessRegistrationId.eq(qBusinessRegistration.businessRegistrationId))
+                .where(qMember.memberId.eq(memberId))
                 .fetchOne();
 
 

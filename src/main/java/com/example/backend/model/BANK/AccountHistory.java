@@ -16,16 +16,16 @@ import java.time.LocalDateTime;
 @Table(name = "account_history")
 public class AccountHistory {
 
-    // 기록 식별 ID
+    // 계좌 기록 식별 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_history_id")
     private Long accountHistoryId;
 
-    // 계좌ID
+    // 계좌 ID
     @ManyToOne
     @JoinColumn(name = "account_id")
-    private Account accountId;
+    private Account account;
 
     // 거래 타입 (매출(Revenue)/지출(Expense)
     @Enumerated(EnumType.STRING)
@@ -62,8 +62,8 @@ public class AccountHistory {
     private String storeName;
 
     @Builder
-    public AccountHistory(String transactionType, Account accountId, String transactionMeans, LocalDateTime transactionDate,BigDecimal amount, String category, String note, Boolean fixedExpenses, String storeName) {
-        this.accountId = accountId;
+    public AccountHistory(String transactionType, Account account, String transactionMeans, LocalDateTime transactionDate,BigDecimal amount, String category, String note, Boolean fixedExpenses, String storeName) {
+        this.account = account;
         this.transactionType = TransactionTypeEnum.EXPENSE;
         this.transactionMeans = TransactionMeansEnum.CASH;
         this.transactionDate = transactionDate;

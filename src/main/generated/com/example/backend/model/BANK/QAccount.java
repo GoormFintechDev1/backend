@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package com.example.backend.model.BANK;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,11 +15,11 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QAccount extends EntityPathBase<Account> {
 
-    private static final long serialVersionUID = 2132865341L;
+    private static final long serialVersionUID = -951426261L;
 
     public static final QAccount account = new QAccount("account");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final com.example.backend.model.QBaseTime _super = new com.example.backend.model.QBaseTime(this);
 
     public final NumberPath<Long> accountId = createNumber("accountId", Long.class);
 

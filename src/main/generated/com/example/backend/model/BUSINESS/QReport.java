@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package com.example.backend.model.BUSINESS;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,15 +16,15 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QReport extends EntityPathBase<Report> {
 
-    private static final long serialVersionUID = -550646748L;
+    private static final long serialVersionUID = -390160782L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QReport report = new QReport("report");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final com.example.backend.model.QBaseTime _super = new com.example.backend.model.QBaseTime(this);
 
-    public final QBusinessRegistration businessRegistrationId;
+    public final QBusinessRegistration businessRegistration;
 
     public final StringPath content = createString("content");
 
@@ -60,7 +60,7 @@ public class QReport extends EntityPathBase<Report> {
 
     public QReport(Class<? extends Report> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.businessRegistrationId = inits.isInitialized("businessRegistrationId") ? new QBusinessRegistration(forProperty("businessRegistrationId"), inits.get("businessRegistrationId")) : null;
+        this.businessRegistration = inits.isInitialized("businessRegistration") ? new QBusinessRegistration(forProperty("businessRegistration"), inits.get("businessRegistration")) : null;
     }
 
 }

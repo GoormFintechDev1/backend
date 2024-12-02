@@ -17,10 +17,8 @@ public class PosSalesService {
 
     private final PosSalesRepository posSalesRepository;
 
-
-
     // 단일 저장 메서드
-    public void saveSale(PosSalesRequestDTO request) {
+    public PosSales saveSale(PosSalesRequestDTO request) {
         PosSales posSales = PosSales.builder()
                 .posId(getDummyPos()) // 임시 POS 설정
                 .productName(request.getProductName())

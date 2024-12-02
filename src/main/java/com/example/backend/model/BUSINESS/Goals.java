@@ -25,8 +25,8 @@ public class Goals extends BaseTime {
 
     // 사업자 ID
     @ManyToOne
-    @JoinColumn(name = "business_id")
-    private BusinessRegistration businessId;
+    @JoinColumn(name = "business_registration_id")
+    private BusinessRegistration businessRegistration;
 
     // 목표월
     @Column(name = "goal_month")

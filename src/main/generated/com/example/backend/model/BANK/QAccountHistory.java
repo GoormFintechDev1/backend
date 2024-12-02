@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package com.example.backend.model.BANK;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,15 +16,15 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QAccountHistory extends EntityPathBase<AccountHistory> {
 
-    private static final long serialVersionUID = -1824645993L;
+    private static final long serialVersionUID = 1931166441L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QAccountHistory accountHistory = new QAccountHistory("accountHistory");
 
-    public final NumberPath<Long> accountHistoryId = createNumber("accountHistoryId", Long.class);
+    public final QAccount account;
 
-    public final QAccount accountId;
+    public final NumberPath<Long> accountHistoryId = createNumber("accountHistoryId", Long.class);
 
     public final NumberPath<java.math.BigDecimal> amount = createNumber("amount", java.math.BigDecimal.class);
 
@@ -60,7 +60,7 @@ public class QAccountHistory extends EntityPathBase<AccountHistory> {
 
     public QAccountHistory(Class<? extends AccountHistory> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.accountId = inits.isInitialized("accountId") ? new QAccount(forProperty("accountId")) : null;
+        this.account = inits.isInitialized("account") ? new QAccount(forProperty("account")) : null;
     }
 
 }

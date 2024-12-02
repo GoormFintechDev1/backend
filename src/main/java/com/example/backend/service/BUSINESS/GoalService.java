@@ -1,10 +1,12 @@
+/*
 package com.example.backend.service.BUSINESS;
 
 import com.example.backend.dto.goals.*;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.BUSINESS.BusinessRegistration;
 import com.example.backend.model.BUSINESS.Goals;
-import com.example.backend.model.QGoals;
+
+import com.example.backend.model.BUSINESS.QGoals;
 import com.example.backend.repository.GoalsRepository;
 import com.example.backend.service.BANK.AccountService;
 import com.example.backend.service.POS.PosService;
@@ -38,7 +40,7 @@ public class GoalService {
         Goals existingGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
-                        qGoals.businessId.id.eq(business.getId())
+                        qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                 .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth()))
                 )
                 .fetchOne();
@@ -52,7 +54,6 @@ public class GoalService {
             if (requestDTO.getExpenseGoal() != null && existingGoal.getExpenseGoal().compareTo(BigDecimal.ZERO) == 0) {
                 existingGoal.setExpenseGoal(requestDTO.getExpenseGoal());
             }
-
             // 두 목표 모두 이미 설정된 경우 예외 처리
             if (existingGoal.getRevenueGoal().compareTo(BigDecimal.ZERO) > 0 && existingGoal.getExpenseGoal().compareTo(BigDecimal.ZERO) > 0) {
                 throw new BadRequestException("해당 연월에 목표가 이미 설정되어 있습니다.");
@@ -66,9 +67,7 @@ public class GoalService {
                     business,
                     requestDTO.getGoalMonth(),
                     requestDTO.getRevenueGoal() != null ? requestDTO.getRevenueGoal() : BigDecimal.ZERO,
-                    requestDTO.getExpenseGoal() != null ? requestDTO.getExpenseGoal() : BigDecimal.ZERO,
-                    false,
-                    false
+                    requestDTO.getExpenseGoal() != null ? requestDTO.getExpenseGoal() : BigDecimal.ZERO
             );
             goalsRepository.save(goal);
         }
@@ -76,14 +75,13 @@ public class GoalService {
 
 
     // 목표 수정 메서드
-
     public GoalResponseDTO updateGoal(Long memberId, GoalRequestDTO requestDTO) {
         BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
         QGoals qGoals = QGoals.goals;
         Goals existingGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
-                        qGoals.businessId.id.eq(business.getId())
+                        qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                 .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth()))
                 )
                 .fetchOne();
@@ -127,7 +125,7 @@ public class GoalService {
         Goals currentGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
-                        qGoals.businessId.id.eq(business.getId())
+                        qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                 .and(qGoals.goalMonth.eq(goalMonth))
                 )
                 .fetchOne();
@@ -139,7 +137,7 @@ public class GoalService {
         Goals oneMonthGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
-                        qGoals.businessId.id.eq(business.getId())
+                        qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                 .and(qGoals.goalMonth.eq(oneMonthAgo))
                 )
                 .fetchOne();
@@ -151,7 +149,7 @@ public class GoalService {
         Goals twoMonthGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
-                        qGoals.businessId.id.eq(business.getId())
+                        qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                 .and(qGoals.goalMonth.eq(twoMonthsAgo))
                 )
                 .fetchOne();
@@ -179,7 +177,7 @@ public class GoalService {
         Goals currentGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
-                        qGoals.businessId.id.eq(business.getId())
+                        qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                 .and(qGoals.goalMonth.eq(goalMonth))
                 )
                 .fetchOne();
@@ -192,7 +190,7 @@ public class GoalService {
         Goals oneMonthGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
-                        qGoals.businessId.id.eq(business.getId())
+                        qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                 .and(qGoals.goalMonth.eq(oneMonthAgo))
                 )
                 .fetchOne();
@@ -203,7 +201,7 @@ public class GoalService {
         Goals twoMonthGoal = queryFactory
                 .selectFrom(qGoals)
                 .where(
-                        qGoals.businessId.id.eq(business.getId())
+                        qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                 .and(qGoals.goalMonth.eq(twoMonthsAgo))
                 )
                 .fetchOne();
@@ -235,7 +233,7 @@ public class GoalService {
             Goals revenueGoal = queryFactory
                     .selectFrom(qGoals)
                     .where(
-                            qGoals.businessId.id.eq(business.getId())
+                            qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                     .and(qGoals.goalMonth.eq(goalMonth))
                     )
                     .fetchOne();
@@ -246,7 +244,7 @@ public class GoalService {
             Goals expenseGoal = queryFactory
                     .selectFrom(qGoals)
                     .where(
-                            qGoals.businessId.id.eq(business.getId())
+                            qGoals.businessRegistration.businessRegistrationId.eq(business.getBusinessRegistrationId())
                                     .and(qGoals.goalMonth.eq(goalMonth))
                     )
                     .fetchOne();
@@ -270,3 +268,4 @@ public class GoalService {
 
 
 }
+*/
