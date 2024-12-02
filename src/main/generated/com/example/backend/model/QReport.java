@@ -24,37 +24,20 @@ public class QReport extends EntityPathBase<Report> {
 
     public final QBaseTime _super = new QBaseTime(this);
 
-    public final NumberPath<Float> bsiIndex = createNumber("bsiIndex", Float.class);
-
-    public final QBusinessRegistration businessRegistration;
+    public final QBusinessRegistration businessRegistrationId;
 
     public final StringPath content = createString("content");
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
-
-    public final NumberPath<Long> expenses = createNumber("expenses", Long.class);
-
-    public final NumberPath<Long> industryAvgExpenses = createNumber("industryAvgExpenses", Long.class);
-
-    public final NumberPath<Long> industryAvgProfit = createNumber("industryAvgProfit", Long.class);
-
-    public final NumberPath<Long> industryAvgRevenue = createNumber("industryAvgRevenue", Long.class);
-
-    public final NumberPath<Long> profit = createNumber("profit", Long.class);
 
     public final NumberPath<Long> reportId = createNumber("reportId", Long.class);
 
     public final DatePath<java.time.LocalDate> reportMonth = createDate("reportMonth", java.time.LocalDate.class);
 
     public final StringPath reportType = createString("reportType");
-
-    public final NumberPath<Long> revenue = createNumber("revenue", Long.class);
-
-    public final StringPath stabilityRating = createString("stabilityRating");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
@@ -77,7 +60,7 @@ public class QReport extends EntityPathBase<Report> {
 
     public QReport(Class<? extends Report> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.businessRegistration = inits.isInitialized("businessRegistration") ? new QBusinessRegistration(forProperty("businessRegistration"), inits.get("businessRegistration")) : null;
+        this.businessRegistrationId = inits.isInitialized("businessRegistrationId") ? new QBusinessRegistration(forProperty("businessRegistrationId"), inits.get("businessRegistrationId")) : null;
     }
 
 }
