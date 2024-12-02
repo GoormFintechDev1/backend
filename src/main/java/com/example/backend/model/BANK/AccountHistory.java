@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package com.example.backend.model.BANK;
 
 import com.example.backend.model.enumSet.TransactionMeansEnum;
 import com.example.backend.model.enumSet.TransactionTypeEnum;

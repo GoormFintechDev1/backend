@@ -1,11 +1,13 @@
-package com.example.backend.service;
+package com.example.backend.service.BUSINESS;
 
 import com.example.backend.dto.goals.*;
 import com.example.backend.exception.base_exceptions.BadRequestException;
-import com.example.backend.model.BusinessRegistration;
-import com.example.backend.model.Goals;
+import com.example.backend.model.BUSINESS.BusinessRegistration;
+import com.example.backend.model.BUSINESS.Goals;
 import com.example.backend.model.QGoals;
 import com.example.backend.repository.GoalsRepository;
+import com.example.backend.service.BANK.AccountService;
+import com.example.backend.service.POS.PosService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

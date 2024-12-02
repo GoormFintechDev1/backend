@@ -1,10 +1,7 @@
-package com.example.backend.model;
+package com.example.backend.model.POS;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "pos")

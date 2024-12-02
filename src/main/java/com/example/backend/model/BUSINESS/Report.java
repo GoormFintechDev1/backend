@@ -1,5 +1,6 @@
-package com.example.backend.model;
+package com.example.backend.model.BUSINESS;
 
+import com.example.backend.model.BaseTime;
 import jakarta.persistence.Entity;
 import lombok.*;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "report")
-public class Report extends BaseTime{
+public class Report extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "report_id")

@@ -1,9 +1,9 @@
-package com.example.backend.controller;
+package com.example.backend.controller.POS;
 
 import com.example.backend.dto.pos.DailyIncomeDTO;
 import com.example.backend.dto.pos.IncomeHistoryDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
-import com.example.backend.service.PosService;
+import com.example.backend.service.POS.PosService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 
 @RestController

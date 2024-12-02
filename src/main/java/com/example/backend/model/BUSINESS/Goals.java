@@ -1,5 +1,6 @@
-package com.example.backend.model;
+package com.example.backend.model.BUSINESS;
 
+import com.example.backend.model.BaseTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.YearMonth;
 
 @Getter
@@ -16,7 +16,7 @@ import java.time.YearMonth;
 @AllArgsConstructor
 @Entity
 @Table(name = "goals")
-public class Goals extends BaseTime{
+public class Goals extends BaseTime {
 
     // 식별 ID
     @Id

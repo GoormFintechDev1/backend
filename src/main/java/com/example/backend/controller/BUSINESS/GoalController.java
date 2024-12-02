@@ -1,14 +1,12 @@
-package com.example.backend.controller;
+package com.example.backend.controller.BUSINESS;
 
 import com.example.backend.dto.goals.*;
-import com.example.backend.service.GoalService;
+import com.example.backend.service.BUSINESS.GoalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
