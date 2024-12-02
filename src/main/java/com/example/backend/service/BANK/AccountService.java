@@ -61,25 +61,6 @@ public class AccountService {
         return accountId;
     }
 
-    // 로그인한 유저의 posId를 가져오는 로직
-    private Long getPosIdByMemberId(Long memberId) {
-        QPos qPos = QPos.pos;
-        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
-
-        Long posId = queryFactory
-                .select(qPos.posId)
-                .from(qPos)
-                .join(qPos.businessRegistration, qBusinessRegistration)
-                .where(qBusinessRegistration.member.id.eq(memberId))
-                .fetchOne();
-
-        if (posId == null) {
-            throw new BadRequestException("해당 사용자는 포스가 없습니다.");
-        }
-        return posId;
-    }
-
-
     // 월별 지출 합계 구하는 함수
     public BigDecimal calculateTotalExpenses(YearMonth month, Long memberId) {
         Long accountId = getAccountIdByMemberId(memberId);
@@ -358,69 +339,6 @@ public class AccountService {
                 weekExpenses.size() > 3 ? weekExpenses.get(3) : BigDecimal.ZERO,
                 weekExpenses.size() > 4 ? weekExpenses.get(4) : BigDecimal.ZERO
         );
-    }
-
-    ///////////// 수기 입력
-    @Autowired
-    private AccountHistoryRepository accountRepository;
-
-    // 입력  -- historyId 반환
-    public Long createAccountHistory(Long memberId, CreateAccountHistoryDTO dto) {
-
-        // accountId는 로그인을 기반으로 자동으로 넣기
-        Long accountId = getAccountIdByMemberId(memberId); // Long 타입으로 계좌 ID 가져오기
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 계좌 ID입니다.")).getAccountId();
-
-        AccountHistory accountHistory = AccountHistory.builder()
-                .accountId(account)
-                .transactionType(String.valueOf(dto.getTransactionType()))
-                .transactionMeans(String.valueOf(dto.getTransactionMeans()))
-                .transactionDate(dto.getTransactionDate())
-                .amount(dto.getAmount())
-                .category(dto.getCategory())
-                .note(dto.getNote())
-                .fixedExpenses(dto.getFixedExpenses())
-                .storeName(dto.getStoreName())
-                .build();
-
-        accountRepository.save(accountHistory);
-        log.info("계좌 기록 생성 성공 : {}", accountHistory.getHistoryId());
-        return accountHistory.getHistoryId();
-    }
-
-    // 수정
-    public CreateAccountHistoryDTO editAccountHistory(Long historyId, CreateAccountHistoryDTO dto) {
-        // 해당 historyId로 계좌 기록 조회
-        AccountHistory existingAccount = accountRepository.findById(historyId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 historyId의 기록을 찾을 수 없습니다."));
-
-        // 기존 AccountHistory 객체의 필드 수정
-        existingAccount.setTransactionType(dto.getTransactionType());
-        existingAccount.setTransactionMeans(dto.getTransactionMeans());
-        existingAccount.setTransactionDate(dto.getTransactionDate());
-        existingAccount.setAmount(dto.getAmount());
-        existingAccount.setCategory(dto.getCategory());
-        existingAccount.setNote(dto.getNote());
-        existingAccount.setFixedExpenses(dto.getFixedExpenses());
-        existingAccount.setStoreName(dto.getStoreName());
-
-        // 수정된 내용 저장 (이제는 기존 레코드가 수정됨)
-        accountRepository.save(existingAccount);
-        return dto;
-    }
-
-
-    // 삭제
-    public boolean deleteAccountHistory(Long historyId) {
-        Optional<AccountHistory> existingAccountOpt = accountRepository.findById(historyId);
-
-        // 기록이 존재할 경우 삭제
-        if (existingAccountOpt.isPresent()) {
-            accountRepository.deleteById(historyId);
-            return true;
-        }
-        return false;
     }
 
     ///////////////////////////////////////////////////////////

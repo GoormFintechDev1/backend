@@ -31,7 +31,6 @@ public class GoalService {
     private final GoalsRepository goalsRepository;
 
     // 목표 설정하기
-
     public void setGoal(Long memberId, GoalRequestDTO requestDTO) {
         BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
 
@@ -118,48 +117,6 @@ public class GoalService {
                 monthlyExpense
         );
     }
-
-//
-//    // 매출 목표 수정 메서드
-//    public void updateRevenueGoal(Long memberId, RevenueGoalRequestDTO requestDTO) {
-//        BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
-//        QGoals qGoals = QGoals.goals;
-//        Goals existingGoal = queryFactory
-//                .selectFrom(qGoals)
-//                .where(
-//                        qGoals.businessId.id.eq(business.getId())
-//                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth()))
-//                )
-//                .fetchOne();
-//
-//        if (existingGoal == null) {
-//            throw new BadRequestException("해당 연월에 설정된 목표가 없습니다.");
-//        }
-//
-//        existingGoal.setRevenueGoal(requestDTO.getRevenueGoal());
-//        goalsRepository.save(existingGoal);
-//    }
-//
-//    // 지출 목표 수정 메서드
-//    public void updateExpenseGoal(Long memberId, ExpenseGoalRequestDTO requestDTO) {
-//        BusinessRegistration business = businessService.getBusinessIdByMemberID(memberId);
-//        QGoals qGoals = QGoals.goals;
-//        Goals existingGoal = queryFactory
-//                .selectFrom(qGoals)
-//                .where(
-//                        qGoals.businessId.id.eq(business.getId())
-//                                .and(qGoals.goalMonth.eq(requestDTO.getGoalMonth()))
-//                )
-//                .fetchOne();
-//
-//        if (existingGoal == null) {
-//            throw new BadRequestException("해당 연월에 설정된 목표가 없습니다.");
-//        }
-//
-//        existingGoal.setExpenseGoal(requestDTO.getExpenseGoal());
-//        goalsRepository.save(existingGoal);
-//    }
-//
 
     // 매출 목표 달성 여부 체크 및 업데이트 (3개월)
     public RevenueGoalResponseDTO checkRevenueGoal(Long memberId, YearMonth goalMonth) {
