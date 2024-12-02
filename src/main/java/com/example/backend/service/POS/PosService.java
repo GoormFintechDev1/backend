@@ -1,15 +1,17 @@
-package com.example.backend.service;
+package com.example.backend.service.POS;
 
 import com.example.backend.dto.pos.DailyIncomeDTO;
 import com.example.backend.dto.pos.IncomeHistoryDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.*;
+import com.example.backend.model.BANK.Account;
+import com.example.backend.model.POS.QPos;
+import com.example.backend.model.POS.QPosSales;
 import com.example.backend.model.enumSet.PaymentTypeEnum;
 import com.example.backend.model.enumSet.TransactionMeansEnum;
 import com.example.backend.model.enumSet.TransactionTypeEnum;
 import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;

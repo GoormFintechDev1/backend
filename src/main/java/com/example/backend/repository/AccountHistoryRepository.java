@@ -1,10 +1,7 @@
 package com.example.backend.repository;
 
-import com.example.backend.model.AccountHistory;
+import com.example.backend.model.BANK.AccountHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface AccountHistoryRepository extends JpaRepository<AccountHistory, Long> {
 }

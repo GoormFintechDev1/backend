@@ -1,4 +1,8 @@
-package com.example.backend.model;
+package com.example.backend.model.BUSINESS;
+import com.example.backend.model.BANK.Account;
+import com.example.backend.model.BaseTime;
+import com.example.backend.model.Member;
+import com.example.backend.model.POS.Pos;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;

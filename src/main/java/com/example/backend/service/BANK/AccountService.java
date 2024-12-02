@@ -1,4 +1,4 @@
-package com.example.backend.service;
+package com.example.backend.service.BANK;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.example.backend.model.POS.QPos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +23,12 @@ import com.example.backend.dto.account.ExpenseDetailDTO;
 import com.example.backend.dto.account.ExpenseWeekDTO;
 import com.example.backend.dto.account.ProfitDetailDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
-import com.example.backend.model.Account;
-import com.example.backend.model.AccountHistory;
-import com.example.backend.model.BusinessRegistration;
+import com.example.backend.model.BANK.Account;
+import com.example.backend.model.BANK.AccountHistory;
+import com.example.backend.model.BUSINESS.BusinessRegistration;
 import com.example.backend.model.QAccount;
 import com.example.backend.model.QAccountHistory;
 import com.example.backend.model.QBusinessRegistration;
-import com.example.backend.model.QPos;
 import com.example.backend.model.enumSet.TransactionTypeEnum;
 import com.example.backend.repository.AccountHistoryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;

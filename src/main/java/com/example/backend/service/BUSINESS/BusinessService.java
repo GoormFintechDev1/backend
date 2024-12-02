@@ -1,8 +1,8 @@
-package com.example.backend.service;
+package com.example.backend.service.BUSINESS;
 
 import com.example.backend.dto.auth.CheckBusinessDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
-import com.example.backend.model.BusinessRegistration;
+import com.example.backend.model.BUSINESS.BusinessRegistration;
 import com.example.backend.model.Member;
 import com.example.backend.model.QBusinessRegistration;
 import com.example.backend.repository.BusinessRepository;

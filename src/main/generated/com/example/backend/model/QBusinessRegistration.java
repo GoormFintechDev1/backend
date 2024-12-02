@@ -2,6 +2,7 @@ package com.example.backend.model;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.example.backend.model.BUSINESS.BusinessRegistration;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
