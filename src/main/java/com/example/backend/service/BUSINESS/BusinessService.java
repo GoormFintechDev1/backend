@@ -41,37 +41,6 @@ public class BusinessService {
         return businessRegistration;
     }
 
-    // @TODO 삭제 예정
-    // 사업자 인증하는 로직
-//    public ResponseEntity<String> checkBusiness(Long memberId, CheckBusinessDTO checkBusinessRequest) {
-//        log.info("!!!!!!!사업자 등록 번호 확인 로직 진입 {}", memberId);
-//
-//        // 1. 입력 값과 사업자 등록 번호가 일치하는 것이 있는지 확인
-//        BusinessRegistration business = businessRepository.findByBrNum(checkBusinessRequest.getBrNum())
-//                .orElseThrow(() -> new BadRequestException("존재하지 않는 사업자 등록 번호입니다."));
-//
-//        // 2. 이미 다른 member와 연결된 지 확인
-//        if (business.getMember() != null) {
-//            throw new BadRequestException("이미 다른 회원과 연결된 사업자입니다.");
-//        }
-//
-//        // 3. member의 name과 사업자의 representative name이 같은지 확인
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new BadRequestException("존재하지 않는 회원입니다."));
-//        String memberName = member.getName();
-//        String businessName = business.getRepresentativeName();
-//
-//        if (!memberName.equals(businessName)) {
-//            throw new BadRequestException("회원의 이름과 사업자의 대표자 이름이 일치하지 않습니다.");
-//        }
-//
-//        // 4. 비어있던 사업자 테이블에 멤버 아이디가 연결됨
-//        business.setMember(member);
-//        businessRepository.save(business); //memberId를 채우고 저장
-//        return ResponseEntity.ok("사업자 인증 성공");
-//    }
-
-
     // 사업자 외부 API에서 인증하는 로직 (최신)
     public void verifyBusiness(Long memberId, CheckBusinessDTO checkBusinessRequest) {
         log.info("사업자 인증 진행 중 for Member ID: {}", memberId);
@@ -98,7 +67,6 @@ public class BusinessService {
         BusinessRegistration business = new BusinessRegistration();
 
         member.setBusinessRegistration(business);
-       // business.setMember(member);
         business.setBrNum(externalBusiness.getBrNum());
         business.setAddress(externalBusiness.getAddress());
         business.setBusinessType(externalBusiness.getBusinessType());
@@ -107,9 +75,14 @@ public class BusinessService {
         business.setRepresentativeName(externalBusiness.getRepresentativeName());
 
 
-        businessRepository.save(business); // 연결 완료
+        member.setBusinessRegistration(business);
+
+        businessRepository.save(business);
+        memberRepository.save(member);
+
         log.info("사업자 인증 성공 for Member ID: {}", memberId);
     }
+
 
 }
 
