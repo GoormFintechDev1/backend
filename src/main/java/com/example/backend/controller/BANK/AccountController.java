@@ -83,40 +83,5 @@ public class AccountController {
         return ResponseEntity.ok(expense);
     }
 
-    /////// 수기 입력
-    // 입력
-    @PostMapping("/create")
-    public ResponseEntity<String> createAccount(
-            @RequestBody CreateAccountHistoryDTO accountHistoryDTO,
-            @AuthenticationPrincipal Long memberId) {
-        Long historyId = accountService.createAccountHistory(memberId,accountHistoryDTO);
-        String responseMessage = "생성 성공 || historyId : " + historyId;
-        return ResponseEntity.ok(responseMessage);
-    }
 
-    // 수정
-    @PutMapping("{historyId}/edit")
-    public ResponseEntity<String> editAccount(
-            @PathVariable Long historyId,
-            @RequestBody CreateAccountHistoryDTO accountHistoryDTO){
-        CreateAccountHistoryDTO updatedAccount = accountService.editAccountHistory(historyId,accountHistoryDTO);
-        if (updatedAccount != null) {
-            return ResponseEntity.ok("수정 성공");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-
-    }
-
-    // 삭제
-    @DeleteMapping("{historyId}/delete")
-    public ResponseEntity<String> deleteAccount(
-            @PathVariable Long historyId){
-        boolean deleted = accountService.deleteAccountHistory(historyId);
-        if (deleted) {
-            return ResponseEntity.ok("삭제 성공");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

@@ -1,7 +1,5 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.account.ExpenseDTO;
-import com.example.backend.service.AccountService;
 import com.example.backend.service.CardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

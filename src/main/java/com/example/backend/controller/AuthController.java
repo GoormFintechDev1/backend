@@ -52,6 +52,7 @@ public class AuthController {
         authService.inActiveMember(activityMemberRequest);
         return ResponseEntity.ok("회원 탈퇴 성공");
     }
+
     // 회원 활성화
     @PostMapping("/active")
     public ResponseEntity<?> activateMember(@RequestBody ActivityMemberRequestDTO activityMemberRequest) {
