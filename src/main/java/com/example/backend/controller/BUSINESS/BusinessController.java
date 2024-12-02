@@ -29,4 +29,16 @@ public class BusinessController {
         businessService.checkBusiness(memberId, checkBusinessRequest);
         return ResponseEntity.ok("사업자 인증 성공");
     }
+
+
+    // <<<NEW>>> 사업자 인증 API
+    @PostMapping("/br-connect")
+    public ResponseEntity<String> authentiateBusiness(HttpServletRequest request,@RequestBody CheckBusinessDTO checkBusinessRequest) {
+        String token = tokenProvider.resolveAccessToken(request);
+        Long memberId = tokenProvider.getMemberIdFromToken(token);
+
+        businessService.verifyBusiness(memberId, checkBusinessRequest);
+        return ResponseEntity.ok("사업자 인증 성공");
+    }
+
 }
