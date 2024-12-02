@@ -1,7 +1,7 @@
-package com.example.backend.controller;
+package com.example.backend.controller.BUSINESS;
 
 import com.example.backend.dto.auth.CheckBusinessDTO;
-import com.example.backend.service.BusinessService;
+import com.example.backend.service.BUSINESS.BusinessService;
 import com.example.backend.util.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

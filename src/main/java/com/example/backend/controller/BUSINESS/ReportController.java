@@ -1,9 +1,8 @@
-package com.example.backend.controller;
+package com.example.backend.controller.BUSINESS;
 
-import com.example.backend.service.ReportService;
+import com.example.backend.service.BUSINESS.ReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

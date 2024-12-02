@@ -1,7 +1,7 @@
-package com.example.backend.controller;
+package com.example.backend.controller.POS;
 
 import com.example.backend.dto.pos.PosSalesRequestDTO;
-import com.example.backend.service.PosSalesService;
+import com.example.backend.service.POS.PosSalesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

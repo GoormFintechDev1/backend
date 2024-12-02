@@ -1,12 +1,14 @@
-package com.example.pos.model.pos;
+package com.example.backend.model.POS;
 
-
-import com.example.backend.model.Pos;
+import com.example.backend.model.enumSet.OrderStatus;
+import com.example.backend.model.enumSet.PaymentStatus;
+import com.example.backend.model.enumSet.PaymentType;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter

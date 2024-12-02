@@ -1,9 +1,8 @@
-package com.example.backend.service;
+package com.example.backend.service.POS;
 
 import com.example.backend.dto.pos.PosSalesRequestDTO;
-import com.example.backend.model.Pos;
-import com.example.backend.model.PosSales;
-import com.example.backend.model.enumSet.PaymentTypeEnum;
+import com.example.backend.model.POS.Pos;
+import com.example.backend.model.POS.PosSales;
 import com.example.backend.repository.PosSalesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,22 +17,24 @@ public class PosSalesService {
 
     private final PosSalesRepository posSalesRepository;
 
+
+
     // 단일 저장 메서드
     public void saveSale(PosSalesRequestDTO request) {
         PosSales posSales = PosSales.builder()
-                .pos(getDummyPos()) // 임시 POS 설정
-                .saleDate(request.getSaleTime())
-                .saleTime(request.getSaleTime())
-                .paymentType(PaymentTypeEnum.CARD)
-                .totalAmount(request.getTotalAmount())
-                .vatAmount(calculateVAT(request.getTotalAmount()))
-                .cardCompany("POS_CARD")
-                .approvalNumber("APPROVED123")
+                .posId(getDummyPos()) // 임시 POS 설정
                 .productName(request.getProductName())
                 .quantity(request.getQuantity())
+                .totalPrice(request.getTotalPrice())
+                .vatAmount(calculateVAT(request.getTotalPrice()))
+                .orderTime(request.getOrderTime())
+                .orderStatus(request.getOrderStatus())
+                .paymentType(request.getPaymentType())
+                .paymentStatus(request.getPaymentStatus())
                 .build();
 
-        posSalesRepository.save(posSales);
+        return posSalesRepository.save(posSales); // 저장된 엔티티 반환
+
     }
 
     // 다중 저장 메서드

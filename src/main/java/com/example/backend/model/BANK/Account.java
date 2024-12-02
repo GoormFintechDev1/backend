@@ -1,5 +1,6 @@
-package com.example.backend.model;
+package com.example.backend.model.BANK;
 
+import com.example.backend.model.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account extends BaseTime{
+public class Account extends BaseTime {
 
     // 계좌식별 ID
     @Id
