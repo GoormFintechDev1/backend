@@ -2,7 +2,7 @@ package com.example.backend.dto.pos;
 
 import com.example.backend.model.enumSet.OrderStatus;
 import com.example.backend.model.enumSet.PaymentStatus;
-import com.example.backend.model.enumSet.PaymentType;
+import com.example.backend.model.enumSet.PaymentTypeEnum;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,6 +19,6 @@ public class PosSalesRequestDTO {
     private BigDecimal totalPrice;        // 총 금액
     private LocalDateTime orderTime;      // 주문 시간
     private OrderStatus orderStatus;      // 주문 상태
-    private PaymentType paymentType;      // 결제 타입
+    private PaymentTypeEnum paymentType;      // 결제 타입
     private PaymentStatus paymentStatus;  // 결제 상태
 }

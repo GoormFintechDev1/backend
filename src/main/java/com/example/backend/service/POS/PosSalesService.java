@@ -20,7 +20,7 @@ public class PosSalesService {
     // 단일 저장 메서드
     public PosSales saveSale(PosSalesRequestDTO request) {
         PosSales posSales = PosSales.builder()
-                .posId(getDummyPos()) // 임시 POS 설정
+                .pos(getDummyPos()) // 임시 POS 설정
                 .productName(request.getProductName())
                 .quantity(request.getQuantity())
                 .totalPrice(request.getTotalPrice())
