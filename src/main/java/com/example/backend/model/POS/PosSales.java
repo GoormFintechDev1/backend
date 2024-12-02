@@ -31,9 +31,6 @@ public class PosSales {
     @Column(name = "order_time", nullable = false)
     private LocalDateTime orderTime;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems;
-
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
 
