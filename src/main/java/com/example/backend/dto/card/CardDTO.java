@@ -2,6 +2,10 @@ package com.example.backend.dto.card;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class CardDTO {
     private String ranking;
     private String cardName;
