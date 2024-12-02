@@ -50,8 +50,20 @@ public class CardService {
 			File jsonFile = new File(filePath);
 			// JSON 파일을 읽어서 Card 리스트로 변환
 			List<CardDTO> cardList = objectMapper.readValue(jsonFile, new TypeReference<List<CardDTO>>() {});
-			log.info(cardList);
-			return cardList;
+			
+			String[] keywords = {"공과금", "쇼핑", "주유", "마트"};
+	        List<CardDTO> filteredCards = cardList.stream()
+	            .map(card -> {
+	                // benefits 필터링
+	                List<String> filteredBenefits = card.getBenefits().stream()
+	                        .filter(benefit -> Arrays.stream(keywords).anyMatch(benefit::contains))
+	                        .collect(Collectors.toList());
+	                card.setBenefits(filteredBenefits); // 필터링된 benefits 설정
+	                return card;
+	            })
+	            .filter(card -> !card.getBenefits().isEmpty()) // 필터링 후 benefits가 비어 있지 않은 카드만 유지
+	            .collect(Collectors.toList());
+			return filteredCards;
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to load cards from JSON file: " + filePath, e);
 		}
@@ -60,6 +72,7 @@ public class CardService {
 	public List<Map<String, Object>> recommendCards(YearMonth month, Long memberId) {
 		// JSON 파일 불러오기
 		List<CardDTO> cards = loadCardsFromJson(jsonFilePath);
+		log.info(cards + " :: cards ?????");
 
 		// 소비 내역에서 상위 3개 카테고리 추출
 		Map<String, BigDecimal> spending = accountService.calculateCategoryWiseExpenses(month, memberId);
