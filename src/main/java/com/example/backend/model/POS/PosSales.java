@@ -41,7 +41,6 @@ public class PosSales {
     @Column(name = "product_name", nullable = false)
     private String productName;
 
-
     @Column(name = "quantity", nullable = false)
     private int quantity;
 

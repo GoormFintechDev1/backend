@@ -36,7 +36,7 @@ spring:
   datasource:
     url: jdbc:mariadb://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/doubly_db?useSSL=false&useServerPrepStmts=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: ${DATABASE_USERNAME:root}
-    password: ${DATABASE_PASSWORD:root}
+    password: ${DATABASE_PASSWORD:1234}
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
@@ -52,7 +52,7 @@ spring:
         order_updates: true
         jdbc.batch_versioned_data: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
@@ -66,24 +66,8 @@ springdoc:
     enabled: true
 
 
-# ?? ??? (?? ???)
-#  servlet:
-#    multipart:
-#      max-file-size: 10MB  # ?? ??? ?? ??
-#      max-request-size: 10MB  # ??? ?? ?? ??
-#    web:
-#      resources:
-#        static-locations: classpath:/static/  # ?? ??? ??
-#
-#  file:
-#    upload-dir: uploads  # ?? ??? ????
+pos:
+  api:
+    url:
+      orders: http://localhost:8083/api/orders
 
-# ???? ??
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: prometheus,metrics,health  # ??? ??????
-#  endpoint:
-#    prometheus:
-#      enabled: true  # Prometheus ????? ???

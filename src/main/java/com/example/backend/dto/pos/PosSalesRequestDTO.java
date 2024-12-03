@@ -14,11 +14,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class PosSalesRequestDTO {
-    private String productName;           // 상품명
-    private int quantity;                 // 수량
-    private BigDecimal totalPrice;        // 총 금액
-    private LocalDateTime orderTime;      // 주문 시간
-    private OrderStatus orderStatus;      // 주문 상태
-    private PaymentType paymentType;      // 결제 타입
-    private PaymentStatus paymentStatus;  // 결제 상태
+    private Long posSalesId;
+    private Long posId;
+    private LocalDateTime orderTime;
+    private BigDecimal totalPrice;
+    private BigDecimal vatAmount;
+    private String productName;
+    private int quantity;
+    private String orderStatus;
+    private String paymentStatus;
 }
