@@ -12,6 +12,7 @@ import com.example.backend.repository.MemberRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,6 +24,8 @@ public class BusinessService {
     private final BusinessRepository businessRepository;
     private final MemberRepository memberRepository;
     private final JPAQueryFactory queryFactory;
+
+    @Qualifier("webClient8084")
     private final WebClient webClient;
 
     // 로그인한 유저의 businessID를 가져오는 로직
