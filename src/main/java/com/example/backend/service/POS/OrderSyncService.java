@@ -5,7 +5,7 @@ import com.example.backend.model.POS.Pos;
 import com.example.backend.model.POS.PosSales;
 import com.example.backend.model.enumSet.OrderStatus;
 import com.example.backend.model.enumSet.PaymentStatus;
-import com.example.backend.model.enumSet.PaymentType;
+import com.example.backend.model.enumSet.PaymentTypeEnum;
 import com.example.backend.repository.PosSalesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class OrderSyncService {
                         .productName(order.getProductName())
                         .quantity(order.getQuantity())
                         .orderStatus(OrderStatus.valueOf(order.getOrderStatus()))
-                        .paymentType(PaymentType.CASH)
+                        .paymentType(PaymentTypeEnum.CASH)
                         .paymentStatus(PaymentStatus.valueOf(order.getPaymentStatus()))
                         .build();
                 posSalesRepository.save(posSales);
