@@ -13,7 +13,6 @@ import lombok.*;
 public class Pos {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pos_id")
     private Long posId;
 
