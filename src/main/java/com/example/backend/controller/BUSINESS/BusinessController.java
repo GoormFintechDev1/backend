@@ -1,7 +1,10 @@
 package com.example.backend.controller.BUSINESS;
 
 import com.example.backend.dto.auth.CheckBusinessDTO;
+import com.example.backend.dto.pos.PosRequestDTO;
 import com.example.backend.service.BUSINESS.BusinessService;
+import com.example.backend.service.POS.PosOrderService;
+import com.example.backend.service.POS.PosService;
 import com.example.backend.util.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ public class BusinessController {
 
     private final BusinessService businessService;
     private final TokenProvider tokenProvider;
+    private final PosOrderService posOrderService;
 
     // 사업자 인증
 //    @PostMapping("/check")
@@ -33,7 +37,7 @@ public class BusinessController {
 
     // <<<NEW>>> 사업자 인증 API
     @PostMapping("/br-connect")
-    public ResponseEntity<String> authentiateBusiness(HttpServletRequest request,@RequestBody CheckBusinessDTO checkBusinessRequest) {
+    public ResponseEntity<String> authentiateBusiness(HttpServletRequest request, @RequestBody CheckBusinessDTO checkBusinessRequest) {
         String token = tokenProvider.resolveAccessToken(request);
         Long memberId = tokenProvider.getMemberIdFromToken(token);
 
@@ -41,4 +45,20 @@ public class BusinessController {
         return ResponseEntity.ok("사업자 인증 성공");
     }
 
+    @PostMapping("/pos-connect")
+    public ResponseEntity<String> authenticatePos(HttpServletRequest request, @RequestBody PosRequestDTO posRequestDTO) {
+
+        // 토큰에서 memberId 추출
+        String token = tokenProvider.resolveAccessToken(request);
+        Long memberId = tokenProvider.getMemberIdFromToken(token);
+
+        // POS ID 저장 로직 호출
+        posOrderService.savePosData(memberId, posRequestDTO.getBrNum());
+
+
+        return ResponseEntity.ok("포스 인증 성공");
+    }
+
 }
+
+
