@@ -2,20 +2,19 @@ package com.example.backend.service.BUSINESS;
 
 import com.example.backend.dto.auth.BusinessRegistrationDTO;
 import com.example.backend.dto.auth.CheckBusinessDTO;
+import com.example.backend.dto.pos.PosRequestDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.BANK.Account;
 import com.example.backend.model.BUSINESS.BusinessRegistration;
 import com.example.backend.model.BUSINESS.QBusinessRegistration;
 import com.example.backend.model.Member;
+import com.example.backend.model.POS.Pos;
 import com.example.backend.model.QMember;
-import com.example.backend.repository.AccountRepository;
-import com.example.backend.repository.BusinessRepository;
-import com.example.backend.repository.MemberRepository;
+import com.example.backend.repository.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -27,12 +26,17 @@ public class BusinessService {
     private final MemberRepository memberRepository;
     private final AccountRepository accountRepository;
     private final JPAQueryFactory queryFactory;
+    private final PosRepository posRepository;
+    private final BusinessRegistrationRepository businessRegistrationRepository;
 
     @Qualifier("webClient8084")
     private final WebClient webClient;
 
     @Qualifier("webClient8081")
     private final WebClient accountWebClient;
+
+    @Qualifier("webClient8083")
+    private final WebClient webClient3;
 
 
     // 로그인한 유저의 businessID를 가져오는 로직
@@ -95,6 +99,7 @@ public class BusinessService {
         // 계좌 인증
         verifyAccount(memberId, checkBusinessRequest.getBrNum());
         // 포스 인증
+        verifyPos(memberId, checkBusinessRequest.getBrNum());
 
 
     }
@@ -145,6 +150,48 @@ public class BusinessService {
         } catch (Exception e) {
             log.error("Error while fetching account for brNum {}: {}", brNum, e.getMessage(), e);
             return null; // 실패 시 null 반환
+        }
+    }
+
+
+    public void verifyPos(Long memberId, String brNum) {
+        // Step 1: Member 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        // Step 2: Member를 통해 BusinessRegistration 확인
+        BusinessRegistration businessRegistration = member.getBusinessRegistration();
+        if (businessRegistration == null) {
+            throw new IllegalArgumentException("BusinessRegistration not found for this member");
+        }
+
+        // Step 3: WebClient로 POS ID 가져오기
+        Long posId = fetchPosIdFromPosService(brNum);
+
+        // Step 4: POS 데이터 생성 및 저장
+        Pos pos = Pos.builder()
+                .posId(posId) // 받아온 posId 그대로 저장
+                .brNum(brNum)
+                .build();
+        posRepository.save(pos);
+
+        // Step 5: BusinessRegistration에 POS 설정
+        businessRegistration.setPos(pos);
+        businessRegistrationRepository.save(businessRegistration);
+    }
+
+    private Long fetchPosIdFromPosService(String brNum) {
+        try {
+            // 요청 DTO 생성
+            PosRequestDTO requestDTO = new PosRequestDTO(null, brNum); // posId는 null
+            return webClient3.post()
+                    .uri("http://localhost:8083/api/pos/get-pos-id")
+                    .bodyValue(requestDTO)
+                    .retrieve()
+                    .bodyToMono(Long.class)
+                    .block();
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to fetch POS ID from POS service", e);
         }
     }
 

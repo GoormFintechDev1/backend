@@ -45,19 +45,6 @@ public class BusinessController {
         return ResponseEntity.ok("사업자 인증 성공");
     }
 
-    @PostMapping("/pos-connect")
-    public ResponseEntity<String> authenticatePos(HttpServletRequest request, @RequestBody PosRequestDTO posRequestDTO) {
-
-        // 토큰에서 memberId 추출
-        String token = tokenProvider.resolveAccessToken(request);
-        Long memberId = tokenProvider.getMemberIdFromToken(token);
-
-        // POS ID 저장 로직 호출
-        posOrderService.savePosData(memberId, posRequestDTO.getBrNum());
-
-
-        return ResponseEntity.ok("포스 인증 성공");
-    }
 
 }
 

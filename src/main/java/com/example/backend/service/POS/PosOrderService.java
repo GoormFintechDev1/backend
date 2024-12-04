@@ -40,45 +40,5 @@ public class PosOrderService {
                 .block();
     }
 
-    public void savePosData(Long memberId, String brNum) {
-        // Step 1: Member 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
-
-        // Step 2: Member를 통해 BusinessRegistration 확인
-        BusinessRegistration businessRegistration = member.getBusinessRegistration();
-        if (businessRegistration == null) {
-            throw new IllegalArgumentException("BusinessRegistration not found for this member");
-        }
-
-        // Step 3: WebClient로 POS ID 가져오기
-        Long posId = fetchPosIdFromPosService(brNum);
-
-        // Step 4: POS 데이터 생성 및 저장
-        Pos pos = Pos.builder()
-                .posId(posId) // 받아온 posId 그대로 저장
-                .brNum(brNum)
-                .build();
-        posRepository.save(pos);
-
-        // Step 5: BusinessRegistration에 POS 설정
-        businessRegistration.setPos(pos);
-        businessRegistrationRepository.save(businessRegistration);
-    }
-
-    private Long fetchPosIdFromPosService(String brNum) {
-        try {
-            // 요청 DTO 생성
-            PosRequestDTO requestDTO = new PosRequestDTO(null, brNum); // posId는 null
-            return webClient.post()
-                    .uri("http://localhost:8083/api/pos/get-pos-id")
-                    .bodyValue(requestDTO)
-                    .retrieve()
-                    .bodyToMono(Long.class)
-                    .block();
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to fetch POS ID from POS service", e);
-        }
-    }
 
 }
