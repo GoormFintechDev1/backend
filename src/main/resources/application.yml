@@ -36,7 +36,7 @@ spring:
   datasource:
     url: jdbc:mariadb://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/doubly_db?useSSL=false&useServerPrepStmts=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: ${DATABASE_USERNAME:root}
-    password: ${DATABASE_PASSWORD:1234}
+    password: ${DATABASE_PASSWORD:root}
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
@@ -70,4 +70,9 @@ pos:
   api:
     url:
       orders: http://localhost:8083/api/orders
+
+bank:
+  api:
+    url: http://localhost:8081/api/bank
+
 

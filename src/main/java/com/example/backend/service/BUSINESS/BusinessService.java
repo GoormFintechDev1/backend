@@ -3,6 +3,7 @@ package com.example.backend.service.BUSINESS;
 import com.example.backend.dto.auth.BusinessRegistrationDTO;
 import com.example.backend.dto.auth.CheckBusinessDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
+import com.example.backend.model.BANK.Account;
 import com.example.backend.model.BUSINESS.BusinessRegistration;
 import com.example.backend.model.BUSINESS.QBusinessRegistration;
 import com.example.backend.model.Member;
@@ -28,6 +29,10 @@ public class BusinessService {
     @Qualifier("webClient8084")
     private final WebClient webClient;
 
+    @Qualifier("webClient8081")
+    private final WebClient accountWebClient;
+
+
     // 로그인한 유저의 businessID를 가져오는 로직
     public BusinessRegistration getBusinessIdByMemberID(Long memberId){
         // BusinessRegistration 조회
@@ -43,6 +48,7 @@ public class BusinessService {
         }
         return businessRegistration;
     }
+
 
     // 사업자 외부 API에서 인증하는 로직 (최신)
     public void verifyBusiness(Long memberId, CheckBusinessDTO checkBusinessRequest) {
@@ -84,8 +90,35 @@ public class BusinessService {
         memberRepository.save(member);
 
         log.info("사업자 인증 성공 for Member ID: {}", memberId);
+        // 3. 계좌 연결 정보 가져오기
+        Account connectedAccount = fetchAccountByBrNum(externalBusiness.getBrNum());
+        if (connectedAccount == null) {
+            throw new BadRequestException("해당 사업자 번호와 연결된 계좌가 없습니다.");
+        }
+
+        log.info("연결된 계좌 정보: {}", connectedAccount);
+        // 5. BusinessRegistration에 연결된 Account 설정
+        business.setAccount(connectedAccount);
+
+        // 6. 저장
+        businessRepository.save(business);
+        memberRepository.save(member);
+
+        log.info("사업자 인증 및 계좌 연결 완료 for Member ID: {}", memberId);
     }
 
-
+    // 계좌 정보 호출 로직 추가
+    private Account fetchAccountByBrNum(String brNum) {
+        try {
+            return accountWebClient.get()
+                    .uri("http://localhost:8081/api/bank/check/account?brNum={brNum}", brNum)
+                    .retrieve()
+                    .bodyToMono(Account.class)
+                    .block();
+        } catch (Exception e) {
+            log.error("Error while fetching account for brNum {}: {}", brNum, e.getMessage(), e);
+            return null; // 실패 시 null 반환
+        }
+    }
 }
 
