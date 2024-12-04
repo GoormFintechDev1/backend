@@ -24,4 +24,12 @@ public class WebClientConfig {
                 .baseUrl("http://localhost:8083")
                 .build();
     }
+
+    // 8081 서버(WebClient 3)
+    @Bean(name = "webClient8081")
+    public WebClient webClientFor8081(WebClient.Builder builder) {
+        return builder
+                .baseUrl("http://localhost:8081")
+                .build();
+    }
 }

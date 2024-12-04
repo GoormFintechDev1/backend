@@ -12,15 +12,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.example.backend.dto.account.*;
+import com.example.backend.model.BANK.Account;
+import com.example.backend.model.BANK.AccountHistory;
 import com.example.backend.model.BANK.QAccount;
 import com.example.backend.model.BANK.QAccountHistory;
 import com.example.backend.model.BUSINESS.QBusinessRegistration;
 import com.example.backend.model.QMember;
+import com.example.backend.repository.AccountHistoryRepository;
+import com.example.backend.repository.AccountRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import com.example.backend.dto.account.ExpenseDTO;
-import com.example.backend.dto.account.ExpenseDetailDTO;
-import com.example.backend.dto.account.ExpenseWeekDTO;
-import com.example.backend.dto.account.ProfitDetailDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.model.BUSINESS.BusinessRegistration;
 
@@ -29,6 +33,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +41,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AccountService {
 
     private final JPAQueryFactory queryFactory;
+    private final AccountHistoryRepository accountHistoryRepository;
+    private final AccountRepository accountRepository;
 
     // 로그인한 유저의 accountId를 가져오는 로직
     private Long getAccountIdByMemberId(Long memberId) {
@@ -55,6 +62,80 @@ public class AccountService {
             throw new BadRequestException("해당 사용자는 계좌가 없습니다.");
         }
         return accountId;
+    }
+
+    /// bank 호출
+    @Qualifier("webClient8081")
+    private final WebClient webClient;
+
+    @Value("${bank.api.url}")
+    private String bankApiUrl;
+
+    // 외부 API 호출하여 sendToMainDTO 데이터 가져오기
+    public sendToMainDTO fetchAccountAndHistoryFromBank() {
+        try {
+            return webClient.post()
+                    .uri(bankApiUrl + "/send/account")
+                    .retrieve()
+                    .bodyToMono(sendToMainDTO.class)
+                    .block();
+        } catch (Exception e) {
+            log.error("Error while fetching account and history from bank: {}", e.getMessage(), e);
+            return null; // 실패 시 null 반환
+        }
+    }
+
+    // 10초마다 bank에서 account와 accountHistory 땡겨오기
+    @Scheduled(fixedRate = 10000)
+    public void updateAccountAndHistory() {
+        try {
+            // 외부 API에서 데이터 가져오기
+            sendToMainDTO fetchedData = fetchAccountAndHistoryFromBank();
+
+            if (fetchedData == null || fetchedData.getAccountHistory() == null || fetchedData.getAccountHistory().isEmpty()) {
+                log.info("새로운 데이터가 없습니다.");
+                return;
+            }
+
+            // Account 저장
+            Account account = fetchedData.getAccount();
+            if (account != null) {
+                boolean accountExists = queryFactory.selectOne()
+                        .from(QAccount.account)
+                        .where(QAccount.account.accountId.eq(account.getAccountId()))
+                        .fetchFirst() != null;
+
+                if (!accountExists) {
+                    accountRepository.save(account);
+                    log.info("새로운 Account 저장: {}", account);
+                } else {
+                    log.info("이미 존재하는 Account, 저장하지 않음: {}", account);
+                }
+            }
+
+            // AccountHistory 저장
+            List<AccountHistory> accountHistories = fetchedData.getAccountHistory();
+            for (AccountHistory history : accountHistories) {
+                // QueryDSL로 중복 확인
+                boolean exists = queryFactory.selectOne()
+                        .from(QAccountHistory.accountHistory)
+                        .where(QAccountHistory.accountHistory.transactionDate.eq(history.getTransactionDate())
+                                .and(QAccountHistory.accountHistory.amount.eq(history.getAmount()))
+                                .and(QAccountHistory.accountHistory.account.accountId.eq(history.getAccount().getAccountId())))
+                        .fetchFirst() != null;
+
+                if (!exists) {
+                    accountHistoryRepository.save(history);
+                    log.info("새로운 AccountHistory 저장: {}", history);
+                } else {
+                    log.info("이미 존재하는 AccountHistory, 저장하지 않음: {}", history);
+                }
+            }
+
+            log.info("Account 및 AccountHistory 업데이트 완료");
+        } catch (Exception e) {
+            log.error("Error during updateAccountAndHistory: {}", e.getMessage(), e);
+        }
     }
 
     // 월별 지출 합계 구하는 함수
