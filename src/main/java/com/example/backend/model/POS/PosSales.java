@@ -25,7 +25,7 @@ public class PosSales {
 
     @ManyToOne
     @JoinColumn(name = "pos_id", nullable = false)
-    private Pos pos;
+    private Pos posId;
 
     // 주문 시간
     @Column(name = "order_time", nullable = false)

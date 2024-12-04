@@ -30,7 +30,7 @@ public class QPosSales extends EntityPathBase<PosSales> {
 
     public final EnumPath<com.example.backend.model.enumSet.PaymentTypeEnum> paymentType = createEnum("paymentType", com.example.backend.model.enumSet.PaymentTypeEnum.class);
 
-    public final QPos pos;
+    public final QPos posId;
 
     public final NumberPath<Long> posSalesId = createNumber("posSalesId", Long.class);
 
@@ -60,7 +60,7 @@ public class QPosSales extends EntityPathBase<PosSales> {
 
     public QPosSales(Class<? extends PosSales> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.pos = inits.isInitialized("pos") ? new QPos(forProperty("pos")) : null;
+        this.posId = inits.isInitialized("posId") ? new QPos(forProperty("posId")) : null;
     }
 
 }

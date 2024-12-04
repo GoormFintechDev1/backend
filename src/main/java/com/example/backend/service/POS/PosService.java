@@ -60,14 +60,14 @@ public class PosService {
         BigDecimal monthlyTotalIncome = queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.orderTime.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
 
         BigDecimal monthlyCardIncome = queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.paymentType.eq(PaymentTypeEnum.CARD))
                         .and(qposSales.orderTime.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
@@ -75,7 +75,7 @@ public class PosService {
         BigDecimal monthlyCashIncome = queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.paymentType.eq(PaymentTypeEnum.CASH))
                         .and(qposSales.orderTime.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
@@ -94,7 +94,7 @@ public class PosService {
                                 .otherwise(BigDecimal.ZERO)
                 )
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.orderTime.between(month.atDay(1).atStartOfDay(), month.atEndOfMonth().atTime(23, 59, 59))))
                 .groupBy(qposSales.orderTime,
                         qposSales.orderTime.year(),
@@ -135,7 +135,7 @@ public class PosService {
         BigDecimal totalIncome = queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.orderTime.year().eq(date.getYear()))
                         .and(qposSales.orderTime.month().eq(date.getMonthValue()))
                         .and(qposSales.orderTime.dayOfMonth().eq(date.getDayOfMonth())))
@@ -144,7 +144,7 @@ public class PosService {
         BigDecimal cardIncome = queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.paymentType.eq(PaymentTypeEnum.CARD))
                         .and(qposSales.orderTime.year().eq(date.getYear()))
                         .and(qposSales.orderTime.month().eq(date.getMonthValue()))
@@ -154,7 +154,7 @@ public class PosService {
         BigDecimal cashIncome = queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.paymentType.eq(PaymentTypeEnum.CASH))
                         .and(qposSales.orderTime.year().eq(date.getYear()))
                         .and(qposSales.orderTime.month().eq(date.getMonthValue()))
@@ -179,7 +179,7 @@ public class PosService {
         BigDecimal totalIncome0Ago = queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.orderTime.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
@@ -190,7 +190,7 @@ public class PosService {
         BigDecimal totalIncome1Ago = queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.orderTime.between(
                                 oneMonthAgo.atDay(1).atStartOfDay(),
                                 oneMonthAgo.atEndOfMonth().atTime(23, 59, 59))))
@@ -201,7 +201,7 @@ public class PosService {
         BigDecimal totalIncome2Ago = queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.orderTime.between(
                                 twoMonthsAgo.atDay(1).atStartOfDay(),
                                 twoMonthsAgo.atEndOfMonth().atTime(23, 59, 59))))
@@ -222,7 +222,7 @@ public class PosService {
         return queryFactory
                 .select(qposSales.totalPrice.sum())
                 .from(qposSales)
-                .where(qposSales.pos.posId.eq(posId)
+                .where(qposSales.posId.posId.eq(posId)
                         .and(qposSales.orderTime.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
