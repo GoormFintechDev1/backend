@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,8 @@ public class OrderSyncService {
 
     private final PosOrderService posOrderService;
     private final PosSalesRepository posSalesRepository;
+
+    private final Random random = new Random();
 
     public void syncOrders() {
         List<OrderResponseDTO> orders = posOrderService.fetchOrdersFromPos();
@@ -30,6 +33,8 @@ public class OrderSyncService {
                 Pos pos = new Pos();
                 pos.setPosId(order.getPosId()); // DTO에서 posId 가져오기
 
+                PaymentTypeEnum paymentType = random.nextBoolean() ? PaymentTypeEnum.CASH : PaymentTypeEnum.CARD;
+
                 PosSales posSales = PosSales.builder()
                         .posId(pos)
                         .orderTime(order.getOrderDate())
@@ -38,7 +43,6 @@ public class OrderSyncService {
                         .productName(order.getProductName())
                         .quantity(order.getQuantity())
                         .orderStatus(OrderStatus.valueOf(order.getOrderStatus()))
-                        .paymentType(PaymentTypeEnum.CASH)
                         .paymentStatus(PaymentStatus.valueOf(order.getPaymentStatus()))
                         .build();
                 posSalesRepository.save(posSales);
