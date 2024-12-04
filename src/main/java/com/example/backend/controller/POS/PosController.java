@@ -1,4 +1,3 @@
-/*
 package com.example.backend.controller.POS;
 
 import com.example.backend.dto.pos.DailyIncomeDTO;
@@ -50,4 +49,3 @@ public class PosController {
    }
 
 }
-*/

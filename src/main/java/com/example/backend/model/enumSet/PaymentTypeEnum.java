@@ -6,7 +6,5 @@ public enum PaymentTypeEnum {
 
     private final String type;
 
-    PaymentTypeEnum(String Type) {
-        this.type = Type;
-    }
+    PaymentTypeEnum(String Type) {this.type = Type;}
 }

@@ -1,7 +1,3 @@
-
-
-INSERT INTO business_category (business_category_id, type, field) VALUES (1, '음식점', '커피전문점');
-
 # 사업자
 
 INSERT INTO business_registration (business_registration_id, member_id, business_category_id, br_num, business_start_date, representative_name, company_name, address) VALUES (1, NULL, 1, 1000000001, '2021-03-01', '이민수', '카페 연남동', '서울특별시 서대문구 연희동 123-1');

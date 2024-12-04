@@ -2,7 +2,7 @@ package com.example.backend.dto.pos;
 
 import com.example.backend.model.enumSet.OrderStatus;
 import com.example.backend.model.enumSet.PaymentStatus;
-import com.example.backend.model.enumSet.PaymentType;
+import com.example.backend.model.enumSet.PaymentTypeEnum;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -23,4 +23,5 @@ public class PosSalesRequestDTO {
     private int quantity;
     private String orderStatus;
     private String paymentStatus;
+
 }
