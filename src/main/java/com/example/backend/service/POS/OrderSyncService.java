@@ -43,6 +43,7 @@ public class OrderSyncService {
                         .productName(order.getProductName())
                         .quantity(order.getQuantity())
                         .orderStatus(OrderStatus.valueOf(order.getOrderStatus()))
+                        .paymentType(paymentType)
                         .paymentStatus(PaymentStatus.valueOf(order.getPaymentStatus()))
                         .build();
                 posSalesRepository.save(posSales);
