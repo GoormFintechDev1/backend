@@ -8,6 +8,7 @@ import com.example.backend.model.BUSINESS.BusinessRegistration;
 import com.example.backend.model.BUSINESS.QBusinessRegistration;
 import com.example.backend.model.Member;
 import com.example.backend.model.QMember;
+import com.example.backend.repository.AccountRepository;
 import com.example.backend.repository.BusinessRepository;
 import com.example.backend.repository.MemberRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class BusinessService {
     private final BusinessRepository businessRepository;
     private final MemberRepository memberRepository;
+    private final AccountRepository accountRepository;
     private final JPAQueryFactory queryFactory;
 
     @Qualifier("webClient8084")
@@ -83,29 +85,54 @@ public class BusinessService {
         business.setCompanyName(externalBusiness.getCompanyName());
         business.setRepresentativeName(externalBusiness.getRepresentativeName());
 
-
         member.setBusinessRegistration(business);
 
         businessRepository.save(business);
         memberRepository.save(member);
 
         log.info("사업자 인증 성공 for Member ID: {}", memberId);
+
+        // 계좌 인증
+        verifyAccount(memberId, checkBusinessRequest.getBrNum());
+        // 포스 인증
+
+
+    }
+
+
+
+    ////////////////// 계좌 연결
+    public void verifyAccount(Long memberId, String brNum){
+
+        // Step 1: Member 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+
+        // Step 2: Member를 통해 BusinessRegistration 확인
+        BusinessRegistration businessRegistration = member.getBusinessRegistration();
+        if (businessRegistration == null) {
+            throw new IllegalArgumentException("BusinessRegistration not found for this member");
+        }
+
         // 3. 계좌 연결 정보 가져오기
-        Account connectedAccount = fetchAccountByBrNum(externalBusiness.getBrNum());
+        Account connectedAccount = fetchAccountByBrNum(brNum);
+
+
         if (connectedAccount == null) {
             throw new BadRequestException("해당 사업자 번호와 연결된 계좌가 없습니다.");
         }
 
         log.info("연결된 계좌 정보: {}", connectedAccount);
-        // 5. BusinessRegistration에 연결된 Account 설정
-        business.setAccount(connectedAccount);
+
+        accountRepository.save(connectedAccount);
 
         // 6. 저장
-        businessRepository.save(business);
-        memberRepository.save(member);
-
+        businessRegistration.setAccount(connectedAccount);
+        businessRepository.save(businessRegistration);
         log.info("사업자 인증 및 계좌 연결 완료 for Member ID: {}", memberId);
     }
+
 
     // 계좌 정보 호출 로직 추가
     private Account fetchAccountByBrNum(String brNum) {

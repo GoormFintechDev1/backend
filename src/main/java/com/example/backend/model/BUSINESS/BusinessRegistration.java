@@ -1,7 +1,6 @@
 package com.example.backend.model.BUSINESS;
 import com.example.backend.model.BANK.Account;
 import com.example.backend.model.BaseTime;
-import com.example.backend.model.Member;
 import com.example.backend.model.POS.Pos;
 import jakarta.persistence.*;
 import lombok.*;
@@ -55,7 +54,7 @@ public class BusinessRegistration extends BaseTime {
     // 계좌 식별 번호
     @OneToOne
     @JoinColumn(name = "account_id", nullable = true)
-    private Account account;
+    public Account account;
 
 
 }

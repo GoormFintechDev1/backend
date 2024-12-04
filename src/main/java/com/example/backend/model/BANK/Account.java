@@ -16,7 +16,6 @@ public class Account extends BaseTime {
 
     // 계좌식별 ID
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
     private Long accountId;
 
