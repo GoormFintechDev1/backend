@@ -11,7 +11,7 @@ public class OrderSyncScheduler {
 
     private final OrderSyncService orderSyncService;
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 10000)
     public void syncOrders() {
         orderSyncService.syncOrders();
     }
