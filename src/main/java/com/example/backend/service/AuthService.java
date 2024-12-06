@@ -4,12 +4,15 @@ import com.example.backend.dto.auth.*;
 import com.example.backend.exception.base_exceptions.BadRequestException;
 import com.example.backend.exception.base_exceptions.ResourceNotFoundException;
 import com.example.backend.model.Member;
+import com.example.backend.model.QMember;
 import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
 import com.example.backend.security.AESUtil;
 import com.example.backend.util.TokenProvider;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,32 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final TokenService tokenService;
+    private final JPAQueryFactory queryFactory;
+
+    @Transactional
+    public void resetPassword(PasswordResetRequestDTO passwordResetRequest) {
+        log.info("비밀번호 재설정 요청: loginId={}, email={}", passwordResetRequest.getLoginId(), passwordResetRequest.getEmail());
+
+        QMember qMember = QMember.member;
+
+        // 1. QueryDSL로 사용자 조회
+        Member member = queryFactory.selectFrom(qMember)
+                .where(
+                        qMember.loginId.eq(passwordResetRequest.getLoginId())
+                                .and(qMember.email.eq(passwordResetRequest.getEmail()))
+                )
+                .fetchOne();
+
+        if (member == null) {
+            throw new ResourceNotFoundException("해당 아이디와 이메일이 일치하는 사용자를 찾을 수 없습니다.");
+        }
+
+        // 2. 새로운 비밀번호 암호화 및 저장
+        String encodedPassword = passwordEncoder.encode(passwordResetRequest.getNewPassword());
+        member.setPassword(encodedPassword);
+
+        log.info("비밀번호 재설정 완료: loginId={}", passwordResetRequest.getLoginId());
+    }
 
     // 회원가입
     public ResponseEntity<String> signup(SignupRequestDTO signupRequest) {

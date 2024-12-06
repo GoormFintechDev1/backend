@@ -24,6 +24,13 @@ public class AuthController {
     private final AuthService authService;
     private final TokenProvider tokenProvider;
 
+    // 비밀번호 재설정
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequestDTO passwordResetRequest) {
+        authService.resetPassword(passwordResetRequest);
+        return ResponseEntity.ok("비밀번호 재설정이 완료되었습니다.");
+    }
+
     // 회원 가입
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDTO signupRequest) {
