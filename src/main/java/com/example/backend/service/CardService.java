@@ -14,11 +14,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.*;
 
-import com.example.backend.service.BANK.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.example.backend.service.BANK.AccountService;
 import com.example.backend.dto.account.ExpenseDetailDTO;
 import com.example.backend.dto.account.ExpenseDetailDTO.ExpenseDetail;
 import com.example.backend.dto.card.CardDTO;
@@ -79,6 +79,7 @@ public class CardService {
 		// JSON 파일 불러오기
 		List<CardDTO> cards = loadCardsFromJson(jsonFilePath);
 
+		// 카드 DTO 에서 지출 상세 정보를 가져온다 
 		List<ExpenseDetailDTO.ExpenseDetail> expenseDetails = accountService.getExpenseDetails(month, memberId);
 		
 		// 카드 추천 로직
@@ -92,7 +93,7 @@ public class CardService {
 			//////// 절약한 총 금액 계산
 			BigDecimal totalSavings = BigDecimal.ZERO;
 			
-			// 절약 세부 내역 저장
+			// 할인을 포함한 지출 상세 정보 저장
 			List<Map<String, Object>> savingDetails = new ArrayList<>();
 			
 		    log.info("=============================");
@@ -100,25 +101,19 @@ public class CardService {
 		    // 지출 세부 내역 조회
 		    for (ExpenseDetail expense : expenseDetails) {
 		    	String category = expense.getCategory();
+		    	// 지출 내역의 카테고리명이 매핑 키워드와 일치하는지 확인하여 keywords 로 저장
 		    	List<String> keywords = categoryKeywords.getOrDefault(category, Arrays.asList(category));
 
 		    	// 카테고리와 일치하는 혜택 정보 필터링
-		    	List<String> matchBenefits = card.getBenefits().stream()
-		    			.filter(benefit -> keywords.stream().anyMatch(benefit::contains))
-		    			.collect(Collectors.toList());
+		    	List<String> matchBenefits = card.getBenefits().stream()	// 카드 정보에서 혜택을 순회하여 
+		    			.filter(benefit -> keywords.stream().anyMatch(benefit::contains))	// 키워드와 일치 여부를 확인
+		    			.collect(Collectors.toList());	// 조건에 맞는 혜택을 리스트화
 		    	
 		    	// 일치하는 혜택 정보가 없으면 스킵
 		    	if (matchBenefits.isEmpty()) continue;
 		    	
-		    	boolean isOnline = matchBenefits.stream().anyMatch(benefit -> benefit.contains("온라인"));
-		    	
-		    	// 적합한 혜택 정보 중 가장 높은 할인율을 필터링
-		    	Optional<BigDecimal> maxDiscountRate = Optional.empty();
-		    		maxDiscountRate = matchBenefits.stream()
-		    			.filter(benefit -> keywords.stream()
-		    					.anyMatch(keyword -> isOnline
-	    			                ? expense.getCategory().contains("재료비") && expense.getNote().contains("온라인")
-	    			                : expense.getNote().contains(keyword) || expense.getCategory().contains(keyword)))
+		    	Optional<BigDecimal> maxDiscountRate = matchBenefits.stream()
+		    			.filter(benefit -> isMatchingBenefit(benefit, expense, keywords))
 		    			.map(this::extractDiscountRate)
 		    			.max(Comparator.naturalOrder());
 		    	
@@ -138,7 +133,6 @@ public class CardService {
 		    		log.info("Matched Benefit:: " + matchBenefits);
 		    		log.info("Discount:: " + discountRate + "%");
 		    		log.info("Savings:: " + savings);
-		    		log.info("isOnline:: " + isOnline);
 		    		
 		            Map<String, Object> savingDetail = new HashMap<>();
 		            savingDetail.put("category", category);
@@ -148,7 +142,6 @@ public class CardService {
 		            savingDetail.put("amount", expense.getAmount());
 		            savingDetail.put("discountRate", discountRate + "%");
 		            savingDetail.put("saving", savings);
-		            savingDetail.put("isOnline", isOnline);
 		            
 		            savingDetails.add(savingDetail);
 		    	}
@@ -209,29 +202,18 @@ public class CardService {
 		return BigDecimal.ZERO;
 	}
 	
-	// 온라인, 오프라인을 구분하여 저장하는 로직
-//	private static Map<String, Map<String, BigDecimal>> calculateExpenseSums(List<ExpenseDetailDTO.ExpenseDetail> expenses) {
-//		// 카테고리별 "온라인"과 "오프라인" 합계를 저장
-//        Map<String, Map<String, BigDecimal>> categorySums = new HashMap<>();
-//        
-//        for (ExpenseDetailDTO.ExpenseDetail expense : expenses) {
-//            String category = expense.getCategory();
-//            String type = expense.getNote().contains("온라인") ? "온라인" : "오프라인";
-//
-//            // 카테고리가 없으면 초기화
-//            categorySums.putIfAbsent(category, new HashMap<>());
-//            Map<String, BigDecimal> typeSums = categorySums.get(category);
-//
-//            if (category.contains("재료비")) {            	
-//            	// "온라인" 또는 "오프라인" 합계에 추가
-//            	typeSums.put(type, typeSums.getOrDefault(type, BigDecimal.ZERO).add(expense.getAmount()));
-//            } else {
-//            	// "전체" 키로 모든 금액을 합산
-//            	typeSums.put("전체", typeSums.getOrDefault("전체", BigDecimal.ZERO).add(expense.getAmount()));
-//            }
-//        }
-//
-//        return categorySums;
-//	}
-
+	private boolean isMatchingBenefit(String benefit, ExpenseDetail expense, List<String> keywords) {
+		// 혜택 중 온라인이라는 키워드를 가지는 경우 true
+    	boolean isOnline = benefit.contains("온라인");
+    	
+		if (isOnline) {	// 혜택에 온라인 정보가 있으면, 지출 카테고리가 재료비이고 온라인 결제 정보를 조회
+			return expense.getCategory().contains("재료비") && expense.getNote().contains("온라인");
+		} else {	// 혜택에 온라인 정보가 없는 경우, 결제(Note)가 온라인이면 false 외에는 모두 true
+			if( expense.getNote().contains("온라인")) {
+				return false;
+			}
+			
+			return true;
+		}
+	}
 }
