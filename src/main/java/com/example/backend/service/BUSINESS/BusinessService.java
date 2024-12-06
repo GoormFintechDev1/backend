@@ -40,20 +40,23 @@ public class BusinessService {
 
 
     // 로그인한 유저의 businessID를 가져오는 로직
-    public BusinessRegistration getBusinessIdByMemberID(Long memberId){
+    public BusinessRegistration getBusinessIdByMemberID(Long memberId) {
+        QMember qMember = QMember.member;
+
         // BusinessRegistration 조회
         BusinessRegistration businessRegistration = queryFactory
-                .selectFrom(QBusinessRegistration.businessRegistration)
-                .join(QBusinessRegistration.businessRegistration)
-                .on(QBusinessRegistration.businessRegistration.businessRegistrationId.eq(QMember.member.businessRegistration.businessRegistrationId)) // 연결
-                .where(QMember.member.memberId.eq(memberId)) // memberId 조건
+                .select(qMember.businessRegistration) // Member의 businessRegistration 직접 선택
+                .from(qMember)
+                .where(qMember.memberId.eq(memberId)) // memberId 조건
                 .fetchOne();
 
-        if (businessRegistration == null){
+        if (businessRegistration == null) {
             throw new BadRequestException("해당 회원과 연결된 사업자가 없습니다");
         }
+
         return businessRegistration;
     }
+
 
 
     // 사업자 외부 API에서 인증하는 로직 (최신)
