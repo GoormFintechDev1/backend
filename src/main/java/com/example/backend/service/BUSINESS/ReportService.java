@@ -2,9 +2,7 @@ package com.example.backend.service.BUSINESS;
 
 import com.example.backend.dto.account.ExpenseDetailDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
-import com.example.backend.model.*;
 import com.example.backend.model.BUSINESS.BusinessRegistration;
-import com.example.backend.model.BUSINESS.QBusinessRegistration;
 import com.example.backend.model.BUSINESS.QReport;
 import com.example.backend.model.BUSINESS.Report;
 import com.example.backend.service.BANK.AccountService;
@@ -41,6 +39,7 @@ public class ReportService {
     private final AccountService accountService;
     private final JPAQueryFactory queryFactory;
     private final RedisService redisService;
+    private final BusinessService businessService;
 
     @PersistenceContext
     private EntityManager em;
@@ -71,13 +70,13 @@ public class ReportService {
     @Transactional
     public String getOrCreateReport(Long memberId, YearMonth month, String reportType) {
 
-        BusinessRegistration businessRegistration = queryFactory
-                .selectFrom(QBusinessRegistration.businessRegistration)
-                .join(QBusinessRegistration.businessRegistration)
-                .on(QBusinessRegistration.businessRegistration.businessRegistrationId.eq(QMember.member.businessRegistration.businessRegistrationId))
-                .where(QMember.member.memberId.eq(memberId))
-                .fetchOne();
-
+//        BusinessRegistration businessRegistration = queryFactory
+//                .selectFrom(QBusinessRegistration.businessRegistration)
+//                .join(QBusinessRegistration.businessRegistration)
+//                .on(QBusinessRegistration.businessRegistration.businessRegistrationId.eq(QMember.member.businessRegistration.businessRegistrationId))
+//                .where(QMember.member.memberId.eq(memberId))
+//                .fetchOne();
+        BusinessRegistration businessRegistration = businessService.getBusinessIdByMemberID(memberId);
 
         if (businessRegistration == null) {
             throw new IllegalArgumentException("Member ID: " + memberId + "에 대한 BusinessRegistration이 존재하지 않습니다.");
@@ -355,12 +354,8 @@ public class ReportService {
         LocalDate previousReportMonth = previousMonth.atDay(1); // 전 달의 첫 번째 날
 
         // BusinessRegistration 조회
-        BusinessRegistration businessRegistration = queryFactory
-                .selectFrom(QBusinessRegistration.businessRegistration)
-                .join(QBusinessRegistration.businessRegistration)
-                .on(QBusinessRegistration.businessRegistration.businessRegistrationId.eq(QMember.member.businessRegistration.businessRegistrationId)) // 연결
-                .where(QMember.member.memberId.eq(memberId)) // memberId 조건
-                .fetchOne();
+        BusinessRegistration businessRegistration = businessService.getBusinessIdByMemberID(memberId);
+
 
         if (businessRegistration == null) {
             throw new IllegalArgumentException("회원 ID: " + memberId + "에 해당하는 사업자 등록 정보가 존재하지 않습니다.");

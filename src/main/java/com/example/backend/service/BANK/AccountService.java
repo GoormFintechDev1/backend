@@ -428,17 +428,20 @@ public class AccountService {
                 .join(qMember.businessRegistration, qBusinessRegistration)
                 .where(qMember.memberId.eq(memberId))
                 .fetchOne();
-
-
+        log.info("!!!!!!!!!!!!!!!!!"+ address);
         // 2. 주소에서 지역 추출
-        String region = extractRegionFromAddress(address);
+        String region = address != null ? extractRegionFromAddress(address) : null;
+        if (region == null || region.isEmpty()) {
+            throw new IllegalArgumentException("주소에서 유효한 지역 정보를 추출할 수 없습니다.");
+        }
 
         // 3. AccountHistory 조회
         QAccountHistory qAccountHistory = QAccountHistory.accountHistory;
         QAccount qAccount = QAccount.account;
 
         List<Map<String, Object>> accountHistoryList = queryFactory.selectFrom(qAccountHistory)
-                .join(qAccount, qBusinessRegistration.account)
+                .join(qAccount).on(qAccount.accountId.eq(qAccountHistory.account.accountId)) // 명확히 연결
+                .join(qBusinessRegistration).on(qBusinessRegistration.account.accountId.eq(qAccount.accountId)) // 명확히 연결
                 .where(qBusinessRegistration.address.contains(region)
                         .and(qAccountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
                         .and(qAccountHistory.transactionDate.between(
@@ -454,8 +457,10 @@ public class AccountService {
                 })
                 .collect(Collectors.toList());
 
+
         // 4. 데이터가 없는 경우 기본값 반환
         if (accountHistoryList.isEmpty()) {
+            log.info("No account history found for region: {} and month: {}", region, month);
             Map<String, Object> result = new HashMap<>();
             result.put("averageExpense", BigDecimal.ZERO);
             result.put("averageExpenseByCategory", Collections.emptyMap());
@@ -496,7 +501,6 @@ public class AccountService {
         return result;
     }
 
-
     // 주소에서 "동" 추출
     private String extractRegionFromAddress(String address) {
         if (address == null || address.isEmpty()) {
@@ -510,4 +514,5 @@ public class AccountService {
         }
         return "";
     }
+
 }
