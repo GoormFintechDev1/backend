@@ -342,7 +342,7 @@ public class AccountService {
                 .select(posSales.vatAmount.sum())
                 .from(posSales)
                 .where(posSales.posId.posId.eq(posId)
-                        .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
+                        .and(posSales.orderTime.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
 //        // 2. posSales에서 vatAmount 항목의 합계 구하기
 //        BigDecimal posVatAmount = queryFactory
