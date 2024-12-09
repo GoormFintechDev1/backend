@@ -18,6 +18,8 @@ import com.example.backend.model.BANK.AccountHistory;
 import com.example.backend.model.BANK.QAccount;
 import com.example.backend.model.BANK.QAccountHistory;
 import com.example.backend.model.BUSINESS.QBusinessRegistration;
+import com.example.backend.model.POS.QPos;
+import com.example.backend.model.POS.QPosSales;
 import com.example.backend.model.QMember;
 import com.example.backend.repository.AccountHistoryRepository;
 import com.example.backend.repository.AccountRepository;
@@ -26,9 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.example.backend.exception.base_exceptions.BadRequestException;
-import com.example.backend.model.BUSINESS.BusinessRegistration;
 
-import com.example.backend.model.enumSet.TransactionTypeEnum;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -62,6 +62,26 @@ public class AccountService {
             throw new BadRequestException("해당 사용자는 계좌가 없습니다.");
         }
         return accountId;
+    }
+
+    // 로그인한 유저의 posId를 가져오는 로직
+    private Long getPosIdByMemberId(Long memberId) {
+        QPos qPos = QPos.pos;
+        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+        QMember qMember = QMember.member;
+
+        Long posId = queryFactory
+                .select(qPos.posId)
+                .from(qMember)
+                .join(qMember.businessRegistration, qBusinessRegistration)
+                .join(qBusinessRegistration.pos, qPos)
+                .where(qMember.memberId.eq(memberId))
+                .fetchOne();
+
+        if (posId == null) {
+            throw new BadRequestException("해당 사용자는 포스가 없습니다.");
+        }
+        return posId;
     }
 
     /// bank 호출
@@ -138,6 +158,7 @@ public class AccountService {
         }
     }
 
+
     // 월별 지출 합계 구하는 함수
     public BigDecimal calculateTotalExpenses(YearMonth month, Long memberId) {
         Long accountId = getAccountIdByMemberId(memberId);
@@ -154,17 +175,17 @@ public class AccountService {
                 .fetchOne();
     }
 
+    /////////////////////////////////////
     // 월별 총수익 합계 구하는 함수
     private BigDecimal calculateTotalRevenue(YearMonth month, Long memberId) {
-        Long accountId = getAccountIdByMemberId(memberId);
-        QAccountHistory accountHistory = QAccountHistory.accountHistory;
+        Long posId = getPosIdByMemberId(memberId);
+        QPosSales posSales = QPosSales.posSales;
 
         return queryFactory
-                .select(accountHistory.amount.sum())
-                .from(accountHistory)
-                .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq("REVENUE"))
-                        .and(accountHistory.transactionDate.between(
+                .select(posSales.totalPrice.sum())
+                .from(posSales)
+                .where(posSales.posId.posId.eq(posId)
+                        .and(posSales.orderTime.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
@@ -263,6 +284,7 @@ public class AccountService {
         );
     }
 
+    ///////////////////////////////////
     ////// 순 이익 (총수익 - 총지출)
     public BigDecimal showNetProfit(Long memberId, YearMonth month) {
         // 총수익 계산
@@ -281,6 +303,9 @@ public class AccountService {
     public ProfitDetailDTO showProfitDetail(Long memberId, YearMonth month) {
         Long accountId = getAccountIdByMemberId(memberId);
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
+
+        Long posId = getPosIdByMemberId(memberId);
+        QPosSales posSales = QPosSales.posSales;
 
         LocalDate startDate = month.atDay(1); // 해당 월의 첫째 날
         LocalDate endDate = month.atEndOfMonth(); // 해당 월의 마지막 날
@@ -311,14 +336,12 @@ public class AccountService {
                 .fetchOne();
 
 
-        // 세금 (지출에서 카테고리가 '세금', 매출의 '부가세' vat_amount)
+        // 세금 (매출에서 tax)
         // 1. accountHistory에서 '세금' 항목의 합계 구하기
         BigDecimal accountTaxes = queryFactory
-                .select(accountHistory.amount.sum())
-                .from(accountHistory)
-                .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq("EXPENSE"))
-                        .and(accountHistory.category.eq("세금"))
+                .select(posSales.vatAmount.sum())
+                .from(posSales)
+                .where(posSales.posId.posId.eq(posId)
                         .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
 //        // 2. posSales에서 vatAmount 항목의 합계 구하기
