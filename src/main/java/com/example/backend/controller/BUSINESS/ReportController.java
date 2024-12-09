@@ -1,6 +1,10 @@
 package com.example.backend.controller.BUSINESS;
 
 import com.example.backend.service.BUSINESS.ReportService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +18,16 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/report")
+@Tag(name = "레포트", description = "레포트 API")
 public class ReportController {
 
     private final ReportService reportService;
 
-    /// 1. 경제 지표 활용 시장 동향 보고서 생성
+    @Operation(summary = "시장 동향 보고서 생성", description = "경제 지표를 활용하여 시장 동향 보고서를 생성합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "시장 동향 보고서 생성 성공"),
+            @ApiResponse(responseCode = "500", description = "시장 동향 보고서 생성 중 서버 오류 발생")
+    })
     @GetMapping("/market-trend")
     public ResponseEntity<Map<String, Object>> getMarketReport() {
         try {
@@ -31,7 +40,12 @@ public class ReportController {
         }
     }
 
-    /// 2. 동종 업계 비교 분석 보고서 생성 (지역 기반)
+    @Operation(summary = "동종 업계 비교 분석 보고서 생성", description = "지역 기반으로 동종 업계 비교 분석 보고서를 생성합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "동종 업계 비교 분석 보고서 생성 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @GetMapping("/industry-comparison")
     public ResponseEntity<Map<String, Object>> getIndustryComparison(
             @AuthenticationPrincipal Long memberId,  // JWT에서 추출한 memberId
@@ -47,6 +61,12 @@ public class ReportController {
         }
     }
 
+    @Operation(summary = "모든 보고서 조회", description = "특정 월에 대한 모든 보고서를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "모든 보고서 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @GetMapping("/all")
     public ResponseEntity<Map<String, Object>> getAllReport(
             @AuthenticationPrincipal Long memberId,
@@ -64,7 +84,12 @@ public class ReportController {
         }
     }
 
-
+    @Operation(summary = "지난 달 보고서 존재 여부 확인", description = "사용자의 지난 달 보고서가 존재하는지 확인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "지난 달 보고서 존재 여부 확인 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @GetMapping("/previous-month/check")
     public ResponseEntity<Boolean> checkPreviousMonthReports(
             @AuthenticationPrincipal Long memberId // JWT에서 추출한 memberId
@@ -80,7 +105,6 @@ public class ReportController {
             log.error("리포트 확인 중 서버 오류", e);
             return ResponseEntity.status(500).body(false);
         }
-
 
     }
 }

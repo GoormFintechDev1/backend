@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()// 인증 및 회원가입 엔드포인트 접근 허용
                         .requestMatchers("/api/pos-sales/save").permitAll()  // 포스 API 호출
                         .requestMatchers("/api/business/br-connect").permitAll()  // 포스 API 호출
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                         .anyRequest().authenticated()  // 나머지 엔드포인트는 인증 필요
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider),

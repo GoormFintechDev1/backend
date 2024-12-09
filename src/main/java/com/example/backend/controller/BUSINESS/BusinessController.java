@@ -6,6 +6,12 @@ import com.example.backend.service.BUSINESS.BusinessService;
 import com.example.backend.service.POS.PosOrderService;
 import com.example.backend.service.POS.PosService;
 import com.example.backend.util.TokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,26 +22,25 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/business")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "사업자", description = "사업자 API")
 public class BusinessController {
 
     private final BusinessService businessService;
     private final TokenProvider tokenProvider;
     private final PosOrderService posOrderService;
 
-    // 사업자 인증
-//    @PostMapping("/check")
-//    public ResponseEntity<String> checkBusiness(HttpServletRequest request, @RequestBody CheckBusinessDTO checkBusinessRequest) {
-//        // 요청에서 토큰을 가져와 memberId를 추출
-//        String token = tokenProvider.resolveAccessToken(request);
-//        Long memberId = tokenProvider.getMemberIdFromToken(token);
-//
-//        // BusinessService 호출
-//        businessService.checkBusiness(memberId, checkBusinessRequest);
-//        return ResponseEntity.ok("사업자 인증 성공");
-//    }
 
-
-    // <<<NEW>>> 사업자 인증 API
+    @Operation(summary = "사업자 인증", description = "사용자의 사업자 정보를 인증합니다.( + pos와 bank 정보를 가져옵니다.)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "사업자 인증 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "brNum", description = "사업자 번호"),
+            @Parameter(name = "address", description = "사업자 주소"),
+    })
     @PostMapping("/br-connect")
     public ResponseEntity<String> authentiateBusiness(HttpServletRequest request, @RequestBody CheckBusinessDTO checkBusinessRequest) {
         String token = tokenProvider.resolveAccessToken(request);

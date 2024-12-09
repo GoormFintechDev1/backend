@@ -1,6 +1,10 @@
 package com.example.backend.controller.POS;
 
 import com.example.backend.service.POS.OrderSyncService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +17,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/pos-sales")
 @RequiredArgsConstructor
+@Tag(name = "포스 매출", description = "포스 매출 API")
 public class PosSalesController {
 
     private final OrderSyncService orderSyncService;
+
+
+    @Operation(summary = "POS 매출 데이터 동기화", description = "POS 시스템의 매출 데이터를 동기화합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "POS 매출 데이터 동기화 성공"),
+            @ApiResponse(responseCode = "500", description = "POS 매출 데이터 동기화 실패")
+    })
 
     @PostMapping("/sync")
     public ResponseEntity<String> syncSales() {
@@ -28,16 +40,4 @@ public class PosSalesController {
         }
     }
 
-
-//    @PostMapping("/save")
-//    public ResponseEntity<String> saveSales(@RequestBody List<PosSalesRequestDTO> requests) {
-//        try {
-//            // 서비스 호출
-//            posSalesService.saveSales(requests);
-//            return ResponseEntity.ok("Sales data saved successfully.");
-//        } catch (Exception e) {
-//            // 에러 응답 처리
-//            return ResponseEntity.status(500).body("Error saving sales data: " + e.getMessage());
-//        }
-//    }
 }

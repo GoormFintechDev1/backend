@@ -4,6 +4,12 @@ import com.example.backend.dto.auth.*;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.TokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +26,22 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "인증", description = "인증 API")
 public class AuthController {
     private final AuthService authService;
     private final TokenProvider tokenProvider;
 
-    // 비밀번호 재설정 전 인증
+    @Operation(summary = "비밀번호 재설정 전 인증", description = "비밀번호 재설정 전에 사용자를 인증합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "인증 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "loginId", description = "로그인 아이디"),
+            @Parameter(name = "email", description = "이메일"),
+
+    })
     @PostMapping("/check")
     public ResponseEntity<String> checkPassword(@RequestBody CheckAuthDTO checkAuth) {
         if(authService.checkAuth(checkAuth)){
@@ -34,7 +51,17 @@ public class AuthController {
         }
     }
 
-    // 비밀번호 재설정
+    @Operation(summary = "비밀번호 재설정", description = "사용자의 비밀번호를 재설정합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "비밀번호 재설정 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "loginId", description = "로그인 아이디"),
+            @Parameter(name = "newPassword", description = "새로운 비밀번호"),
+
+    })
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequestDTO passwordResetRequest) {
         authService.resetPassword(passwordResetRequest);
@@ -42,7 +69,21 @@ public class AuthController {
     }
 
 
-    // 회원 가입
+    @Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원가입 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "loginId", description = "아이디"),
+            @Parameter(name = "password", description = "비밀번호"),
+            @Parameter(name = "name", description = "이름"),
+            @Parameter(name = "identityNumber", description = "주민등록번호"),
+            @Parameter(name = "phoneNumber", description = "전화번호"),
+            @Parameter(name = "email", description = "이메일"),
+
+    })
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDTO signupRequest) {
         authService.signup(signupRequest);
@@ -50,35 +91,79 @@ public class AuthController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    // 로그인
+    @Operation(summary = "로그인", description = "사용자를 인증하고 로그인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "loginId", description = "아이디"),
+            @Parameter(name = "password", description = "비밀번호"),
+
+    })
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest, HttpServletResponse response) {
         authService.login(loginRequest, response);
         return ResponseEntity.ok("로그인 성공");
     }
 
-    // 로그아웃
+
+    @Operation(summary = "로그아웃", description = "사용자를 로그아웃합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "loginId", description = "아이디"),
+    })
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestBody LogoutRequestDTO logoutRequest, HttpServletRequest request, HttpServletResponse response) {
         authService.logout(logoutRequest, request, response);
         return ResponseEntity.ok("로그아웃 성공");
     }
 
-    // 회원 탈퇴(비활성화)
+    @Operation(summary = "회원 탈퇴", description = "사용자 계정을 비활성화합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "loginId", description = "아이디"),
+    })
     @PostMapping("/inactive")
     public ResponseEntity<String> inActiveMember(@RequestBody ActivityMemberRequestDTO activityMemberRequest) {
         authService.inActiveMember(activityMemberRequest);
         return ResponseEntity.ok("회원 탈퇴 성공");
     }
 
-    // 회원 활성화
+    @Operation(summary = "회원 활성화", description = "사용자 계정을 활성화합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 활성화 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "loginId", description = "아이디"),
+    })
     @PostMapping("/active")
     public ResponseEntity<?> activateMember(@RequestBody ActivityMemberRequestDTO activityMemberRequest) {
         authService.activeMember(activityMemberRequest);
         return ResponseEntity.ok("회원 활성화 성공");
     }
 
-    // 아이디 중복 확인 (true - 중복, false - 중복 아님)
+
+    @Operation(summary = "아이디 중복 확인", description = "사용자 아이디의 중복 여부를 확인합니다.(true - 중복)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "아이디 중복 여부 확인 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "loginId", description = "아이디"),
+    })
     @PostMapping("/duplication/loginId")
     public ResponseEntity<Boolean> checkLoginID(@RequestBody CheckIdRequestDTO checkIdRequest) {
         boolean isDuplicate = authService.checkLoginID(checkIdRequest);
@@ -86,14 +171,31 @@ public class AuthController {
     }
 
 
-    // 폰 번호 중복 확인 (true - 중복, false - 중복 아님)
+    @Operation(summary = "전화번호 중복 확인", description = "사용자 전화번호의 중복 여부를 확인합니다.(true - 중복)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "전화번호 중복 여부 확인 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "phoneNumber", description = "전화번호"),
+    })
     @PostMapping("/duplication/phone")
     public ResponseEntity<Boolean> checkPhone(@RequestBody CheckPhoneNumberRequestDTO checkPhoneRequest) {
         boolean isDuplicate = authService.checkPhoneNumber(checkPhoneRequest);
         return ResponseEntity.ok(isDuplicate);
     }
 
-    // 이메일 중복 확인 (true - 중복, false - 중복 아님)
+
+    @Operation(summary = "이메일 중복 확인", description = "사용자 이메일의 중복 여부를 확인합니다.(true - 중복)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "이메일 중복 여부 확인 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Parameters({
+            @Parameter(name = "email", description = "이메일"),
+    })
     @PostMapping("/duplication/email")
     public ResponseEntity<Boolean> checkEmail(@RequestBody CheckEmailRequestDTO checkEmailRequest) {
         boolean isDuplicate = authService.checkEmail(checkEmailRequest);
