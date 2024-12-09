@@ -147,7 +147,7 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.transactionDate.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
@@ -163,7 +163,7 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.REVENUE))
+                        .and(accountHistory.transactionType.eq("REVENUE"))
                         .and(accountHistory.transactionDate.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
@@ -180,7 +180,7 @@ public class AccountService {
                 .from(accountHistory)
                 .select(accountHistory.category, accountHistory.amount.sum())
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.transactionDate.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
@@ -203,7 +203,7 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.transactionDate.year().eq(today.getYear()))
                         .and(accountHistory.transactionDate.month().eq(today.getMonthValue()))
                         .and(accountHistory.transactionDate.dayOfMonth().eq(today.getDayOfMonth())))
@@ -218,7 +218,7 @@ public class AccountService {
         return queryFactory
                 .selectFrom(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.transactionDate.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
@@ -295,7 +295,7 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.category.in("재료비", "인건비", "물류비"))
                         .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
@@ -305,7 +305,7 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.category.in("임대료", "통신비", "유지보수비", "공과금"))
                         .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
@@ -317,7 +317,7 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.category.eq("세금"))
                         .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
@@ -397,7 +397,7 @@ public class AccountService {
                     .select(accountHistory.amount.sum())
                     .from(accountHistory)
                     .where(accountHistory.account.accountId.eq(accountId)
-                            .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                            .and(accountHistory.transactionType.eq("EXPENSE"))
                             .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                     .fetchOne();
 
@@ -443,7 +443,7 @@ public class AccountService {
                 .join(qAccount).on(qAccount.accountId.eq(qAccountHistory.account.accountId)) // 명확히 연결
                 .join(qBusinessRegistration).on(qBusinessRegistration.account.accountId.eq(qAccount.accountId)) // 명확히 연결
                 .where(qBusinessRegistration.address.contains(region)
-                        .and(qAccountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(qAccountHistory.transactionType.eq("EXPENSE"))
                         .and(qAccountHistory.transactionDate.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
