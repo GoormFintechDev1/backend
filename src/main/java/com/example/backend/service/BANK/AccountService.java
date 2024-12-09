@@ -291,12 +291,26 @@ public class AccountService {
         BigDecimal totalRevenue = calculateTotalRevenue(month, memberId);
         if (totalRevenue == null) totalRevenue = BigDecimal.ZERO;
 
+        Long posId = getPosIdByMemberId(memberId);
+        QPosSales posSales = QPosSales.posSales;
+
+        LocalDate startDate = month.atDay(1); // 해당 월의 첫째 날
+        LocalDate endDate = month.atEndOfMonth(); // 해당 월의 마지막 날
+
+
         // 총지출 계산 (세금)
         BigDecimal totalExpenses = calculateTotalExpenses(month, memberId);
-        if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;
+        BigDecimal accountTaxes = queryFactory
+                .select(posSales.vatAmount.sum())
+                .from(posSales)
+                .where(posSales.posId.posId.eq(posId)
+                        .and(posSales.orderTime.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
+                .fetchOne();
 
+        if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;
+        BigDecimal expense = totalExpenses.add(accountTaxes);
         // 순이익 = 총수익 - 총지출
-        return totalRevenue.subtract(totalExpenses);
+        return totalRevenue.subtract(expense);
     }
 
     /////// 순이익 상세
