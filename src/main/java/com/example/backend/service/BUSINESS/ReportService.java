@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.HashMap;
@@ -267,7 +268,13 @@ public class ReportService {
             MonthlyIncomeDTO myIncome  = posService.getMonthlyIncomeSummary(memberId, month);
             List<ExpenseDetailDTO.ExpenseDetail> myExpense = accountService.getExpenseDetails(month,memberId);
 
-            String content = String.format("""
+            // amount 필드의 합계를 계산
+            BigDecimal myAmount = myExpense.stream()
+                    .map(ExpenseDetailDTO.ExpenseDetail::getAmount) // BigDecimal 필드로 매핑
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+        String content = String.format("""
                     다음 데이터는 평균 카페 운영 관련 지출 및 매출 데이터입니다.
                     - 평균 매출 정보: %s
                     - 평균 지출 정보: %s
@@ -275,7 +282,7 @@ public class ReportService {
                     다음 데이터는 나의 카페 운영 관련 지출 및 매출 데이터입니다.
                     - 평균 나의 매출 정보: %s
                     - 평균 나의 지출 정보: %s
-                    """, monthlyIncome, categoryExpense, myIncome, myExpense
+                    """, monthlyIncome, categoryExpense, myIncome, myAmount
             );
             Map<String, Object> requestBody = Map.of(
                     "model", "gpt-4o",
