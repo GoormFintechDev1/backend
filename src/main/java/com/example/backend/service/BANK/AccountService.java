@@ -510,9 +510,7 @@ public class AccountService {
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal averageExpense = totalExpense.divide(
-                BigDecimal.valueOf(accountHistoryList.size()), 2, RoundingMode.HALF_UP
-        );
+        BigDecimal averageExpense = totalExpense.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
         log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!"+averageExpense);
 
         // 6. 카테고리별 평균 계산
@@ -527,7 +525,7 @@ public class AccountService {
         categoryMap.forEach((category, amounts) -> {
             BigDecimal total = amounts.stream()
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-            BigDecimal average = total.divide(BigDecimal.valueOf(amounts.size()), 2, RoundingMode.HALF_UP);
+            BigDecimal average = total.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
             averageExpenseByCategory.put(category, average);
         });
 

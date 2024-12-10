@@ -243,7 +243,7 @@ public class PosService {
                 .fetchOne();
 
         BigDecimal averageMonthlyIncome = totalMonthlyIncome != null
-                ? totalMonthlyIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
+                ? totalMonthlyIncome.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
         // 2. 전체 사업자의 월 카드 매출 평균
@@ -257,7 +257,7 @@ public class PosService {
                 .fetchOne();
 
         BigDecimal averageMonthlyCardIncome = totalCardIncome != null
-                ? totalCardIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
+                ? totalCardIncome.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
         // 3. 전체 사업자의 월 현금 매출 평균
@@ -272,7 +272,7 @@ public class PosService {
                 .fetchOne();
 
         BigDecimal averageMonthlyCashIncome = totalCashIncome != null
-                ? totalCashIncome.divide(BigDecimal.valueOf(5), RoundingMode.HALF_UP)
+                ? totalCashIncome.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
         // 4. 아침, 점심, 저녁 시간대별 매출 합계 계산
