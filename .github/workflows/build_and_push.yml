@@ -1,9 +1,14 @@
 name: Main PR 후 build 및 jenkins 요청
 
 on:
-  pull_request:
-    branches:
-      - main
+  # pull_request:
+  #   branches:
+  #     - main
+  push:
+    # branches:
+    #   - main
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
 
 jobs:
@@ -41,8 +46,8 @@ jobs:
           docker push ghcr.io/${{ env.REPO_NAME }}:${{ github.sha }}
       
       # 5. Jenkins Job 호출
-      # - name: Trigger Jenkins Job
-      #   run: |
-      #     curl -X POST "http://doubly.co.kr:8100/job/backend/buildWithParameters" \
-      #     --user "doubly:${{ secrets.JENKINS_API_TOKEN }}" \
-      #     --data-urlencode "B_IMAGE_TAG=${{ github.sha }}"
+      - name: Trigger Jenkins Job
+        run: |
+          curl -X POST "http://doubly.co.kr:8100/job/backend/buildWithParameters" \
+          --user "doubly:${{ secrets.JENKINS_API_TOKEN }}" \
+          --data-urlencode "B_IMAGE_TAG=${{ github.sha }}"
