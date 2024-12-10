@@ -113,7 +113,7 @@ public class AccountService {
             sendToMainDTO fetchedData = fetchAccountAndHistoryFromBank();
 
             if (fetchedData == null || fetchedData.getAccountHistory() == null || fetchedData.getAccountHistory().isEmpty()) {
-                log.info("새로운 데이터가 없습니다.");
+//                log.info("새로운 데이터가 없습니다.");
                 return;
             }
 
@@ -127,9 +127,9 @@ public class AccountService {
 
                 if (!accountExists) {
                     accountRepository.save(account);
-                    log.info("새로운 Account 저장: {}", account);
+//                    log.info("새로운 Account 저장: {}", account);
                 } else {
-                    log.info("이미 존재하는 Account, 저장하지 않음: {}", account);
+//                    log.info("이미 존재하는 Account, 저장하지 않음: {}", account);
                 }
             }
 
@@ -146,9 +146,9 @@ public class AccountService {
 
                 if (!exists) {
                     accountHistoryRepository.save(history);
-                    log.info("새로운 AccountHistory 저장: {}", history);
+//                    log.info("새로운 AccountHistory 저장: {}", history);
                 } else {
-                    log.info("이미 존재하는 AccountHistory, 저장하지 않음: {}", history);
+//                    log.info("이미 존재하는 AccountHistory, 저장하지 않음: {}", history);
                 }
             }
 
