@@ -24,15 +24,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      # 레포지토리 명을 소문자로 변경
       - name: Set repository name to lowercase
         run: echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      # 2. 보안 설정 파일 생성
+    - name: Create application-API-KEY.properties
+      run: |
+        cat <<EOF > application-API-KEY.properties
+        JWT_SECRET=${{ secrets.JWT_SECRET }}
+        AES_SECRET=${{ secrets.AES_SECRET }}
+        OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+        EOF
       
-      # 2. Docker 이미지 빌드
+      # 3. Docker 이미지 빌드
       - name: Build Docker image
         run: |
           docker build -t ghcr.io/${{ env.REPO_NAME }}:${{ github.sha }} .
       
-      # 3. GitHub Container Registry 로그인
+      # 빌드 이후 보안 설정 파일 삭제
+      - name: Clean up application-API-KEY.properties
+        run: rm -f application-API-KEY.properties
+      
+      # 4. GitHub Container Registry 로그인
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -40,12 +54,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GH_TOKEN }}
       
-      # 4. Docker 이미지 푸시
+      # 5. Docker 이미지 푸시
       - name: Push Docker image to GitHub Packages
         run: |
           docker push ghcr.io/${{ env.REPO_NAME }}:${{ github.sha }}
       
-      # 5. Jenkins Job 호출
+      # 6. Jenkins Job 호출
       - name: Trigger Jenkins Job
         run: |
           curl -X POST "http://doubly.co.kr:8100/job/backend/buildWithParameters" \
