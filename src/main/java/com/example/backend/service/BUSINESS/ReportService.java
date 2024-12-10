@@ -1,5 +1,6 @@
 package com.example.backend.service.BUSINESS;
 
+import com.example.backend.dto.account.ExpenseDTO;
 import com.example.backend.dto.account.ExpenseDetailDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.model.BUSINESS.BusinessRegistration;
@@ -266,12 +267,7 @@ public class ReportService {
             Map<String, Object> monthlyIncome = posService.calculateAverageMonthlyMetrics(month);
             Map<String, Object> categoryExpense = accountService.getAccountHistoryByRegion(memberId, month);
             MonthlyIncomeDTO myIncome  = posService.getMonthlyIncomeSummary(memberId, month);
-            List<ExpenseDetailDTO.ExpenseDetail> myExpense = accountService.getExpenseDetails(month,memberId);
-
-            // amount 필드의 합계를 계산
-            BigDecimal myAmount = myExpense.stream()
-                    .map(ExpenseDetailDTO.ExpenseDetail::getAmount) // BigDecimal 필드로 매핑
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            ExpenseDTO myExpense = accountService.showSimpleExpense(memberId,month);
 
 
         String content = String.format("""
@@ -282,27 +278,42 @@ public class ReportService {
                     다음 데이터는 나의 카페 운영 관련 지출 및 매출 데이터입니다.
                     - 평균 나의 매출 정보: %s
                     - 평균 나의 지출 정보: %s
-                    """, monthlyIncome, categoryExpense, myIncome, myAmount
+                    """, monthlyIncome, categoryExpense, myIncome, myExpense
             );
-            Map<String, Object> requestBody = Map.of(
-                    "model", "gpt-4o",
-                    "messages", List.of(
-                            Map.of("role", "system", "content", "당신은 카페를 운영하는 사장님을 위한 시장 동향 보고서를 작성하는 AI입니다." +
-                                    " 다음 데이터는 카페 운영 관련 지출 및 매출 데이터입니다. " + content +
-                                    "이를 바탕으로 동종 업계와 비교하여 분석 결과를 JSON 형식으로 제공해주세요." + " 20대의 친근한 여성처럼 대답하세요."),
-                            Map.of("role", "user", "content", String.format("""
-                                    다음 정보를 JSON 형식으로 정리해주세요 : 
-                              
-                                    1. **average_sale** : 약 ~ 만원 형식으로 된 주변 동종 업계 매출 평균 (예시: 약 1181만원)
-                                    2. **average_expense**: 약 ~ 만원 형식으로 된 주변 동종 업계 지출 평균 (예시: 약 821만원)
-                                    3. **my_income : 약 ~ 만원 형식으로 된 나의 매출 (예시: 약 281만원)
-                                    4. **my_expense : 약 ~ 만원 형식으로 된 나의 지출 (예시: 약 181만원)
-                                    3. **sale_description**: 주변 카페와 비교한 시간과 매출 타입(카드/현금) 분석 결과 (예시: '주변 카페들은 카드 거래가 대부분이고, 주로 아침 시간대에 매출이 높아요!'")
-                                    4. **expense_description**: 주변 카페와 비교한 카테고리 별 지출 분석 결과. (예시: '주변 카페 평균보다 임대료 관련 지출이 높아요!'),
-                      
-                                    """))
-                    ),
-                    "functions", List.of(
+        Map<String, Object> requestBody = Map.of(
+                "model", "gpt-4o",
+                "messages", List.of(
+                        Map.of("role", "system", "content",
+                                "당신은 카페를 운영하는 사장님을 위한 시장 동향 보고서를 작성하는 AI입니다. " +
+                                        "다음 데이터는 카페 운영 관련 지출 및 매출 데이터입니다: " + content +
+                                        "이를 바탕으로 동종 업계와 비교하여 분석 결과를 JSON 형식으로 제공해주세요. " +
+                                        "답변은 20대의 친근한 여성처럼 작성해주세요."
+                        ),
+                        Map.of("role", "user", "content",
+                                """
+                                다음 정보를 JSON 형식으로 정리하세요. 금액은 "약 ~ 만원" 형식으로 입력하며, 
+                                입력된 금액이 소수점을 포함하거나 정수 형태인 경우 모두 1만 원 단위로 반올림하여 표현합니다.
+                                   - 예: 5145000.00 → "약 515만원"
+                                   - 예: 11814000 → "약 1181만원"
+                                 :
+                    
+                                1. **average_sale**: "약 ~ 만원" 형식으로 된 주변 동종 업계 매출 평균을 입력합니다. (예: "약 1181만원")
+                                2. **average_expense**: "약 ~ 만원" 형식으로 된 주변 동종 업계 지출 평균을 입력합니다. (예: "약 821만원")
+                                3. **my_income**: "약 ~ 만원" 형식으로 된 나의 매출을 입력합니다. (예: "약 281만원")
+                                4. **my_expense**: "약 ~ 만원" 형식으로 된 나의 지출을 입력합니다. (예: "약 181만원")
+                                5. **sale_description**: 주변 업계와 비교한 매출 분석 결과를 서술합니다. 분석 결과는 다음 요소를 포함해야 합니다:
+                                   - 주변 업계 대비 매출 비율 (예: "주변 카페들에 비해 10% 낮아요.")
+                                   - 매출이 주로 발생하는 시간대 (예: "아침 시간대에 매출이 높아요.")
+                                   - 카드와 현금 매출의 비율 차이 (예: "카드 거래가 대부분이에요.")
+                                6. **expense_description**: 주변 업계와 비교한 지출 분석 결과를 서술합니다. 분석 결과는 다음 요소를 포함해야 합니다:
+                                   - 특정 지출 카테고리(예: 인건비, 공과금, 임대료 등)와 비교
+                                   - 해당 카테고리의 평균 지출 금액 (예: "임대료는 평균 100만원이에요.")
+                                   - 나의 지출이 평균 대비 몇 % 더 높은지 또는 낮은지 (예: "임대료가 15% 높아요.")
+                                """
+                        )
+                ),
+
+        "functions", List.of(
                             Map.of(
                                     "name", "generateIndustryComparisonReport",
                                     "description", "지출과 매출에 대한 비교 분석 리포트를 생성합니다.",
