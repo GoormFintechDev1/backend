@@ -70,12 +70,7 @@ public class ReportService {
     @Transactional
     public String getOrCreateReport(Long memberId, YearMonth month, String reportType) {
 
-//        BusinessRegistration businessRegistration = queryFactory
-//                .selectFrom(QBusinessRegistration.businessRegistration)
-//                .join(QBusinessRegistration.businessRegistration)
-//                .on(QBusinessRegistration.businessRegistration.businessRegistrationId.eq(QMember.member.businessRegistration.businessRegistrationId))
-//                .where(QMember.member.memberId.eq(memberId))
-//                .fetchOne();
+
         BusinessRegistration businessRegistration = businessService.getBusinessIdByMemberID(memberId);
 
         if (businessRegistration == null) {
@@ -100,6 +95,13 @@ public class ReportService {
 
         // 3. 리포트가 없으면 GPT API 호출 및 저장
         Map<String, Object> reportData = generateReportFromAPI(memberId, month, reportType);
+
+        // API 호출이 성공적인지 검증
+        if (reportData.containsKey("error")) {
+            log.error("API 호출 오류로 리포트를 생성하지 못했습니다.{}", reportData.get("error"));
+            throw new RuntimeException("리포트 생성 실패: " + reportData.get("error"));
+        }
+
         saveReport(businessRegistration, reportMonth, reportType, reportData);
 
 
