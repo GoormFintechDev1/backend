@@ -41,7 +41,7 @@ jobs:
       # 3. Docker 이미지 빌드
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ env.REPO_NAME }}:${{ github.sha }} .
+          docker build -t ghcr.io/${{ env.REPO_NAME }}:latest .
       
       # 4. GitHub Container Registry 로그인
       - name: Login to GitHub Container Registry
@@ -54,7 +54,7 @@ jobs:
       # 5. Docker 이미지 푸시
       - name: Push Docker image to GitHub Packages
         run: |
-          docker push ghcr.io/${{ env.REPO_NAME }}:${{ github.sha }}
+          docker push ghcr.io/${{ env.REPO_NAME }}:latest
 
       # 빌드 이후 보안 설정 파일 삭제
       - name: Clean up application-API-KEY.properties
