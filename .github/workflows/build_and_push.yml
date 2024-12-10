@@ -29,13 +29,13 @@ jobs:
         run: echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       # 2. 보안 설정 파일 생성
-    - name: Create application-API-KEY.properties
-      run: |
-        cat <<EOF > application-API-KEY.properties
-        JWT_SECRET=${{ secrets.JWT_SECRET }}
-        AES_SECRET=${{ secrets.AES_SECRET }}
-        OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-        EOF
+      - name: Create application-API-KEY.properties
+        run: |
+          cat <<EOF > application-API-KEY.properties
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          AES_SECRET=${{ secrets.AES_SECRET }}
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          EOF
       
       # 3. Docker 이미지 빌드
       - name: Build Docker image
