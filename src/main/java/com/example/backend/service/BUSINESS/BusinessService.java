@@ -29,13 +29,13 @@ public class BusinessService {
     private final PosRepository posRepository;
     private final BusinessRegistrationRepository businessRegistrationRepository;
 
-    @Qualifier("webClient8084")
+    @Qualifier("webClientLocal8084")
     private final WebClient webClient;
 
-    @Qualifier("webClient8081")
+    @Qualifier("webClientLocal8081")
     private final WebClient accountWebClient;
 
-    @Qualifier("webClient8083")
+    @Qualifier("webClientLocal8083")
     private final WebClient webClient3;
 
 

@@ -54,8 +54,12 @@ public class SecurityConfig {
         log.info("Configuring CORS settings");
 
         org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000"); // 허용할 프론트엔드 도메인
+        configuration.addAllowedOrigin("http://doubly.co.kr"); // 허용할 도메인 nginx
         configuration.addAllowedOrigin("http://localhost"); // 허용할 프론트엔드 도메인 nginx
+        configuration.addAllowedOrigin("http://localhost:3000"); // 허용할 프론트엔드 도메인
+        configuration.addAllowedOrigin("http://ec2-54-180-115-242.ap-northeast-2.compute.amazonaws.com:8081"); // 허용할 bank api
+        configuration.addAllowedOrigin("http://ec2-54-180-115-242.ap-northeast-2.compute.amazonaws.com:8082"); // 허용할 pos api
+        configuration.addAllowedOrigin("http://ec2-54-180-115-242.ap-northeast-2.compute.amazonaws.com:8084"); // 허용할 business api
         configuration.setAllowCredentials(true); // 쿠키 및 인증 정보를 포함한 요청 허용
         configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
