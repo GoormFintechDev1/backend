@@ -4,6 +4,7 @@ import com.example.backend.dto.account.ExpenseDTO;
 import com.example.backend.dto.account.ExpenseDetailDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
 import com.example.backend.model.BUSINESS.BusinessRegistration;
+import com.example.backend.model.BUSINESS.Prompt;
 import com.example.backend.model.BUSINESS.QReport;
 import com.example.backend.model.BUSINESS.Report;
 import com.example.backend.service.BANK.AccountService;
@@ -155,7 +156,37 @@ public class ReportService {
         }
     }
 
+  /*  public String getMarketIssueAndTrendByMonth(String month) {
+        // "시장 이슈" 데이터 가져오기
+        List<Prompt> marketIssues = queryFactory
+                .selectFrom(prompt)
+                .where(
+                        prompt.month.eq(month),
+                        prompt.type.eq("시장 이슈")
+                )
+                .fetch();
 
+        // "트렌드" 데이터 가져오기
+        List<Prompt> trends = queryFactory
+                .selectFrom(prompt)
+                .where(
+                        prompt.month.eq(month),
+                        prompt.type.eq("트렌드")
+                )
+                .fetch();
+
+        // 결과 합치기
+        String marketIssueText = marketIssues.stream()
+                .map(Prompt::getContents)
+                .collect(Collectors.joining("\n"));
+
+        String trendText = trends.stream()
+                .map(Prompt::getContents)
+                .collect(Collectors.joining("\n"));
+
+        return "시장 이슈:\n" + marketIssueText + "\n\n트렌드:\n" + trendText;
+    }
+*/
     @Transactional
     public void saveReport(BusinessRegistration businessRegistration, LocalDate reportMonth, String reportType, Map<String, Object> reportData) {
         try {
@@ -183,7 +214,6 @@ public class ReportService {
         String latestExchangeRate = "1,320원";  // 실제 API 호출로 가져올 수 있습니다.
         String bsiIndex = "98";  // 실제 경제 지표 API로부터 가져올 수 있습니다.
         String priceDescription = "원두 가격 5% 상승, 우유 가격 3% 상승, 설탕 가격 안정적";  // 실제 API에서 가져온 데이터 예시
-
         Map<String, Object> requestBody = Map.of(
                 "model", "gpt-4o",
                 "messages", List.of(
@@ -261,7 +291,7 @@ public class ReportService {
         }
     }
 
-    /////////////////////// 2. 동종 업계 비교 분석 보고서 생성 (지역 기반)
+    /////////////////////// 2. &#xB3D9;&#xC885; &#xC5C5;&#xACC4; &#xBE44;&#xAD50; &#xBD84;&#xC11D; &#xBCF4;&#xACE0;&#xC11C; &#xC0DD;&#xC131; (&#xC9C0;&#xC5ED; &#xAE30;&#xBC18;)
     public Map<String,Object> generateIndustryComparisonReport(Long memberId, YearMonth month) {
 
             Map<String, Object> monthlyIncome = posService.calculateAverageMonthlyMetrics(month);
