@@ -31,7 +31,8 @@ jobs:
       # 2. 보안 설정 파일 생성
       - name: Create application-API-KEY.properties
         run: |
-          cat <<EOF > application-API-KEY.properties
+          mkdir -p src/main/resources
+          cat <<EOF > src/main/resources/application-API-KEY.properties
           JWT_SECRET=${{ secrets.JWT_SECRET }}
           AES_SECRET=${{ secrets.AES_SECRET }}
           OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
@@ -40,11 +41,7 @@ jobs:
       # 3. Docker 이미지 빌드
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ env.REPO_NAME }}:${{ github.sha }} .
-      
-      # 빌드 이후 보안 설정 파일 삭제
-      - name: Clean up application-API-KEY.properties
-        run: rm -f application-API-KEY.properties
+          docker build -t ghcr.io/${{ env.REPO_NAME }}:latest .
       
       # 4. GitHub Container Registry 로그인
       - name: Login to GitHub Container Registry
@@ -57,11 +54,14 @@ jobs:
       # 5. Docker 이미지 푸시
       - name: Push Docker image to GitHub Packages
         run: |
-          docker push ghcr.io/${{ env.REPO_NAME }}:${{ github.sha }}
+          docker push ghcr.io/${{ env.REPO_NAME }}:latest
+
+      # 빌드 이후 보안 설정 파일 삭제
+      - name: Clean up application-API-KEY.properties
+        run: rm -f src/main/resources/application-API-KEY.properties
       
       # 6. Jenkins Job 호출
       - name: Trigger Jenkins Job
         run: |
           curl -X POST "http://doubly.co.kr:8100/job/backend/buildWithParameters" \
-          --user "doubly:${{ secrets.JENKINS_API_TOKEN }}" \
-          --data-urlencode "B_IMAGE_TAG=${{ github.sha }}"
+          --user "doubly:${{ secrets.JENKINS_API_TOKEN }}"
