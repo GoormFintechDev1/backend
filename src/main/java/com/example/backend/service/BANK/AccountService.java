@@ -513,6 +513,7 @@ public class AccountService {
         BigDecimal averageExpense = totalExpense.divide(
                 BigDecimal.valueOf(accountHistoryList.size()), 2, RoundingMode.HALF_UP
         );
+        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!"+averageExpense);
 
         // 6. 카테고리별 평균 계산
         Map<String, List<BigDecimal>> categoryMap = accountHistoryList.stream()
