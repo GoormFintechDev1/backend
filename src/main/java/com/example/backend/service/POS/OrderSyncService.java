@@ -26,7 +26,8 @@ public class OrderSyncService {
 
     private final Random random = new Random();
 
-    @Scheduled(fixedRate = 10000)
+    // @Scheduled(fixedRate = 10000)
+    @Scheduled(cron = "0 */1 * * * *")
     public void syncOrders() {
         try {
             List<OrderResponseDTO> orders = posOrderService.fetchOrdersFromPos();

@@ -27,13 +27,9 @@ public class PosOrderService {
     private final WebClient webClient;
     private final MemberRepository memberRepository;
 
-
-    @Value("${pos.api.url}")
-    private String posUrl;
-
     public List<OrderResponseDTO> fetchOrdersFromPos() {
         return webClient.get()
-                .uri(posUrl + "/api/orders/all")
+                .uri("/api/orders/all")
                 .retrieve()
                 .bodyToFlux(OrderResponseDTO.class)
                 .collectList()
