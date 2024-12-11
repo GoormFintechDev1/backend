@@ -106,7 +106,8 @@ public class AccountService {
     }
 
     // 10초마다 bank에서 account와 accountHistory 땡겨오기
-    @Scheduled(fixedRate = 10000)
+    // @Scheduled(fixedRate = 10000)	// 1000ms * 10 = 10초
+    @Scheduled(cron = "0 */30 * * * *")
     public void updateAccountAndHistory() {
         try {
             // 외부 API에서 데이터 가져오기
