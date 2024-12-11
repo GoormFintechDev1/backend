@@ -69,13 +69,13 @@ public class AccountService {
     private final WebClient webClient;
 
     @Value("${bank.api.url}")
-    private String bankApiUrl;
+    private String bankUrl;
 
     // 외부 API 호출하여 sendToMainDTO 데이터 가져오기
     public sendToMainDTO fetchAccountAndHistoryFromBank() {
         try {
             return webClient.post()
-                    .uri(bankApiUrl + "/send/account")
+                    .uri(bankUrl + "/api/bank/send/account")
                     .retrieve()
                     .bodyToMono(sendToMainDTO.class)
                     .block();

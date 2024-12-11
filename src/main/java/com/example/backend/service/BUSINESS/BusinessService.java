@@ -65,7 +65,7 @@ public class BusinessService {
 
         // 1. 외부 API 호출하여 사업자 정보 확인
         BusinessRegistrationDTO externalBusiness = webClient.get()
-                .uri("http://localhost:8084/business/{brNum}", checkBusinessRequest.getBrNum())
+                .uri("/business/{brNum}", checkBusinessRequest.getBrNum())
                 .retrieve()
                 .bodyToMono(BusinessRegistrationDTO.class)
                 .block();
