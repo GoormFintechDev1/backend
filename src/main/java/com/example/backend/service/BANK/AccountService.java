@@ -18,6 +18,8 @@ import com.example.backend.model.BANK.AccountHistory;
 import com.example.backend.model.BANK.QAccount;
 import com.example.backend.model.BANK.QAccountHistory;
 import com.example.backend.model.BUSINESS.QBusinessRegistration;
+import com.example.backend.model.POS.QPos;
+import com.example.backend.model.POS.QPosSales;
 import com.example.backend.model.QMember;
 import com.example.backend.repository.AccountHistoryRepository;
 import com.example.backend.repository.AccountRepository;
@@ -26,9 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.example.backend.exception.base_exceptions.BadRequestException;
-import com.example.backend.model.BUSINESS.BusinessRegistration;
 
-import com.example.backend.model.enumSet.TransactionTypeEnum;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -64,6 +64,26 @@ public class AccountService {
         return accountId;
     }
 
+    // 로그인한 유저의 posId를 가져오는 로직
+    private Long getPosIdByMemberId(Long memberId) {
+        QPos qPos = QPos.pos;
+        QBusinessRegistration qBusinessRegistration = QBusinessRegistration.businessRegistration;
+        QMember qMember = QMember.member;
+
+        Long posId = queryFactory
+                .select(qPos.posId)
+                .from(qMember)
+                .join(qMember.businessRegistration, qBusinessRegistration)
+                .join(qBusinessRegistration.pos, qPos)
+                .where(qMember.memberId.eq(memberId))
+                .fetchOne();
+
+        if (posId == null) {
+            throw new BadRequestException("해당 사용자는 포스가 없습니다.");
+        }
+        return posId;
+    }
+
     /// bank 호출
     @Qualifier("webClient8081")
     private final WebClient webClient;
@@ -93,7 +113,7 @@ public class AccountService {
             sendToMainDTO fetchedData = fetchAccountAndHistoryFromBank();
 
             if (fetchedData == null || fetchedData.getAccountHistory() == null || fetchedData.getAccountHistory().isEmpty()) {
-                log.info("새로운 데이터가 없습니다.");
+//                log.info("새로운 데이터가 없습니다.");
                 return;
             }
 
@@ -107,9 +127,9 @@ public class AccountService {
 
                 if (!accountExists) {
                     accountRepository.save(account);
-                    log.info("새로운 Account 저장: {}", account);
+//                    log.info("새로운 Account 저장: {}", account);
                 } else {
-                    log.info("이미 존재하는 Account, 저장하지 않음: {}", account);
+//                    log.info("이미 존재하는 Account, 저장하지 않음: {}", account);
                 }
             }
 
@@ -126,9 +146,9 @@ public class AccountService {
 
                 if (!exists) {
                     accountHistoryRepository.save(history);
-                    log.info("새로운 AccountHistory 저장: {}", history);
+//                    log.info("새로운 AccountHistory 저장: {}", history);
                 } else {
-                    log.info("이미 존재하는 AccountHistory, 저장하지 않음: {}", history);
+//                    log.info("이미 존재하는 AccountHistory, 저장하지 않음: {}", history);
                 }
             }
 
@@ -137,6 +157,7 @@ public class AccountService {
             log.error("Error during updateAccountAndHistory: {}", e.getMessage(), e);
         }
     }
+
 
     // 월별 지출 합계 구하는 함수
     public BigDecimal calculateTotalExpenses(YearMonth month, Long memberId) {
@@ -147,24 +168,24 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.transactionDate.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
     }
 
+    /////////////////////////////////////
     // 월별 총수익 합계 구하는 함수
     private BigDecimal calculateTotalRevenue(YearMonth month, Long memberId) {
-        Long accountId = getAccountIdByMemberId(memberId);
-        QAccountHistory accountHistory = QAccountHistory.accountHistory;
+        Long posId = getPosIdByMemberId(memberId);
+        QPosSales posSales = QPosSales.posSales;
 
         return queryFactory
-                .select(accountHistory.amount.sum())
-                .from(accountHistory)
-                .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.REVENUE))
-                        .and(accountHistory.transactionDate.between(
+                .select(posSales.totalPrice.sum())
+                .from(posSales)
+                .where(posSales.posId.posId.eq(posId)
+                        .and(posSales.orderTime.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
                 .fetchOne();
@@ -180,7 +201,7 @@ public class AccountService {
                 .from(accountHistory)
                 .select(accountHistory.category, accountHistory.amount.sum())
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.transactionDate.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
@@ -203,7 +224,7 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.transactionDate.year().eq(today.getYear()))
                         .and(accountHistory.transactionDate.month().eq(today.getMonthValue()))
                         .and(accountHistory.transactionDate.dayOfMonth().eq(today.getDayOfMonth())))
@@ -218,7 +239,7 @@ public class AccountService {
         return queryFactory
                 .selectFrom(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.transactionDate.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
@@ -263,24 +284,42 @@ public class AccountService {
         );
     }
 
+    ///////////////////////////////////
     ////// 순 이익 (총수익 - 총지출)
     public BigDecimal showNetProfit(Long memberId, YearMonth month) {
         // 총수익 계산
         BigDecimal totalRevenue = calculateTotalRevenue(month, memberId);
         if (totalRevenue == null) totalRevenue = BigDecimal.ZERO;
 
+        Long posId = getPosIdByMemberId(memberId);
+        QPosSales posSales = QPosSales.posSales;
+
+        LocalDate startDate = month.atDay(1); // 해당 월의 첫째 날
+        LocalDate endDate = month.atEndOfMonth(); // 해당 월의 마지막 날
+
+
         // 총지출 계산 (세금)
         BigDecimal totalExpenses = calculateTotalExpenses(month, memberId);
-        if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;
+        BigDecimal accountTaxes = queryFactory
+                .select(posSales.vatAmount.sum())
+                .from(posSales)
+                .where(posSales.posId.posId.eq(posId)
+                        .and(posSales.orderTime.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
+                .fetchOne();
 
+        if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;
+        BigDecimal expense = totalExpenses.add(accountTaxes);
         // 순이익 = 총수익 - 총지출
-        return totalRevenue.subtract(totalExpenses);
+        return totalRevenue.subtract(expense);
     }
 
     /////// 순이익 상세
     public ProfitDetailDTO showProfitDetail(Long memberId, YearMonth month) {
         Long accountId = getAccountIdByMemberId(memberId);
         QAccountHistory accountHistory = QAccountHistory.accountHistory;
+
+        Long posId = getPosIdByMemberId(memberId);
+        QPosSales posSales = QPosSales.posSales;
 
         LocalDate startDate = month.atDay(1); // 해당 월의 첫째 날
         LocalDate endDate = month.atEndOfMonth(); // 해당 월의 마지막 날
@@ -295,7 +334,7 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.category.in("재료비", "인건비", "물류비"))
                         .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
@@ -305,21 +344,19 @@ public class AccountService {
                 .select(accountHistory.amount.sum())
                 .from(accountHistory)
                 .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(accountHistory.transactionType.eq("EXPENSE"))
                         .and(accountHistory.category.in("임대료", "통신비", "유지보수비", "공과금"))
                         .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
 
 
-        // 세금 (지출에서 카테고리가 '세금', 매출의 '부가세' vat_amount)
+        // 세금 (매출에서 tax)
         // 1. accountHistory에서 '세금' 항목의 합계 구하기
         BigDecimal accountTaxes = queryFactory
-                .select(accountHistory.amount.sum())
-                .from(accountHistory)
-                .where(accountHistory.account.accountId.eq(accountId)
-                        .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
-                        .and(accountHistory.category.eq("세금"))
-                        .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
+                .select(posSales.vatAmount.sum())
+                .from(posSales)
+                .where(posSales.posId.posId.eq(posId)
+                        .and(posSales.orderTime.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                 .fetchOne();
 //        // 2. posSales에서 vatAmount 항목의 합계 구하기
 //        BigDecimal posVatAmount = queryFactory
@@ -397,7 +434,7 @@ public class AccountService {
                     .select(accountHistory.amount.sum())
                     .from(accountHistory)
                     .where(accountHistory.account.accountId.eq(accountId)
-                            .and(accountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                            .and(accountHistory.transactionType.eq("EXPENSE"))
                             .and(accountHistory.transactionDate.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59))))
                     .fetchOne();
 
@@ -443,7 +480,7 @@ public class AccountService {
                 .join(qAccount).on(qAccount.accountId.eq(qAccountHistory.account.accountId)) // 명확히 연결
                 .join(qBusinessRegistration).on(qBusinessRegistration.account.accountId.eq(qAccount.accountId)) // 명확히 연결
                 .where(qBusinessRegistration.address.contains(region)
-                        .and(qAccountHistory.transactionType.eq(TransactionTypeEnum.EXPENSE))
+                        .and(qAccountHistory.transactionType.eq("EXPENSE"))
                         .and(qAccountHistory.transactionDate.between(
                                 month.atDay(1).atStartOfDay(),
                                 month.atEndOfMonth().atTime(23, 59, 59))))
@@ -473,9 +510,8 @@ public class AccountService {
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal averageExpense = totalExpense.divide(
-                BigDecimal.valueOf(accountHistoryList.size()), 2, RoundingMode.HALF_UP
-        );
+        BigDecimal averageExpense = totalExpense.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
+        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!"+averageExpense);
 
         // 6. 카테고리별 평균 계산
         Map<String, List<BigDecimal>> categoryMap = accountHistoryList.stream()
@@ -489,7 +525,7 @@ public class AccountService {
         categoryMap.forEach((category, amounts) -> {
             BigDecimal total = amounts.stream()
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-            BigDecimal average = total.divide(BigDecimal.valueOf(amounts.size()), 2, RoundingMode.HALF_UP);
+            BigDecimal average = total.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
             averageExpenseByCategory.put(category, average);
         });
 

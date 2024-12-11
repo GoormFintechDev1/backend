@@ -18,28 +18,34 @@ public class WebClientConfig {
 	@Value("${br.api.url}")
 	private String brUrl;
 
-	// 8081 서버(WebClient 3)
-	@Bean(name = "webClient8081")
-	public WebClient webClientFor8081(WebClient.Builder builder) {
-		return builder
-				.baseUrl(bankUrl)
-				.build();
-	}
-	
-    // 8083 서버(WebClient 2)
-    @Bean(name = "webClient8083")
-    public WebClient webClientFor8083(WebClient.Builder builder) {
+    // 공통 버퍼 크기 설정 메서드
+    private WebClient.Builder configureBuilder(WebClient.Builder builder, int bufferSize) {
         return builder
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(bufferSize));
+    }
+  
+    // localhost:8081에 연결하는 WebClient
+    @Bean(name = "webClient8081")
+    public WebClient webClientLocal8081(WebClient.Builder builder) {
+        return configureBuilder(builder, 10 * 1024 * 1024) // 10MB 버퍼 크기
+                .baseUrl(bankUrl)
+                .build();
+    }
+  
+    // localhost:8083에 연결하는 WebClient
+    @Bean(name = "webClient8083")
+    public WebClient webClientLocal8083(WebClient.Builder builder) {
+        return configureBuilder(builder, 10 * 1024 * 1024) // 10MB 버퍼 크기
                 .baseUrl(posUrl)
                 .build();
     }
 
-    // 8084 서버(WebClient 1)
+    // localhost:8084에 연결하는 WebClient
     @Primary
     @Bean(name = "webClient8084")
-    public WebClient webClientFor8084(WebClient.Builder builder) {
-    	return builder
-    			.baseUrl(brUrl)
-    			.build();
+    public WebClient webClientLocal8084(WebClient.Builder builder) {
+        return configureBuilder(builder, 2 * 1024 * 1024) // 2MB 버퍼 크기
+                .baseUrl(brUrl)
+                .build();
     }
 }

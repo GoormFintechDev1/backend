@@ -1,10 +1,9 @@
 package com.example.backend.service.BUSINESS;
 
+import com.example.backend.dto.account.ExpenseDTO;
 import com.example.backend.dto.account.ExpenseDetailDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
-import com.example.backend.model.BUSINESS.BusinessRegistration;
-import com.example.backend.model.BUSINESS.QReport;
-import com.example.backend.model.BUSINESS.Report;
+import com.example.backend.model.BUSINESS.*;
 import com.example.backend.service.BANK.AccountService;
 import com.example.backend.service.POS.PosService;
 import com.example.backend.service.RedisService;
@@ -23,11 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -70,12 +71,7 @@ public class ReportService {
     @Transactional
     public String getOrCreateReport(Long memberId, YearMonth month, String reportType) {
 
-//        BusinessRegistration businessRegistration = queryFactory
-//                .selectFrom(QBusinessRegistration.businessRegistration)
-//                .join(QBusinessRegistration.businessRegistration)
-//                .on(QBusinessRegistration.businessRegistration.businessRegistrationId.eq(QMember.member.businessRegistration.businessRegistrationId))
-//                .where(QMember.member.memberId.eq(memberId))
-//                .fetchOne();
+
         BusinessRegistration businessRegistration = businessService.getBusinessIdByMemberID(memberId);
 
         if (businessRegistration == null) {
@@ -100,6 +96,13 @@ public class ReportService {
 
         // 3. 리포트가 없으면 GPT API 호출 및 저장
         Map<String, Object> reportData = generateReportFromAPI(memberId, month, reportType);
+
+        // API 호출이 성공적인지 검증
+        if (reportData.containsKey("error")) {
+            log.error("API 호출 오류로 리포트를 생성하지 못했습니다.{}", reportData.get("error"));
+            throw new RuntimeException("리포트 생성 실패: " + reportData.get("error"));
+        }
+
         saveReport(businessRegistration, reportMonth, reportType, reportData);
 
 
@@ -131,7 +134,7 @@ public class ReportService {
 
     private Map<String, Object> generateReportFromAPI(Long memberId, YearMonth month, String reportType) {
         if ("MARKET_REPORT".equals(reportType)) {
-            return generateMarketReport();
+            return generateMarketReport(month);
         } else if ("INDUSTRY_REPORT".equals(reportType)) {
             return generateIndustryComparisonReport(memberId, month);
         }
@@ -149,6 +152,39 @@ public class ReportService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("JSON 파싱 오류: " + e.getMessage(), e);
         }
+    }
+
+    public String getMarketIssueByMonth(YearMonth month) {
+        QPrompt prompt = QPrompt.prompt;
+
+        // "시장 이슈" 데이터 가져오기
+        String marketIssues = queryFactory
+                .select(prompt.contents)
+                .from(prompt)
+                .where(
+                        prompt.month.eq(month),
+                        prompt.type.eq("issue")
+                )
+                .fetchOne();
+
+        return marketIssues != null ? marketIssues : "";
+    }
+
+    public String getTrendByMonth(YearMonth month) {
+        QPrompt prompt = QPrompt.prompt;
+
+        // "트렌드" 데이터 가져오기
+        String trends = queryFactory
+                .select(prompt.contents)
+                .from(prompt)
+                .where(
+                        prompt.month.eq(month),
+                        prompt.type.eq("trend")
+                )
+                .fetchOne();
+
+        // "트렌드" 결과 합치기
+        return trends != null ? trends : "";
     }
 
 
@@ -174,32 +210,39 @@ public class ReportService {
     //////////////////// 1. 경제 지표 활용 시장 동향 보고서 생성
     private final ObjectMapper objectMapper;
 
-    public Map<String, Object> generateMarketReport() {
-        // 실제 최신 데이터를 가져왔다고 가정한 예시입니다.
-        String latestExchangeRate = "1,320원";  // 실제 API 호출로 가져올 수 있습니다.
-        String bsiIndex = "98";  // 실제 경제 지표 API로부터 가져올 수 있습니다.
-        String priceDescription = "원두 가격 5% 상승, 우유 가격 3% 상승, 설탕 가격 안정적";  // 실제 API에서 가져온 데이터 예시
+    public Map<String, Object> generateMarketReport(YearMonth month) {
+        // 시장 이슈와 트렌드 데이터를 가져오기
+        String market =  getMarketIssueByMonth(month);
+        String trend = getTrendByMonth(month);
 
+        // 실제 최신 데이터를 가져왔다고 가정한 예시입니다.
+        String bsiIndex = "98";  // 실제 경제 지표 API로부터 가져올 수 있습니다.
+        int _month = month.getMonthValue(); // 월만 가져오기
+        // 요청 바디 구성
         Map<String, Object> requestBody = Map.of(
                 "model", "gpt-4o",
                 "messages", List.of(
-                        Map.of("role", "system", "content", "당신은 2024년 11월 15일 한국의 경제 뉴스를 기반으로 카페 운영자를 위한 시장 동향 보고서를 작성하는 AI입니다. " +
-                                "실제 최신 뉴스와 공공 데이터(예: 한국은행, 기상청, 농림축산식품부, 통계청 등)를 기반으로 보고서를 작성하세요. 20대의 친근한 여성처럼 대답하세요." +
-                                "2024년 11월 15일 기준 환율은 1400.90원 이고, BSI 지수는 91.8입니다. 모든 정보에 대한 실제 출처를 적어주세요. 출처가 무조건 있어야 합니다. 출처가 없는 값은 보여주지 마세요" ),
-
+                        Map.of("role", "system", "content", String.format("당신은 %s 한국의 경제 뉴스를 기반으로 카페 운영자를 위한 시장 동향 보고서를 작성하는 AI입니다. " +
+                                "실제 최신 뉴스와 공공 데이터(예: 한국은행, 기상청, 농림축산식품부, 통계청 등)를 기반으로 작성하세요. " +
+                                "20대의 친근한 여성처럼 대답하세요.", _month)),
                         Map.of("role", "user", "content", String.format("""
-                                다음 정보를 JSON 형식으로 정리해주세요:
-                                
-                                1. **month**: 2024년 11월
-                                2. **BSI_index**: %s
-                                3. **BSI_description**: %s의 BSI 지수를 기준으로 한 기업들의 경기 전망 설명 (실제 데이터에 근거)
-                                4. **exchange_rate**: %s 기준 원/달러 환율의 변화와 그로 인해 예상되는 카페 운영에 미칠 영향
-                                5. **price_index**: %s (원두, 우유, 설탕 등 주요 카페 재료 가격 변동에 따른 카페 운영 예상 영향)
-                                6. **food_trend**: 한국 내 최신 카페 소비 트렌드 (뉴스나 시장 조사에 근거)
-                                7. **recommendations**: 위 정보들을 바탕으로 카페 운영자를 위한 권장 사항 (실제 데이터를 기반으로 예측)
-                                
-                                모든 정보는 가능한 한 정확한 최신 자료에 기반하여 작성하며, 허구적인 데이터는 포함하지 마세요.
-                                """, bsiIndex, bsiIndex, latestExchangeRate, priceDescription))
+                            다음 정보를 JSON 형식으로 정리해주세요:
+                            
+                            1. **month**: %s
+                            2. **BSI_index**: %s
+                            3. **BSI_description**: %s의 BSI 지수를 기준으로 한 기업들의 경기 전망 설명 (실제 데이터에 근거)
+                            4. **market_issue**: %s
+                            5. **trend**: %s
+                            7. **recommendations**: 위 정보들을 바탕으로 카페 운영자를 위한 권장 사항 (실제 데이터를 기반으로 예측)
+                            
+                            모든 정보는 가능한 한 정확한 최신 자료에 기반하여 작성하며, 허구적인 데이터는 포함하지 마세요.
+                            """,
+                                _month,
+                                bsiIndex,
+                                bsiIndex,
+                                market,
+                                trend
+                                ))
                 ),
                 "functions", List.of(
                         Map.of(
@@ -211,16 +254,15 @@ public class ReportService {
                                                 "month", Map.of("type", "integer", "description", "2024년 11월"),
                                                 "BSI_index", Map.of("type", "integer", "description", "2024년 11월 15일 기준 최신 기업경기실사지수 (BSI)"),
                                                 "BSI_description", Map.of("type", "string", "description", "오늘 기준 BSI 지수에 대한 설명"),
-                                                "exchange_rate", Map.of("type", "string", "description", "2024년 11월 15일 기준 환율 정보와 그로 인한 카페 운영 예상 영향"),
-                                                "price_index", Map.of("type", "string", "description", "주요 카페 재료의 가격 변동 (우유, 원두, 설탕 등)"),
-                                                "food_trend", Map.of("type", "string", "description", "한국 내 최신 카페 소비 동향"),
+                                                "market_issue", Map.of("type", "string", "description", "주요 카페 재료의 가격 변동 (우유, 원두, 설탕 등)"),
+                                                "trend", Map.of("type", "string", "description", "한국 내 최신 카페 소비 동향"),
                                                 "recommendations", Map.of(
                                                         "type", "array",
                                                         "items", Map.of("type", "string"),
                                                         "description", "위 정보에 기반하여 카페 운영자를 위한 예측 및 권장 사항 목록"
                                                 )
                                         ),
-                                        "required", List.of("month", "BSI_index", "BSI_description", "price_index", "food_trend", "recommendations")
+                                        "required", List.of("month", "BSI_index", "BSI_description", "market_issue", "trend", "recommendations")
                                 )
                         )
                 ),
@@ -257,15 +299,16 @@ public class ReportService {
         }
     }
 
-    /////////////////////// 2. 동종 업계 비교 분석 보고서 생성 (지역 기반)
+    /////////////////////// 2. &#xB3D9;&#xC885; &#xC5C5;&#xACC4; &#xBE44;&#xAD50; &#xBD84;&#xC11D; &#xBCF4;&#xACE0;&#xC11C; &#xC0DD;&#xC131; (&#xC9C0;&#xC5ED; &#xAE30;&#xBC18;)
     public Map<String,Object> generateIndustryComparisonReport(Long memberId, YearMonth month) {
 
             Map<String, Object> monthlyIncome = posService.calculateAverageMonthlyMetrics(month);
             Map<String, Object> categoryExpense = accountService.getAccountHistoryByRegion(memberId, month);
             MonthlyIncomeDTO myIncome  = posService.getMonthlyIncomeSummary(memberId, month);
-            List<ExpenseDetailDTO.ExpenseDetail> myExpense = accountService.getExpenseDetails(month,memberId);
+            ExpenseDTO myExpense = accountService.showSimpleExpense(memberId,month);
 
-            String content = String.format("""
+
+        String content = String.format("""
                     다음 데이터는 평균 카페 운영 관련 지출 및 매출 데이터입니다.
                     - 평균 매출 정보: %s
                     - 평균 지출 정보: %s
@@ -275,25 +318,42 @@ public class ReportService {
                     - 평균 나의 지출 정보: %s
                     """, monthlyIncome, categoryExpense, myIncome, myExpense
             );
-            Map<String, Object> requestBody = Map.of(
-                    "model", "gpt-4o",
-                    "messages", List.of(
-                            Map.of("role", "system", "content", "당신은 카페를 운영하는 사장님을 위한 시장 동향 보고서를 작성하는 AI입니다." +
-                                    " 다음 데이터는 카페 운영 관련 지출 및 매출 데이터입니다. " + content +
-                                    "이를 바탕으로 동종 업계와 비교하여 분석 결과를 JSON 형식으로 제공해주세요." + " 20대의 친근한 여성처럼 대답하세요."),
-                            Map.of("role", "user", "content", String.format("""
-                                    다음 정보를 JSON 형식으로 정리해주세요 : 
-                              
-                                    1. **average_sale** : 약 ~ 만원 형식으로 된 주변 동종 업계 매출 평균 (예시: 약 1181만원)
-                                    2. **average_expense**: 약 ~ 만원 형식으로 된 주변 동종 업계 지출 평균 (예시: 약 821만원)
-                                    3. **my_income : 약 ~ 만원 형식으로 된 나의 매출 (예시: 약 281만원)
-                                    4. **my_expense : 약 ~ 만원 형식으로 된 나의 지출 (예시: 약 181만원)
-                                    3. **sale_description**: 주변 카페와 비교한 시간과 매출 타입(카드/현금) 분석 결과 (예시: '주변 카페들은 카드 거래가 대부분이고, 주로 아침 시간대에 매출이 높아요!'")
-                                    4. **expense_description**: 주변 카페와 비교한 카테고리 별 지출 분석 결과. (예시: '주변 카페 평균보다 임대료 관련 지출이 높아요!'),
-                      
-                                    """))
-                    ),
-                    "functions", List.of(
+        Map<String, Object> requestBody = Map.of(
+                "model", "gpt-4o",
+                "messages", List.of(
+                        Map.of("role", "system", "content",
+                                "당신은 카페를 운영하는 사장님을 위한 시장 동향 보고서를 작성하는 AI입니다. " +
+                                        "다음 데이터는 카페 운영 관련 지출 및 매출 데이터입니다: " + content +
+                                        "이를 바탕으로 동종 업계와 비교하여 분석 결과를 JSON 형식으로 제공해주세요. " +
+                                        "답변은 20대의 친근한 여성처럼 작성해주세요."
+                        ),
+                        Map.of("role", "user", "content",
+                                """
+                                다음 정보를 JSON 형식으로 정리하세요. 금액은 "약 ~ 만원" 형식으로 입력하며, 
+                                입력된 금액이 소수점을 포함하거나 정수 형태인 경우 모두 1만 원 단위로 반올림하여 표현합니다.
+                                   - 예: 5145000.00 → "약 515만원"
+                                   - 예: 11814000 → "약 1181만원"
+                                 :
+                    
+                                1. **average_sale**: "약 ~ 만원" 형식으로 된 주변 동종 업계 매출 평균을 입력합니다. (예: "약 1181만원")
+                                2. **average_expense**: "약 ~ 만원" 형식으로 된 주변 동종 업계 지출 평균을 입력합니다. (예: "약 821만원")
+                                3. **my_income**: "약 ~ 만원" 형식으로 된 나의 매출을 입력합니다. (예: "약 281만원")
+                                4. **my_expense**: "약 ~ 만원" 형식으로 된 나의 지출을 입력합니다. (예: "약 181만원")
+                                5. **sale_description**: 주변 업계와 비교한 매출 분석 결과를 서술합니다. 분석 결과는 다음 요소를 포함해야 합니다:
+                                   - 주변 업계 대비 매출 비율 (예: "주변 카페들에 비해 10% 낮아요.")
+                                   - 매출이 주로 발생하는 시간대 (예: "아침 시간대에 매출이 높아요.")
+                                   - 카드와 현금 매출의 비율 차이 (예: "카드 거래가 대부분이에요.")
+                                   - 추천 사항: 매출 시간이 적은 시간의 매출 증대를 위한 전략 및 실행 가능한 조언을 포함합니다 
+                                6. **expense_description**: 주변 업계와 비교한 지출 분석 결과를 서술합니다. 분석 결과는 다음 요소를 포함해야 합니다:
+                                   - 특정 지출 카테고리(예: 인건비, 공과금, 임대료 등)와 비교
+                                   - 해당 카테고리의 평균 지출 금액 (예: "임대료는 평균 100만원이에요.")
+                                   - 나의 지출이 평균 대비 몇 % 더 높은지 또는 낮은지 (예: "임대료가 15% 높아요.")
+                                   - 추천 사항: 지출 중 평균 대비 높은 지출을 절감 및 효율화를 위한 실행 가능한 조언을 포함합니다 
+                                """
+                        )
+                ),
+
+        "functions", List.of(
                             Map.of(
                                     "name", "generateIndustryComparisonReport",
                                     "description", "지출과 매출에 대한 비교 분석 리포트를 생성합니다.",

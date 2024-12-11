@@ -28,9 +28,8 @@ public class AccountHistory {
     private Account account;
 
     // 거래 타입 (매출(Revenue)/지출(Expense)
-    @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type")
-    private TransactionTypeEnum transactionType;
+    private String transactionType;
 
     // 거래 방식 (카드(Card) / 현금(Cash)
     @Enumerated(EnumType.STRING)
@@ -64,7 +63,7 @@ public class AccountHistory {
     @Builder
     public AccountHistory(String transactionType, Account account, String transactionMeans, LocalDateTime transactionDate,BigDecimal amount, String category, String note, Boolean fixedExpenses, String storeName) {
         this.account = account;
-        this.transactionType = TransactionTypeEnum.EXPENSE;
+        this.transactionType = "EXPENSE";
         this.transactionMeans = TransactionMeansEnum.CASH;
         this.transactionDate = transactionDate;
         this.amount = amount;

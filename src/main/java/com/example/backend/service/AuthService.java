@@ -32,30 +32,57 @@ public class AuthService {
     private final TokenService tokenService;
     private final JPAQueryFactory queryFactory;
 
-    @Transactional
-    public void resetPassword(PasswordResetRequestDTO passwordResetRequest) {
-        log.info("비밀번호 재설정 요청: loginId={}, email={}", passwordResetRequest.getLoginId(), passwordResetRequest.getEmail());
 
+    // 비밀번호 재설정 전 인증
+    @Transactional
+    public boolean checkAuth(CheckAuthDTO checkAuth) {
         QMember qMember = QMember.member;
 
-        // 1. QueryDSL로 사용자 조회
+        Member member = queryFactory.selectFrom(qMember)
+                .where(
+                        qMember.loginId.eq(checkAuth.getLoginId())
+                                .and(qMember.email.eq(checkAuth.getEmail()))
+                )
+                .fetchOne();
+
+        // 회원이 존재하면 true, 없으면 false 반환
+        boolean isValid = member != null;
+        log.info("인증 체크 결과: loginId={}, email={}, isValid={}",
+                checkAuth.getLoginId(), checkAuth.getEmail(), isValid);
+        return isValid;
+    }
+
+    // 비밀번호 재설정
+    @Transactional
+    public void resetPassword(PasswordResetRequestDTO passwordResetRequest) {
+        QMember qMember = QMember.member;
+
+        log.info("비밀번호 재설정 요청: loginId={}", passwordResetRequest.getLoginId());
+
+        // QueryDSL로 사용자 조회
         Member member = queryFactory.selectFrom(qMember)
                 .where(
                         qMember.loginId.eq(passwordResetRequest.getLoginId())
-                                .and(qMember.email.eq(passwordResetRequest.getEmail()))
                 )
                 .fetchOne();
 
         if (member == null) {
-            throw new ResourceNotFoundException("해당 아이디와 이메일이 일치하는 사용자를 찾을 수 없습니다.");
+            log.error("사용자를 찾을 수 없습니다: loginId={}", passwordResetRequest.getLoginId());
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
 
-        // 2. 새로운 비밀번호 암호화 및 저장
+        // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(passwordResetRequest.getNewPassword());
+
+        // 비밀번호 업데이트
         member.setPassword(encodedPassword);
 
         log.info("비밀번호 재설정 완료: loginId={}", passwordResetRequest.getLoginId());
     }
+
+
+
+
 
     // 회원가입
     public ResponseEntity<String> signup(SignupRequestDTO signupRequest) {
