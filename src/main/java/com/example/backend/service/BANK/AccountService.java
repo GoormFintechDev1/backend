@@ -549,4 +549,35 @@ public class AccountService {
         return "";
     }
 
+
+
+    // 월별 전체 사용자들의 AccountHistory에서 지출 평균을 계산하는 메서드
+    public Map<String, Object> getMonthlyExpenseAverage(YearMonth month) {
+        // 1. AccountHistory에서 월별 EXPENSE의 총합 계산
+        QAccountHistory qAccountHistory = QAccountHistory.accountHistory;
+
+        BigDecimal totalExpense = queryFactory.select(qAccountHistory.amount.sum())
+                .from(qAccountHistory)
+                .where(qAccountHistory.transactionType.eq("EXPENSE")
+                        .and(qAccountHistory.transactionDate.between(
+                                month.atDay(1).atStartOfDay(),
+                                month.atEndOfMonth().atTime(23, 59, 59))))
+                .fetchOne();
+
+        if (totalExpense == null) {
+            totalExpense = BigDecimal.ZERO;
+        }
+
+        // 2. 평균 지출 계산 (3으로 나누기)
+        BigDecimal averageExpense = totalExpense.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
+
+        log.info("Total Expense: {}, Average Expense: {}", totalExpense, averageExpense);
+
+        // 3. 결과 반환
+        Map<String, Object> result = new HashMap<>();
+        result.put("averageExpense", averageExpense);
+        result.put("totalExpense", totalExpense);
+        return result;
+    }
+
 }
