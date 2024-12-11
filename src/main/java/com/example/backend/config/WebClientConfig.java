@@ -26,7 +26,7 @@ public class WebClientConfig {
   
     // localhost:8081에 연결하는 WebClient
     @Bean(name = "webClient8081")
-    public WebClient webClientLocal8081(WebClient.Builder builder) {
+    public WebClient webClient8081(WebClient.Builder builder) {
         return configureBuilder(builder, 10 * 1024 * 1024) // 10MB 버퍼 크기
                 .baseUrl(bankUrl)
                 .build();
@@ -34,7 +34,7 @@ public class WebClientConfig {
   
     // localhost:8083에 연결하는 WebClient
     @Bean(name = "webClient8083")
-    public WebClient webClientLocal8083(WebClient.Builder builder) {
+    public WebClient webClient8083(WebClient.Builder builder) {
         return configureBuilder(builder, 10 * 1024 * 1024) // 10MB 버퍼 크기
                 .baseUrl(posUrl)
                 .build();
@@ -43,7 +43,7 @@ public class WebClientConfig {
     // localhost:8084에 연결하는 WebClient
     @Primary
     @Bean(name = "webClient8084")
-    public WebClient webClientLocal8084(WebClient.Builder builder) {
+    public WebClient webClient8084(WebClient.Builder builder) {
         return configureBuilder(builder, 2 * 1024 * 1024) // 2MB 버퍼 크기
                 .baseUrl(brUrl)
                 .build();
