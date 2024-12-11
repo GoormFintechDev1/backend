@@ -21,6 +21,15 @@ INSERT INTO prompt (month, type, contents) VALUES
 ('2024-09', 'trend', '넷플릭스 요리 경연 프로그램 덕분에 밤을 활용한 메뉴가 요즘 주목받고 있어요! 밤 티라미수나 밤 라떼 같은 메뉴들이 인기몰이 중이에요. 또, 런치플레이션 영향으로 점심시간 직장인을 위한 할인 이벤트에 대한 수요가 커지고 있는데, 점심 할인 이벤트를 진행해 보면 어떨까요?');
 
 
+INSERT INTO business_registration (
+    business_registration_id, member_id, business_type, business_item, br_num,
+    address, business_start_date, representative_name, company_name, pos_id, account_id
+) VALUES
+(2, NULL, '음식점업', '커피 전문점', '2068692418',
+ '서울특별시 서대문구 연희동 96-9', '2020-03-15', '박수진', '프로토콜 커피', NULL, NULL),
+(3, NULL, '음식점업', '커피 전문점', '2768956781',
+ '서울특별시 서대문구 연희동 132-24', '2021-06-20', '이정훈', '유니크 커피로스터스', NULL, NULL);
+
 
 
 -- 10월 데이터
