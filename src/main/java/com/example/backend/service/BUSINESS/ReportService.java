@@ -217,14 +217,14 @@ public class ReportService {
 
         // 실제 최신 데이터를 가져왔다고 가정한 예시입니다.
         String bsiIndex = "98";  // 실제 경제 지표 API로부터 가져올 수 있습니다.
-
+        int _month = month.getMonthValue(); // 월만 가져오기
         // 요청 바디 구성
         Map<String, Object> requestBody = Map.of(
                 "model", "gpt-4o",
                 "messages", List.of(
                         Map.of("role", "system", "content", String.format("당신은 %s 한국의 경제 뉴스를 기반으로 카페 운영자를 위한 시장 동향 보고서를 작성하는 AI입니다. " +
                                 "실제 최신 뉴스와 공공 데이터(예: 한국은행, 기상청, 농림축산식품부, 통계청 등)를 기반으로 작성하세요. " +
-                                "20대의 친근한 여성처럼 대답하세요.", month.toString())),
+                                "20대의 친근한 여성처럼 대답하세요.", _month)),
                         Map.of("role", "user", "content", String.format("""
                             다음 정보를 JSON 형식으로 정리해주세요:
                             
@@ -237,7 +237,7 @@ public class ReportService {
                             
                             모든 정보는 가능한 한 정확한 최신 자료에 기반하여 작성하며, 허구적인 데이터는 포함하지 마세요.
                             """,
-                                month,
+                                _month,
                                 bsiIndex,
                                 bsiIndex,
                                 market,
