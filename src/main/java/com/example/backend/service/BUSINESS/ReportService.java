@@ -3,10 +3,7 @@ package com.example.backend.service.BUSINESS;
 import com.example.backend.dto.account.ExpenseDTO;
 import com.example.backend.dto.account.ExpenseDetailDTO;
 import com.example.backend.dto.pos.MonthlyIncomeDTO;
-import com.example.backend.model.BUSINESS.BusinessRegistration;
-import com.example.backend.model.BUSINESS.Prompt;
-import com.example.backend.model.BUSINESS.QReport;
-import com.example.backend.model.BUSINESS.Report;
+import com.example.backend.model.BUSINESS.*;
 import com.example.backend.service.BANK.AccountService;
 import com.example.backend.service.POS.PosService;
 import com.example.backend.service.RedisService;
@@ -31,6 +28,7 @@ import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -136,7 +134,7 @@ public class ReportService {
 
     private Map<String, Object> generateReportFromAPI(Long memberId, YearMonth month, String reportType) {
         if ("MARKET_REPORT".equals(reportType)) {
-            return generateMarketReport();
+            return generateMarketReport(month);
         } else if ("INDUSTRY_REPORT".equals(reportType)) {
             return generateIndustryComparisonReport(memberId, month);
         }
@@ -156,37 +154,40 @@ public class ReportService {
         }
     }
 
-  /*  public String getMarketIssueAndTrendByMonth(String month) {
+    public String getMarketIssueByMonth(YearMonth month) {
+        QPrompt prompt = QPrompt.prompt;
+
         // "시장 이슈" 데이터 가져오기
-        List<Prompt> marketIssues = queryFactory
-                .selectFrom(prompt)
+        String marketIssues = queryFactory
+                .select(prompt.contents)
+                .from(prompt)
                 .where(
                         prompt.month.eq(month),
-                        prompt.type.eq("시장 이슈")
+                        prompt.type.eq("issue")
                 )
-                .fetch();
+                .fetchOne();
+
+        return marketIssues != null ? marketIssues : "";
+    }
+
+    public String getTrendByMonth(YearMonth month) {
+        QPrompt prompt = QPrompt.prompt;
 
         // "트렌드" 데이터 가져오기
-        List<Prompt> trends = queryFactory
-                .selectFrom(prompt)
+        String trends = queryFactory
+                .select(prompt.contents)
+                .from(prompt)
                 .where(
                         prompt.month.eq(month),
-                        prompt.type.eq("트렌드")
+                        prompt.type.eq("trend")
                 )
-                .fetch();
+                .fetchOne();
 
-        // 결과 합치기
-        String marketIssueText = marketIssues.stream()
-                .map(Prompt::getContents)
-                .collect(Collectors.joining("\n"));
-
-        String trendText = trends.stream()
-                .map(Prompt::getContents)
-                .collect(Collectors.joining("\n"));
-
-        return "시장 이슈:\n" + marketIssueText + "\n\n트렌드:\n" + trendText;
+        // "트렌드" 결과 합치기
+        return trends != null ? trends : "";
     }
-*/
+
+
     @Transactional
     public void saveReport(BusinessRegistration businessRegistration, LocalDate reportMonth, String reportType, Map<String, Object> reportData) {
         try {
@@ -209,31 +210,39 @@ public class ReportService {
     //////////////////// 1. 경제 지표 활용 시장 동향 보고서 생성
     private final ObjectMapper objectMapper;
 
-    public Map<String, Object> generateMarketReport() {
+    public Map<String, Object> generateMarketReport(YearMonth month) {
+        // 시장 이슈와 트렌드 데이터를 가져오기
+        String market =  getMarketIssueByMonth(month);
+        String trend = getTrendByMonth(month);
+
         // 실제 최신 데이터를 가져왔다고 가정한 예시입니다.
-        String latestExchangeRate = "1,320원";  // 실제 API 호출로 가져올 수 있습니다.
         String bsiIndex = "98";  // 실제 경제 지표 API로부터 가져올 수 있습니다.
-        String priceDescription = "원두 가격 5% 상승, 우유 가격 3% 상승, 설탕 가격 안정적";  // 실제 API에서 가져온 데이터 예시
+
+        // 요청 바디 구성
         Map<String, Object> requestBody = Map.of(
                 "model", "gpt-4o",
                 "messages", List.of(
-                        Map.of("role", "system", "content", "당신은 2024년 11월 15일 한국의 경제 뉴스를 기반으로 카페 운영자를 위한 시장 동향 보고서를 작성하는 AI입니다. " +
-                                "실제 최신 뉴스와 공공 데이터(예: 한국은행, 기상청, 농림축산식품부, 통계청 등)를 기반으로 보고서를 작성하세요. 20대의 친근한 여성처럼 대답하세요." +
-                                "2024년 11월 15일 기준 환율은 1400.90원 이고, BSI 지수는 91.8입니다. 모든 정보에 대한 실제 출처를 적어주세요. 출처가 무조건 있어야 합니다. 출처가 없는 값은 보여주지 마세요" ),
-
+                        Map.of("role", "system", "content", String.format("당신은 %s 한국의 경제 뉴스를 기반으로 카페 운영자를 위한 시장 동향 보고서를 작성하는 AI입니다. " +
+                                "실제 최신 뉴스와 공공 데이터(예: 한국은행, 기상청, 농림축산식품부, 통계청 등)를 기반으로 작성하세요. " +
+                                "20대의 친근한 여성처럼 대답하세요.", month.toString())),
                         Map.of("role", "user", "content", String.format("""
-                                다음 정보를 JSON 형식으로 정리해주세요:
-                                
-                                1. **month**: 2024년 11월
-                                2. **BSI_index**: %s
-                                3. **BSI_description**: %s의 BSI 지수를 기준으로 한 기업들의 경기 전망 설명 (실제 데이터에 근거)
-                                4. **exchange_rate**: %s 기준 원/달러 환율의 변화와 그로 인해 예상되는 카페 운영에 미칠 영향
-                                5. **price_index**: %s (원두, 우유, 설탕 등 주요 카페 재료 가격 변동에 따른 카페 운영 예상 영향)
-                                6. **food_trend**: 한국 내 최신 카페 소비 트렌드 (뉴스나 시장 조사에 근거)
-                                7. **recommendations**: 위 정보들을 바탕으로 카페 운영자를 위한 권장 사항 (실제 데이터를 기반으로 예측)
-                                
-                                모든 정보는 가능한 한 정확한 최신 자료에 기반하여 작성하며, 허구적인 데이터는 포함하지 마세요.
-                                """, bsiIndex, bsiIndex, latestExchangeRate, priceDescription))
+                            다음 정보를 JSON 형식으로 정리해주세요:
+                            
+                            1. **month**: %s
+                            2. **BSI_index**: %s
+                            3. **BSI_description**: %s의 BSI 지수를 기준으로 한 기업들의 경기 전망 설명 (실제 데이터에 근거)
+                            4. **market_issue**: %s
+                            5. **trend**: %s
+                            7. **recommendations**: 위 정보들을 바탕으로 카페 운영자를 위한 권장 사항 (실제 데이터를 기반으로 예측)
+                            
+                            모든 정보는 가능한 한 정확한 최신 자료에 기반하여 작성하며, 허구적인 데이터는 포함하지 마세요.
+                            """,
+                                month,
+                                bsiIndex,
+                                bsiIndex,
+                                market,
+                                trend
+                                ))
                 ),
                 "functions", List.of(
                         Map.of(
@@ -245,16 +254,15 @@ public class ReportService {
                                                 "month", Map.of("type", "integer", "description", "2024년 11월"),
                                                 "BSI_index", Map.of("type", "integer", "description", "2024년 11월 15일 기준 최신 기업경기실사지수 (BSI)"),
                                                 "BSI_description", Map.of("type", "string", "description", "오늘 기준 BSI 지수에 대한 설명"),
-                                                "exchange_rate", Map.of("type", "string", "description", "2024년 11월 15일 기준 환율 정보와 그로 인한 카페 운영 예상 영향"),
-                                                "price_index", Map.of("type", "string", "description", "주요 카페 재료의 가격 변동 (우유, 원두, 설탕 등)"),
-                                                "food_trend", Map.of("type", "string", "description", "한국 내 최신 카페 소비 동향"),
+                                                "market_issue", Map.of("type", "string", "description", "주요 카페 재료의 가격 변동 (우유, 원두, 설탕 등)"),
+                                                "trend", Map.of("type", "string", "description", "한국 내 최신 카페 소비 동향"),
                                                 "recommendations", Map.of(
                                                         "type", "array",
                                                         "items", Map.of("type", "string"),
                                                         "description", "위 정보에 기반하여 카페 운영자를 위한 예측 및 권장 사항 목록"
                                                 )
                                         ),
-                                        "required", List.of("month", "BSI_index", "BSI_description", "price_index", "food_trend", "recommendations")
+                                        "required", List.of("month", "BSI_index", "BSI_description", "market_issue", "trend", "recommendations")
                                 )
                         )
                 ),

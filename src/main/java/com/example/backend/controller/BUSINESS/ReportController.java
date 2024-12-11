@@ -29,9 +29,9 @@ public class ReportController {
             @ApiResponse(responseCode = "500", description = "시장 동향 보고서 생성 중 서버 오류 발생")
     })
     @GetMapping("/market-trend")
-    public ResponseEntity<Map<String, Object>> getMarketReport() {
+    public ResponseEntity<Map<String, Object>> getMarketReport(@RequestParam YearMonth month) {
         try {
-            Map<String, Object> report = reportService.generateMarketReport();
+            Map<String, Object> report = reportService.generateMarketReport(month);
             return ResponseEntity.ok(report);
 
         } catch (Exception e) {
