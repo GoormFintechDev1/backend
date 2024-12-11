@@ -28,12 +28,12 @@ public class PosOrderService {
     private final MemberRepository memberRepository;
 
 
-    @Value("${pos.api.url.orders}")
-    private String posOrdersUrl;
+    @Value("${pos.api.url}")
+    private String posUrl;
 
     public List<OrderResponseDTO> fetchOrdersFromPos() {
         return webClient.get()
-                .uri(posOrdersUrl + "/all")
+                .uri(posUrl + "/api/orders/all")
                 .retrieve()
                 .bodyToFlux(OrderResponseDTO.class)
                 .collectList()
