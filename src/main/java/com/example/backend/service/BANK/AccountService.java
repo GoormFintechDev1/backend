@@ -88,14 +88,11 @@ public class AccountService {
     @Qualifier("webClient8081")
     private final WebClient webClient;
 
-    @Value("${bank.api.url}")
-    private String bankUrl;
-
     // 외부 API 호출하여 sendToMainDTO 데이터 가져오기
     public sendToMainDTO fetchAccountAndHistoryFromBank() {
         try {
             return webClient.post()
-                    .uri(bankUrl + "/api/bank/send/account")
+                    .uri("/api/bank/send/account")
                     .retrieve()
                     .bodyToMono(sendToMainDTO.class)
                     .block();
@@ -107,7 +104,7 @@ public class AccountService {
 
     // 10초마다 bank에서 account와 accountHistory 땡겨오기
     // @Scheduled(fixedRate = 10000)	// 1000ms * 10 = 10초
-    @Scheduled(cron = "0 */30 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     public void updateAccountAndHistory() {
         try {
             // 외부 API에서 데이터 가져오기
