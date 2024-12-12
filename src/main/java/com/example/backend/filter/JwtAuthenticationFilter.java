@@ -1,6 +1,7 @@
 package com.example.backend.filter;
 
 import com.example.backend.model.Member;
+import com.example.backend.model.enumSet.MemberActiveEnum;
 import com.example.backend.repository.MemberRepository;
 import com.example.backend.util.TokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -76,6 +77,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 멤버 유효성 검사
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AccessDeniedException("존재하지 않는 회원입니다."));
+
+        // 멤버 탈퇴 여부 검사
+        if (MemberActiveEnum.INACTIVE.equals(member.getActivity())) {
+            throw new AccessDeniedException("비활성화된 회원입니다. 접근이 거부됩니다.");
+        }
+
 
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(memberId, null, null);
