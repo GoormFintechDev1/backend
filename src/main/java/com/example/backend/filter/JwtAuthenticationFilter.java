@@ -1,5 +1,7 @@
 package com.example.backend.filter;
 
+import com.example.backend.model.Member;
+import com.example.backend.repository.MemberRepository;
 import com.example.backend.util.TokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -8,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,6 +22,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
+    private final MemberRepository memberRepository;
 
 
     @Override
@@ -68,6 +72,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void setAuthentication(String token) {
         Long memberId = tokenProvider.getMemberIdFromToken(token);
+
+        // 멤버 유효성 검사
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AccessDeniedException("존재하지 않는 회원입니다."));
+
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(memberId, null, null);
 
