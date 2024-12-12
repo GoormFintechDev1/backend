@@ -27,8 +27,8 @@ public class TokenProvider {
 
     private byte[] keyBytes;
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1시간
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 15; // 15분
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 3; // 3일
 
     // SECRET_KEY를 Base64로 디코딩하여 바이트 배열로 변환
     @PostConstruct
@@ -119,6 +119,7 @@ public class TokenProvider {
     public void setAccessTokenCookie(String accessToken, HttpServletResponse response) {
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setMaxAge(900); // 15분 만료
         accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
     }
