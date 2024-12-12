@@ -245,31 +245,44 @@ public class ReportService {
         String market = getMarketIssueByMonth(month);
         String trend = getTrendByMonth(month);
 
+//        // 기본값을 추가하여 값이 없을 경우 대체 문구 제공
+//        market = (market == null || market.isBlank()) ? "시장 이슈 데이터가 없습니다. 최신 이슈를 업데이트하세요." : market;
+//        trend = (trend == null || trend.isBlank()) ? "트렌드 데이터가 없습니다. 최신 트렌드를 업데이트하세요." : trend;
+
+        String content = String.format("""
+            다음 데이터는 현재 월 기준으로 제공된 시장 동향 데이터입니다.
+            - BSI 지수: %s
+            - BSI 설명: %s
+            - CPI 지수: %s
+            - CPI 설명: %s
+            - 시장 이슈: %s
+            - 트렌드: %s
+            """,
+                bsiIndex, bsiDescription, cpiIndex, cpiDescription, market, trend
+        );
+
         Map<String, Object> requestBody = Map.of(
                 "model", "gpt-4o",
                 "messages", List.of(
-                        Map.of("role", "system", "content", String.format("당신은 %s 한국의 경제 뉴스를 기반으로 카페 운영자를 위한 시장 동향 보고서를 작성하는 AI입니다. " +
-                                "실제 최신 뉴스와 공공 데이터(예: 한국은행, 기상청, 농림축산식품부, 통계청 등)를 기반으로 작성하세요.", currentMonth)),
-                        Map.of("role", "user", "content", String.format("""
-                        다음 정보를 JSON 형식으로 정리하세요:
-
-                        1. **month**: %s
-                        2. **BSI_index**: %s
-                        3. **BSI_description**: %s
-                        4. **CPI_index**: %s
-                        5. **CPI_description**: %s
-                        6. **market_issue**: %s
-                        7. **trend**: %s
-                        8. **recommendation**: 제공된 데이터를 기반으로 종합적으로 고려한 권장 사항
-                        """,
-                                currentMonth,
-                                bsiIndex,
-                                bsiDescription,
-                                cpiIndex,
-                                cpiDescription,
-                                market,
-                                trend
-                        ))
+                        Map.of("role", "system", "content",
+                                "당신은 카페를 운영하는 사장님을 위한 시장 동향 보고서를 작성하는 AI입니다. " +
+                                        "다음 데이터는 카페 운영 관련 시장 동향 정보입니다: ", +currentMonth, content +
+                                        "이를 바탕으로 분석 결과와 권장 사항을 JSON 형식으로 제공해주세요. " +
+                                        "답변은 친근한 아나운서처럼 작성해주세요. 귀하 보다는 사장님 표현을 써주세요. -하는게 좋을 것 같아요. - 했어요. -해요. -하는게 어떨까요? 등의 표현을 써주세요."
+                        ),
+                        Map.of("role", "user", "content",
+                                """
+                                다음 정보를 JSON 형식으로 정리하세요:
+                                1. **month**: 해당 월
+                                2. **BSI_index**: BSI 지수
+                                3. **BSI_description**: BSI 지수에 대한 설명
+                                4. **CPI_index**: CPI 지수
+                                5. **CPI_description**: CPI 지수에 대한 설명
+                                6. **market_issue**: 시장 이슈에 대한 설명
+                                7. **trend**: 트렌드에 대한 설명
+                                8. **recommendation**: 위 데이터를 기반으로 종합적으로 고려한 권장 사항
+                                """
+                        )
                 ),
                 "functions", List.of(
                         Map.of(
@@ -280,12 +293,12 @@ public class ReportService {
                                         "properties", Map.of(
                                                 "month", Map.of("type", "integer", "description", "2024년 해당 월"),
                                                 "BSI_index", Map.of("type", "string", "description", "오늘 기준 BSI 지수"),
-                                                "BSI_description", Map.of("type", "string", "description", "오늘 기준 BSI 지수에 대한 설명"),
+                                                "BSI_description", Map.of("type", "string", "description", "오늘 기준 BSI 지수에 대한 자세한 설명"),
                                                 "CPI_index", Map.of("type", "string", "description", "오늘 기준 소비자물가지수 (CPI)"),
-                                                "CPI_description", Map.of("type", "string", "description", "오늘 기준 소비자물가지수 (CPI)에 대한 설명"),
-                                                "market_issue", Map.of("type", "string", "description", "전달받은 시장 이슈 데이터"),
-                                                "trend", Map.of("type", "string", "description", "전달받은 트렌드 데이터"),
-                                                "recommendation", Map.of("type", "string", "description", "종합적으로 고려한 권장 사항")
+                                                "CPI_description", Map.of("type", "string", "description", "오늘 기준 소비자물가지수 (CPI)에 대한 자세한 설명"),
+                                                "market_issue", Map.of("type", "string", "description", "시장 이슈에 대한 설명"),
+                                                "trend", Map.of("type", "string", "description", "트렌드에 대한 설명"),
+                                                "recommendation", Map.of("type", "string", "description", "위 정보를 종합적으로 고려한 권장 사항")
                                         ),
                                         "required", List.of("month", "BSI_index", "BSI_description", "CPI_index", "CPI_description", "market_issue", "trend", "recommendation")
                                 )
@@ -431,8 +444,6 @@ public class ReportService {
 //            return Map.of("error", "예상치 못한 오류 발생");
 //        }
 //    }
-
-
 
 
     /////////////////////// 2. &#xB3D9;&#xC885; &#xC5C5;&#xACC4; &#xBE44;&#xAD50; &#xBD84;&#xC11D; &#xBCF4;&#xACE0;&#xC11C; &#xC0DD;&#xC131; (&#xC9C0;&#xC5ED; &#xAE30;&#xBC18;)
