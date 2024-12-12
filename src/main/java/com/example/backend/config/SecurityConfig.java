@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
                 .authorizeRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()// 인증 및 회원가입 엔드포인트 접근 허용
+                        .requestMatchers("/api/health-check").permitAll()
                         .requestMatchers("/api/pos-sales/save").permitAll()  // 포스 API 호출
                         .requestMatchers("/api/business/br-connect").permitAll()  // 포스 API 호출
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
