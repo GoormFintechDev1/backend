@@ -27,7 +27,7 @@ public class PosOrderService {
 
     @Autowired
     @Qualifier("webClient8083")
-    private final WebClient webClient;
+    private WebClient webClient;
     private final MemberRepository memberRepository;
 
     public List<OrderResponseDTO> fetchOrdersFromPos() {
