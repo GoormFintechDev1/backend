@@ -1,6 +1,7 @@
 package com.example.backend.config;
 
 import com.example.backend.filter.JwtAuthenticationFilter;
+import com.example.backend.repository.MemberRepository;
 import com.example.backend.util.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +19,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
+    private final MemberRepository memberRepository;
 
-    public SecurityConfig(TokenProvider tokenProvider) {
+    public SecurityConfig(TokenProvider tokenProvider, MemberRepository memberRepository) {
         this.tokenProvider = tokenProvider;
+        this.memberRepository = memberRepository;
     }
 
     @Bean
@@ -42,7 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                         .anyRequest().authenticated()  // 나머지 엔드포인트는 인증 필요
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider),
+                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider, memberRepository),
                         UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
 
         log.info("SecurityFilterChain configured successfully");
