@@ -96,7 +96,7 @@ public class AccountService {
         try {
         	log.info(webClient.toString());
             return webClient.post()
-                    .uri("http://localhost:8081/api/bank/send/account")
+                    .uri("/api/bank/send/account")
                     .retrieve()
                     .bodyToMono(sendToMainDTO.class)
                     .block();

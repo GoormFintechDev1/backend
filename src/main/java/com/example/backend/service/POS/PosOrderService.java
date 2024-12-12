@@ -32,7 +32,7 @@ public class PosOrderService {
 
     public List<OrderResponseDTO> fetchOrdersFromPos() {
         return webClient.get()
-                .uri("http://localhost:8083/api/orders/all")
+                .uri("/api/orders/all")
                 .retrieve()
                 .bodyToFlux(OrderResponseDTO.class)
                 .collectList()
