@@ -11,6 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                     "http://doubly.co.kr",
+                    "https://doubly.co.kr",
                     "http://ec2-54-180-115-242.ap-northeast-2.compute.amazonaws.com:8081",
                     "http://ec2-54-180-115-242.ap-northeast-2.compute.amazonaws.com:8083",
                     "http://ec2-54-180-115-242.ap-northeast-2.compute.amazonaws.com:8084",
