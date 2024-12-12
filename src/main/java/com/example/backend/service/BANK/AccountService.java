@@ -23,6 +23,8 @@ import com.example.backend.model.POS.QPosSales;
 import com.example.backend.model.QMember;
 import com.example.backend.repository.AccountHistoryRepository;
 import com.example.backend.repository.AccountRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -85,12 +87,14 @@ public class AccountService {
     }
 
     /// bank 호출
+    @Autowired
     @Qualifier("webClient8081")
-    private final WebClient webClient;
+    private WebClient webClient;
 
     // 외부 API 호출하여 sendToMainDTO 데이터 가져오기
     public sendToMainDTO fetchAccountAndHistoryFromBank() {
         try {
+        	log.info(webClient.toString());
             return webClient.post()
                     .uri("/api/bank/send/account")
                     .retrieve()
