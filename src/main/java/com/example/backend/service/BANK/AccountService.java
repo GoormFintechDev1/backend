@@ -107,8 +107,8 @@ public class AccountService {
     }
 
     // 10초마다 bank에서 account와 accountHistory 땡겨오기
-    // @Scheduled(fixedRate = 10000)	// 1000ms * 10 = 10초
-    @Scheduled(cron = "0 */1 * * * *")
+//     @Scheduled(fixedRate = 10000)	// 1000ms * 10 = 10초
+    @Scheduled(cron = "10 * * * * *")
     public void updateAccountAndHistory() {
         try {
             // 외부 API에서 데이터 가져오기
@@ -128,10 +128,10 @@ public class AccountService {
                         .fetchFirst() != null;
 
                 if (!accountExists) {
-                    accountRepository.save(account);
+                    log.info("해당 계좌가 존재하지 않습니다.");
+                    return;
+//                    accountRepository.save(account);
 //                    log.info("새로운 Account 저장: {}", account);
-                } else {
-//                    log.info("이미 존재하는 Account, 저장하지 않음: {}", account);
                 }
             }
 
