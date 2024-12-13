@@ -210,7 +210,7 @@ public class CardService {
 			return expense.getCategory().contains("재료비") && expense.getNote().contains("온라인");
 		} else {	// 혜택에 온라인 정보가 없는 경우, 결제(Note)가 온라인이면 false 외에는 모두 true
 			if( expense.getNote().contains("온라인")) {
-				return false;
+		 	 			return false;
 			}
 			
 			return true;
