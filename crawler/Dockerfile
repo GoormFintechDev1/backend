@@ -30,6 +30,7 @@ WORKDIR /app
 
 # 스크립트 복사
 COPY card_crawler.py .
+COPY card_data.json .
 
 # 실행 명령어 설정
 CMD ["python", "card_crawler.py"]
