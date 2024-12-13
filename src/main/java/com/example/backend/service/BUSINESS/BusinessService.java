@@ -146,7 +146,7 @@ public class BusinessService {
     private Account fetchAccountByBrNum(String brNum) {
         try {
             return accountWebClient.get()
-                    .uri("http://localhost:8081/api/bank/check/account?brNum={brNum}", brNum)
+                    .uri("/api/bank/check/account?brNum={brNum}", brNum)
                     .retrieve()
                     .bodyToMono(Account.class)
                     .block();
@@ -188,7 +188,7 @@ public class BusinessService {
             // 요청 DTO 생성
             PosRequestDTO requestDTO = new PosRequestDTO(null, brNum); // posId는 null
             return webClient3.post()
-                    .uri("http://localhost:8083/api/pos/get-pos-id")
+                    .uri("/api/pos/get-pos-id")
                     .bodyValue(requestDTO)
                     .retrieve()
                     .bodyToMono(Long.class)
