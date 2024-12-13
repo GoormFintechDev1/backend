@@ -119,7 +119,7 @@ public class TokenProvider {
     public void setAccessTokenCookie(String accessToken, HttpServletResponse response) {
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setMaxAge(900); // 15분 만료
+        accessTokenCookie.setMaxAge(10800); // 3시간 만료
         accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
     }
