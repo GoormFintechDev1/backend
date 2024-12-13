@@ -1,22 +1,28 @@
 package com.example.backend.service.BUSINESS;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import com.example.backend.dto.auth.BusinessRegistrationDTO;
 import com.example.backend.dto.auth.CheckBusinessDTO;
 import com.example.backend.dto.pos.PosRequestDTO;
 import com.example.backend.exception.base_exceptions.BadRequestException;
+import com.example.backend.model.Member;
+import com.example.backend.model.QMember;
 import com.example.backend.model.BANK.Account;
 import com.example.backend.model.BUSINESS.BusinessRegistration;
-import com.example.backend.model.BUSINESS.QBusinessRegistration;
-import com.example.backend.model.Member;
 import com.example.backend.model.POS.Pos;
-import com.example.backend.model.QMember;
-import com.example.backend.repository.*;
+import com.example.backend.repository.AccountRepository;
+import com.example.backend.repository.BusinessRegistrationRepository;
+import com.example.backend.repository.BusinessRepository;
+import com.example.backend.repository.MemberRepository;
+import com.example.backend.repository.PosRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
@@ -29,14 +35,17 @@ public class BusinessService {
     private final PosRepository posRepository;
     private final BusinessRegistrationRepository businessRegistrationRepository;
 
-    @Qualifier("webClient8084")
-    private final WebClient webClient;
-
+    @Autowired
     @Qualifier("webClient8081")
-    private final WebClient accountWebClient;
-
+    private WebClient accountWebClient;
+    
+    @Autowired
     @Qualifier("webClient8083")
-    private final WebClient webClient3;
+    private WebClient webClient3;
+    
+    @Autowired
+    @Qualifier("webClient8084")
+    private WebClient webClient;
 
 
     // 로그인한 유저의 businessID를 가져오는 로직
@@ -126,6 +135,7 @@ public class BusinessService {
         // 3. 계좌 연결 정보 가져오기
         Account connectedAccount = fetchAccountByBrNum(brNum);
 
+        accountRepository.save(connectedAccount);
 
         if (connectedAccount == null) {
             throw new BadRequestException("해당 사업자 번호와 연결된 계좌가 없습니다.");
@@ -133,7 +143,6 @@ public class BusinessService {
 
         log.info("연결된 계좌 정보: {}", connectedAccount);
 
-        accountRepository.save(connectedAccount);
 
         // 6. 저장
         businessRegistration.setAccount(connectedAccount);
